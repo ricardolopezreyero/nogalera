@@ -10,15 +10,16 @@ from shapely import affinity, prepared
 from shapely.ops import transform as stf, unary_union
 from pyproj import Transformer, Geod
 G = Geod(ellps="WGS84")
-D = sys.argv[1] if len(sys.argv) > 1 else "data"
-OUT = sys.argv[2] if len(sys.argv) > 2 else "../public/n6"
+args = globals().get("args") or sys.argv[1:]
+D = args[0] if len(args) > 0 else "data"
+OUT = args[1] if len(args) > 1 else "../public/n6"
 to_u = Transformer.from_crs(4326, 32613, always_xy=True).transform
 to_w = Transformer.from_crs(32613, 4326, always_xy=True).transform
 A = np.load(f"{D}/n6_arboles.npy"); P, H = A[:, :2], A[:, 2]
 th, _, _, _, _, cx, cy = np.load(f"{D}/n6_grid.npy")
 t = np.radians(th); Rm = np.array([[np.cos(t), np.sin(t)], [-np.sin(t), np.cos(t)]])
 Q = (P - [cx, cy]) @ Rm.T                                   # (u, v): u a lo largo de las hileras
-lim = stf(to_u, shape(json.load(open(sys.argv[3] if len(sys.argv) > 3 else "etiquetas/n6_limite.geojson"))))
+lim = stf(to_u, shape(json.load(open(args[2] if len(args) > 2 else "etiquetas/n6_limite.geojson"))))
 R = affinity.rotate(affinity.translate(lim, -cx, -cy), -th, origin=(0, 0))
 u0, v0, u1, v1 = R.bounds
 gross = abs(G.geometry_area_perimeter(stf(to_w, lim))[0])
