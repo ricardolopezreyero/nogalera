@@ -301,6 +301,36 @@
   $("cerrar-info").addEventListener("click", function () { if (info.close) info.close(); else info.removeAttribute("open"); });
   info.addEventListener("click", function (ev) { if (ev.target === info && info.close) info.close(); });
 
+  /* ---------- Mi selección: 5 aptas para urbanizar ---------- */
+  var SELECCION = [
+    { id: 24, nota: "58 ha pegadas a Los Olivos, Gómez Palacio" },
+    { id: 6, nota: "40 ha junto a La Paz, oriente de Torreón" },
+    { id: 25, nota: "36 ha junto a Santa Fe, Torreón" },
+    { id: 22, nota: "33 ha (2 bloques) junto a Los Olivos, Gómez" },
+    { id: 29, nota: "20 ha junto a Santa Fe, Torreón" }
+  ];
+  var capaSeleccion = L.layerGroup().addTo(map);
+  function pintarSeleccion() {
+    capaSeleccion.clearLayers();
+    var html = "";
+    SELECCION.forEach(function (s, i) {
+      var f = porId[s.id];
+      if (!f) return;
+      var p = f.properties;
+      L.geoJSON(f, { style: { color: "#000", weight: 4, dashArray: "8 5", fill: false }, interactive: false }).addTo(capaSeleccion);
+      L.marker([p.lat, p.lon], { icon: L.divIcon({ className: "estrella", html: "★" + (i + 1), iconSize: null }), interactive: false, keyboard: false }).addTo(capaSeleccion);
+      html += '<li><button type="button" data-sel="' + s.id + '"><span>' + (i + 1) + ". N" + s.id + " · " + escapar(s.nota) + "</span><b>≈ " + dinero(p.valor) + "</b></button></li>";
+    });
+    $("sel-items").innerHTML = html;
+  }
+  $("sel-items").addEventListener("click", function (ev) {
+    var b = ev.target.closest("button[data-sel]");
+    if (b) { abrir(Number(b.getAttribute("data-sel")), true); track("seleccion_abrir", { nogalera_id: Number(b.getAttribute("data-sel")) }); }
+  });
+  $("chk-seleccion").addEventListener("change", function (ev) {
+    if (ev.target.checked) capaSeleccion.addTo(map); else map.removeLayer(capaSeleccion);
+  });
+
   /* ---------- Datos ---------- */
   function iniciar(fc) {
     feats = fc.features;
@@ -326,6 +356,7 @@
     $("n-urbanizada").textContent = nf0.format(n.urbanizada);
     $("stats").textContent = nf0.format(n.activa) + " nogaleras · " + nf0.format(haAct / 1e4) + " ha · valor estimado ≈ " + dinero(valAct);
     dibujarRef();
+    pintarSeleccion();
     var m = /^#n=?(\d+)$/.exec(location.hash);
     if (m && porId[Number(m[1])]) {
       abrir(Number(m[1]), true);
