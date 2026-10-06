@@ -70,3 +70,13 @@ En `final.py`, función `precio_m2`:
 - Rango que se muestra: de −35 % a +50 %.
 
 Calibración, con anuncios de 2025–2026: 50 ha con 1,100 nogales en Matamoros, $34.5 millones (≈ $69/m²; avalúo de $40.1 millones). 30 ha en La Loma, Lerdo, $40.5 millones (≈ $135/m²). 40 ha con 1,300 nogales, $20 millones (≈ $50/m²). Lotes urbanizados de Torreón, $3,500–3,750/m²; terrenos cerca de TSM, $850/m². No es un avalúo.
+
+## N6 (diseño de fraccionamiento)
+
+```bash
+./venv/bin/python scripts/n6_optimo.py                              # barrido de lotes de 280 a 330 m² → public/n6/n6.geojson y lotes-*.geojson
+./venv/bin/python scripts/n6_arboles.py                             # detecta cada nogal y la cuadrícula → data/n6_arboles.npy, data/n6_grid.npy
+./venv/bin/python scripts/n6_final.py data ../public/n6             # diseño alineado a los nogales → public/n6/final.geojson y arboles.json
+```
+
+El límite de N6 está en `etiquetas/n6_limite.geojson`.
