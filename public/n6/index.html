@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>N6 · Diseño con confort</title>
+<title>N6 · Diseño</title>
 <meta name="description" content="Diseño de N6 (La Paz, Torreón) alineado a la cuadrícula de nogales: lotes, bulevar, parques, pista y área comunal.">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../vendor/leaflet/leaflet.css">
@@ -30,9 +30,6 @@
   .q-msg { margin: 0.2rem 0 0; color: var(--gris); font-size: 0.75rem; min-height: 1em; }
   .calle { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #000; white-space: nowrap; text-shadow: 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #fff; transform: translate(-50%, -50%); width: auto !important; height: auto !important; pointer-events: none; }
   .calle.cruce { font-weight: 400; }
-  .rentas { width: 100%; border-collapse: collapse; font-size: 0.75rem; font-variant-numeric: tabular-nums; margin: 0.25rem 0 0.5rem; }
-  .rentas td, .rentas th { border-bottom: 1px solid var(--suave); padding: 0.2rem 0.25rem; text-align: right; }
-  .rentas td:first-child, .rentas th:first-child { text-align: left; }
   .chk { font-size: 0.8125rem; display: flex; gap: 0.5rem; align-items: center; margin: 0.25rem 0; }
   @media (max-width: 40rem) { .panel { max-height: 50vh; } .notas { display: none; } }
 </style>
@@ -47,15 +44,14 @@
     <a href="base.html">N6 · base</a>
     <a href="tamanos.html">N6 · tamaños</a>
   </nav>
-  <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · diseño con confort, alineado a los nogales</span></h1>
+  <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · diseño alineado a los nogales</span></h1>
   <dl class="kpis" id="kpis"><div><dt>Cargando…</dt><dd></dd></div></dl>
   <div class="leyenda" aria-hidden="true">
     <span><i style="background:#fafafa"></i>Lote</span>
-    <span><i style="background:#f0f0f0;border-width:2px"></i>Lote frente a verde</span>
     <span><i style="background:#c8c8c8"></i>Calle</span>
     <span><i style="background:#7a7a7a"></i>Bulevar</span>
     <span><i style="background:#e6e6e6;border-style:dashed"></i>Pista</span>
-    <span><i style="background:#b9b9b9"></i>Parque y plaza</span>
+    <span><i style="background:#b9b9b9"></i>Parque</span>
     <span><i style="background:#111"></i>Club</span>
     <span><i style="background:#fff;border-width:2px;border-style:double"></i>Comercio</span>
     <span><b class="p" style="background:#000"></b>Nogal que se queda</span>
@@ -69,18 +65,14 @@
   </form>
   <label class="chk"><input type="checkbox" id="chk-arboles" checked> Mostrar nogales (al acercar el mapa)</label>
   <div class="notas">
-    <p><b>Direcciones:</b> una palabra y un número, como «Encino 65, Fracc. La Nogalera». Las calles que corren a lo largo del fraccionamiento llevan nombre de árbol; las que cruzan, de ave. Las dos van en orden alfabético: de sur a norte <b>Álamo, Cedro, Ébano, Encino, Nogal</b> (el bulevar), <b>Olmo, Roble, Sabino</b>, y de poniente a oriente <b>Alondra, Calandria, Cenzontle, Colibrí, Garza, Gorrión, Jilguero, Paloma, Tórtola</b>. Si sabes la letra, sabes dónde está. Los números son impares del lado norte y pares del lado sur, y crecen desde el poniente (desde la entrada principal); el más alto es 187. Las plazas llevan nombre de flor y los parques, el de su calle de cruce.</p>
-    <p><b>Capa rentable</b> (se queda en manos del desarrollador): locales con frente a Espinoza, súper, guardería junto a la caseta, mini bodegas en el patio de servicio, coworking arriba del salón, lockers de paquetería y carga de autos eléctricos. Cada uno resuelve algo del día a día y ayuda a vender: los lotes se ofrecen con el súper, la guardería y el coworking ya funcionando.</p>
-    <table class="rentas" id="rentas"></table>
-    <p><b>Para 1,076 familias (unas 4,000 personas), esto es lo que cambia:</b></p>
-    <p><b>Tres accesos.</b> Con uno solo habría filas en las horas pico. El <b>principal</b> va frente a la Calzada José Vasconcelos: la caseta (2 entradas y 2 salidas) está 55 m adentro, para que la fila de autos quede dentro del terreno y no en la calle. Justo pasando la caseta hay una bahía de ascenso y descenso (camión escolar, taxis y paquetería). El de <b>residentes</b> sale al camino del noroeste, con tag. El de <b>servicio</b> da al sureste: mudanzas, basura y mantenimiento no cruzan el fraccionamiento, y desde ahí hay paso peatonal a Fontanal.</p>
-    <p><b>Súper, café y farmacia</b> en la plaza de acceso, antes de la caseta: abren a la calle y se venden o rentan como comercio, y los vecinos entran caminando por una puerta peatonal. Los lotes pegados a la Calle Juan Agustín de Espinoza pasan a <b>frente comercial hacia afuera</b> (consultorios, guardería, restaurantes): nadie vive junto a la avenida y ese terreno vale casi el doble.</p>
-    <p><b>Club social junto al acceso:</b> salón en planta baja y oficinas de la administración arriba (la administración atiende sin que los proveedores entren al fraccionamiento), <b>gimnasio de 2 niveles</b> y alberca con chapoteadero y asoleadero bajo los nogales. <b>Club deportivo</b> enfrente: tenis, 2 de pádel, multicancha y juegos. Los dos van en la hilera vacía, así que casi no se tumban árboles, y tienen estacionamiento entre hileras.</p>
-    <p><b>Ninguna casa a más de 140 m de un lugar para jugar</b> (en promedio, 64 m). Dos parques grandes: uno con juegos, asadores y parque para perros; otro con explanada, gimnasio al aire libre y huerto. Además, 9 plazas de bolsillo con juegos y bancas repartidas por todo el conjunto.</p>
-    <p><b>Calles cómodas:</b> a 30 km/h, con cruces elevados en las esquinas, banquetas de 2 m bajo los nogales y cuadras de 170 m (se camina todo). En el bulevar, ciclovía y sendero al centro.</p>
-    <p><b>Patio de servicio</b> junto al acceso de servicio: mantenimiento, acopio de basura y un vivero donde se replantan los nogales que se reubican.</p>
-    <p><b>Lo que cuesta:</b> el margen baja de $346 a ≈ $271 millones (28 % sobre inversión). Se dejan de vender 91 lotes para plazas, club, accesos y comercio, y las amenidades suben a $66 millones. Lo compensan en parte los lotes frente a parque (+8 %), los de bulevar (+5 %) y el comercio ($6,000/m²). El verde pasa de 12 % a 17 %, que seguramente ya cumple la donación municipal; el diseño base quizá no la cumplía. No supuse que todo el fraccionamiento se venda más caro por tener club, aunque en la práctica suele pasar: con 2 % más de precio general se recuperarían unos $25 millones.</p>
-    <p>Supuestos: terreno $670/m²; calles $1,400/m²; redes $250/m² bruto; reubicar cada nogal $12,000; ventas y permisos 12 %; lote de 328 m² a ≈ $3,340/m². Lindero por confirmar con catastro.</p>
+    <p><b>Lo que tiene, y nada más:</b></p>
+    <p><b>Lotes de 12.7 × 25.9 m (328 m²)</b> trazados sobre la cuadrícula de nogales: los árboles quedan en los linderos y la casa va entre ellos. Calles entre hileras, con los nogales en la banqueta. Se quedan 85 % de los árboles.</p>
+    <p><b>Un acceso</b> frente a la Calzada José Vasconcelos, con la caseta 55 m adentro para que la fila de autos no quede en la calle. Junto a la entrada, el <b>mini súper</b>, que abre a la calle y tiene puerta peatonal para los vecinos.</p>
+    <p><b>Club</b> en la hilera donde ya faltan árboles: salón en planta baja con oficinas de la administración arriba, gimnasio, tenis y 2 de pádel, con estacionamiento.</p>
+    <p><b>Bulevar central</b> con sendero, <b>2 parques</b> en las manzanas de nogales más grandes y <b>pista para correr</b> de 3.3 km por el perímetro.</p>
+    <p><b>Frente comercial</b>: los lotes pegados a la Calle Juan Agustín de Espinoza se venden como comercio hacia afuera; nadie vive junto a la avenida.</p>
+    <p><b>Direcciones:</b> una palabra y un número, como «Encino 65, Fracc. La Nogalera». Las calles largas llevan nombre de árbol y las que cruzan, de ave, las dos en orden alfabético: de sur a norte <b>Álamo, Cedro, Ébano, Encino, Nogal</b> (el bulevar), <b>Olmo, Roble, Sabino</b>; de poniente a oriente <b>Alondra, Calandria, Cenzontle, Colibrí, Garza, Gorrión, Jilguero, Paloma, Tórtola</b>. Impares al norte y pares al sur.</p>
+    <p>Supuestos: terreno $670/m²; calles $1,400/m²; redes $250/m² bruto; amenidades $46 millones; reubicar cada nogal $12,000; ventas y permisos 12 %; lote a ≈ $3,340/m² (+8 % frente a parque, +5 % frente al bulevar); comercio a $6,000/m². Lindero por confirmar con catastro.</p>
   </div>
 </section>
 
@@ -176,18 +168,11 @@
       "<div><dt>Lotes (casas)</dt><dd>" + nf0.format(s.lotes) + "</dd></div>" +
       "<div><dt>Lote típico</dt><dd>12.7 × 25.9 m · " + nf0.format(s.lote_mediana) + " m²</dd></div>" +
       "<div><dt>Vendible</dt><dd>" + nf1.format(s.vendible_m2 / 1e4) + " ha (" + nf1.format(s.pct_vendible) + " %)</dd></div>" +
-      "<div><dt>Verde y amenidades</dt><dd>" + nf1.format(s.verde_pct) + " %</dd></div>" +
-      "<div><dt>Casa más lejos de un parque</dt><dd>" + s.dist_verde_max_m + " m (prom. " + s.dist_verde_media_m + " m)</dd></div>" +
-      "<div><dt>Lotes frente a verde</dt><dd>" + nf0.format(s.lotes_premio_parque) + "</dd></div>" +
+      "<div><dt>Verde y club</dt><dd>" + nf1.format(s.verde_pct) + " %</dd></div>" +
       "<div><dt>Nogales que se quedan</dt><dd>" + nf0.format(quedan) + " de " + nf0.format(s.arboles) + " (" + nf0.format(100 * quedan / s.arboles) + " %)</dd></div>" +
       "<div><dt>Comercio</dt><dd>" + nf0.format(s.predio_comercial_m2) + " m²</dd></div>" +
       "<div><dt>Venta total</dt><dd>$" + nf0.format(s.venta / 1e6) + " millones</dd></div>" +
-      "<div><dt>Margen</dt><dd>$" + nf0.format(s.margen / 1e6) + " millones (" + nf1.format(s.roi) + " %)</dd></div>" +
-      "<div><dt>Renta de la capa rentable</dt><dd>≈ $" + nf0.format(s.renta_mensual / 1000) + " mil al mes</dd></div>" +
-      "<div><dt>Inversión · valor a 9 %</dt><dd>$" + nf0.format(s.inversion_rentable / 1e6) + " M · $" + nf0.format(s.valor_rentable / 1e6) + " M</dd></div>";
-    document.getElementById("rentas").innerHTML = "<tr><th>Rentable</th><th>m²</th><th>Renta/mes</th><th>Inversión</th></tr>" + s.rentable.map(function (x) {
-      return "<tr><td>" + x.nombre + "</td><td>" + (x.m2 ? nf0.format(x.m2) : "—") + "</td><td>$" + nf0.format(x.renta / 1000) + " mil</td><td>$" + nf1.format(x.inversion / 1e6) + " M</td></tr>";
-    }).join("");
+      "<div><dt>Margen</dt><dd>$" + nf0.format(s.margen / 1e6) + " millones (" + nf1.format(s.roi) + " %)</dd></div>";
     var p = document.getElementById("panel").getBoundingClientRect();
     map.fitBounds(todo.getBounds(), window.matchMedia("(max-width: 40rem)").matches ? { paddingTopLeft: [12, p.bottom + 12], paddingBottomRight: [12, 12] } : { paddingTopLeft: [p.right + 12, 12], paddingBottomRight: [60, 12] });
   });

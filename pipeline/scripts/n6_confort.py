@@ -1,4 +1,5 @@
-"""N6 · diseño con confort (sobre el diseño alineado a la cuadrícula de nogales).
+"""N6 · diseño simple con lo esencial (sobre el diseño alineado a la cuadrícula de nogales):
+un acceso con caseta, súper, club (salón con oficinas, gimnasio, tenis y 2 de pádel), 2 parques, bulevar, pista y frente comercial.
 - Calles longitudinales sobre las líneas libres entre hileras (cada 5 hileras): los troncos quedan fuera del arroyo.
 - Linderos laterales de lote sobre las columnas de árboles (desfase local por manzana): la casa va entre árboles.
 - Bulevar central sobre la hilera faltante (calle interna existente); área comunal en la otra hilera faltante.
@@ -142,25 +143,19 @@ def extremos(c):
     inter = shapely.LineString([(c, v0 - 50), (c, v1 + 50)]).intersection(R)
     ys = [y for g in getattr(inter, "geoms", [inter]) for _, y in g.coords]
     return min(ys), max(ys)
-# 1) Accesos: principal frente a la Calzada José Vasconcelos (u≈-280, borde sur); residentes al camino del noroeste;
-#    servicio y paso peatonal a Fontanal por el sureste.
+# 1) Un acceso, frente a la Calzada José Vasconcelos (u≈-280, borde sur)
 c_pri = min(cruces, key=lambda c: abs(c - (-280)))
-c_res = min(cruces, key=lambda c: abs(c - 60))
-c_ser = min(cruces, key=lambda c: abs(c - 500))
-v_pri, _ = extremos(c_pri); _, v_res = extremos(c_res); v_ser, _ = extremos(c_ser)
-acc_calles = [box(c_pri - 5.5, v_pri - 2, c_pri + 5.5, v_pri + TRAIL + 2), box(c_res - 5.5, v_res - TRAIL - 2, c_res + 5.5, v_res + 2),
-              box(c_ser - 5.5, v_ser - 2, c_ser + 5.5, v_ser + TRAIL + 2)]
+v_pri, _ = extremos(c_pri)
+acc_calles = [box(c_pri - 5.5, v_pri - 2, c_pri + 5.5, v_pri + TRAIL + 2)]
 v_gate = v_pri + 55                                          # caseta 55 m adentro: cola de autos dentro del terreno, no en la calle
-# 2) Plaza de acceso (antes de la caseta): súper, café y farmacia con frente a la calle y entrada peatonal desde adentro
+# 2) Plaza de acceso (antes de la caseta): mini súper con frente a la calle y puerta peatonal desde adentro
 plaza_acc = box(c_pri - 80, v0 - 5, c_pri + 80, v_gate + 22).intersection(inner).difference(box(c_pri - 5.5, v0 - 5, c_pri + 5.5, v1))
 plaza_acc = max(getattr(plaza_acc, "geoms", [plaza_acc]), key=lambda g: g.area) if plaza_acc.geom_type != "Polygon" else plaza_acc
 plaza_acc = unary_union([g for g in getattr(box(c_pri - 80, v0 - 5, c_pri + 80, v_gate + 22).intersection(inner).difference(box(c_pri - 5.5, v0 - 5, c_pri + 5.5, v1)), "geoms", [plaza_acc])])
-super_ = box(c_pri - 58, v_pri + 8, c_pri - 9, v_pri + 30).intersection(inner)          # súper + café + farmacia ≈ 1,000 m²
+super_ = box(c_pri - 58, v_pri + 8, c_pri - 9, v_pri + 30).intersection(inner)          # mini súper ≈ 1,000 m²
 estac_vis = box(c_pri + 9, v_pri + 8, c_pri + 62, v_pri + 28).intersection(inner)       # visitas y clientes del súper
 caseta = box(c_pri - 3, v_gate - 5, c_pri + 3, v_gate + 5)                            # isla: 2 entradas y 2 salidas
-bahia = box(c_pri + 7, v_gate + 2, c_pri + 45, v_gate + 12)                          # ascenso y descenso: escolar, taxis, paquetería
-caseta_res = box(c_res - 3, v_res - TRAIL - 14, c_res + 3, v_res - TRAIL - 4)
-# 3) Club ampliado sobre la hilera vacía, de los dos lados de la calle de acceso
+# 3) Club sobre la hilera vacía, de los dos lados de la calle de acceso
 def celda_en(u, v):
     for c in celdas:
         if c["sa"] <= u <= c["sb"] and c["lo"] <= v <= c["hi"]: return c
@@ -173,29 +168,23 @@ if len(parques) < 2:
 lane = (va - SV + 1.5, va + SV - 1.5); lw = lane[1] - lane[0]
 mid = lambda w: (lane[0] + (lw - w) / 2, lane[0] + (lw + w) / 2)
 el = {}
-# club social (celda A, del lado de la caseta): salón y oficinas, gimnasio, alberca
+# club social (celda A): salón con oficinas arriba y gimnasio
 x = cA["sb"] - 6                                              # de la calle de acceso hacia adentro
 el["salon"] = box(x - 40, lane[0], x, lane[0] + 18); x -= 44
 el["gimnasio"] = box(x - 32, lane[0], x, lane[0] + 16); x -= 36
-el["alberca"] = box(x - 38, lane[0], x, lane[0] + min(20, lw))                     # alberca 25 × 12.5, chapoteadero y asoleadero
 gcA = va + 1.5 * SV if abs(va + 1.5 * SV - (cA["lo"] + cA["hi"]) / 2) < abs(va - 1.5 * SV - (cA["lo"] + cA["hi"]) / 2) else va - 1.5 * SV
 el["estacionamiento"] = box(cA["sb"] - 70, gcA - 5, cA["sb"] - 6, gcA + 5)
-# club deportivo (celda B): tenis, 2 de pádel, multicancha y juegos
+# club deportivo (celda B): tenis y 2 de pádel
 x = cB["sa"] + 6
 el["tenis"] = box(x, mid(18.3)[0], x + 36.6, mid(18.3)[1]); x += 40.6
 el["padel1"] = box(x, mid(10)[0], x + 20, mid(10)[1]); x += 22
-el["padel2"] = box(x, mid(10)[0], x + 20, mid(10)[1]); x += 24
-el["multicancha"] = box(x, mid(15)[0], x + 28, mid(15)[1]); x += 32
-if x + 20 < cB["sb"] - 4: el["juegos"] = box(x, mid(14)[0], x + 20, mid(14)[1])
+el["padel2"] = box(x, mid(10)[0], x + 20, mid(10)[1])
 gcB = va + 1.5 * SV if abs(va + 1.5 * SV - (cB["lo"] + cB["hi"]) / 2) < abs(va - 1.5 * SV - (cB["lo"] + cB["hi"]) / 2) else va - 1.5 * SV
 el["estacionamiento2"] = box(cB["sa"] + 6, gcB - 5, cB["sa"] + 60, gcB + 5)
 for k in list(el):
     if not cA["g"].union(cB["g"]).buffer(0.5).contains(el[k]): print("aviso: no cabe", k)
-# 4) Patio de servicio junto al acceso de servicio: mantenimiento, vivero de nogales reubicados, acopio de basura
-servicio = box(c_ser + 6, v_ser + TRAIL, c_ser + 60, v_ser + TRAIL + 34).intersection(inner)
-amen = unary_union([cA["g"], cB["g"], plaza_acc, servicio] + [p["g"] for p in parques])
+amen = unary_union([cA["g"], cB["g"], plaza_acc] + [p["g"] for p in parques])
 libre = inner.difference(vial).difference(bulevar).difference(amen).difference(unary_union(acc_calles))
-libre_p = prepared.prep(libre.buffer(0.05))
 libre_p = prepared.prep(libre.buffer(0.05))
 
 # lotes: linderos laterales sobre columnas de árboles (desfase y separación locales por celda)
@@ -228,28 +217,9 @@ for lo, hi, lado_f in franjas:
                     lotes.append(dict(g=Li, frente="calle", ancho=b - a, fondo=hi - lo, lado=lado_f, irregular=True))
 
 
-# 5) Plazas de bolsillo: ninguna casa a más de 150 m (en línea recta) de un espacio verde
-verdes = [p["g"] for p in parques] + [cA["g"], cB["g"], plaza_acc]   # el bulevar no cuenta: es para caminar, no para jugar
 plazas = []
-def cubiertos():
-    V = prepared.prep(unary_union(verdes + plazas).buffer(150))
-    return [V.intersects(L["g"].centroid) for L in lotes]
-while True:
-    cov = cubiertos()
-    falta = [i for i, c in enumerate(cov) if not c]
-    if not falta: break
-    cen = np.array([[L["g"].centroid.x, L["g"].centroid.y] for L in lotes])
-    fc_ = cen[falta]
-    regulares = [i for i in range(len(lotes)) if not lotes[i].get("irregular") and lotes[i]["g"].area >= 300]
-    best = max(regulares, key=lambda i: int(np.sum(np.hypot(*(fc_ - cen[i]).T) < 150)))
-    L0 = lotes[best]; a, lo_, b, hi_ = L0["g"].bounds
-    # plaza = el lote y sus vecinos de la misma franja (4 lotes ≈ 1,300 m², con sus nogales y juegos)
-    vec = [i for i, L in enumerate(lotes) if L["g"].bounds[1] == lo_ and L["g"].distance(L0["g"]) < 0.5]
-    vec2 = [i for i, L in enumerate(lotes) if L["g"].bounds[1] == lo_ and any(L["g"].distance(lotes[j]["g"]) < 0.5 for j in vec + [best])]
-    quitar = sorted(set(vec + vec2 + [best]), key=lambda i: abs(lotes[i]["g"].centroid.x - L0["g"].centroid.x))[:4]
-    plazas.append(unary_union([lotes[i]["g"] for i in quitar]))
-    lotes = [L for i, L in enumerate(lotes) if i not in quitar]
-print("plazas de bolsillo:", len(plazas))
+verdes = [p["g"] for p in parques] + [cA["g"], cB["g"], plaza_acc]
+
 
 # reubicación de árboles
 pts = [Point(q) for q in Q]
@@ -259,7 +229,7 @@ def troncos_en(g, margen=0.0):
 casas = [box(L["g"].bounds[0] + 1.5, L["g"].bounds[1] + 3, L["g"].bounds[2] - 1.5, L["g"].bounds[3] - 3).intersection(L["g"]) for L in lotes]
 r_casas = set(i for c in casas for i in troncos_en(c))
 r_calles = set(troncos_en(unary_union([pavimento, arroyos_bul] + acc_calles), 0.5))
-edificios = [g for k, g in el.items()] + [super_, estac_vis, bahia]
+edificios = [g for k, g in el.items()] + [super_, estac_vis]
 r_com = set(i for g in edificios for i in troncos_en(g, 1.0))
 reubicar = r_casas | r_calles | r_com
 print(f"árboles {len(Q)}; a reubicar: casas {len(r_casas)}, calles {len(r_calles)}, amenidades {len(r_com)}, total {len(reubicar)}")
@@ -287,9 +257,8 @@ predio_super = super_.buffer(6).intersection(plaza_acc).area
 com_m2 = sum(L['g'].area for L in comercial)
 venta = venta_lotes + (predio_super + com_m2) * 6000
 vial_m2 = vial.area + arroyos_bul.area + sum(g.area for g in acc_calles)
-AMEN = {"salón y oficinas (1,440 m²)": 21.6e6, "gimnasio (2 niveles, 1,000 m²)": 14e6, "alberca, chapoteadero y asoleadero": 7e6, "tenis": 1.5e6,
-        "2 de pádel": 1.8e6, "multicancha y juegos": 2.5e6, "parques y plazas (juegos, asadores, perros, gimnasio al aire libre)": 8e6,
-        "3 accesos con caseta": 5e6, "patio de servicio": 2e6, "plaza de acceso y bahía": 3e6}
+AMEN = {"salón con oficinas arriba (1,440 m²)": 21.6e6, "gimnasio (2 niveles, 1,000 m²)": 14e6, "tenis y 2 de pádel": 3.3e6,
+        "2 parques": 5e6, "acceso con caseta": 2e6}
 TERRENO, URB_CALLE, URB_BASE, BLANDOS, REUBICA = 670.0, 1400.0, 250.0, 0.12, 12000.0
 costo = TERRENO * gross + URB_CALLE * vial_m2 + URB_BASE * gross + BLANDOS * venta + sum(AMEN.values()) + REUBICA * len(reubicar)
 verde_m2 = R.area - areas.sum() - vial_m2 - predio_super - com_m2
@@ -328,11 +297,9 @@ NOM = {"salon": "Salón (PB) · oficinas (PA)", "gimnasio": "Gimnasio", "alberca
 CAPA = {"salon": "salon", "gimnasio": "salon", "alberca": "alberca", "estacionamiento": "estacionamiento", "estacionamiento2": "estacionamiento",
         "tenis": "tenis", "padel1": "padel", "padel2": "padel", "multicancha": "tenis", "juegos": "juegos"}
 for k, g in el.items(): add(CAPA[k], g, nombre=NOM[k])
-add("comercio", super_, nombre="Súper · café · farmacia"); add("estacionamiento", estac_vis, nombre="Visitas")
-add("caseta", caseta, nombre="Caseta (2 entradas, 2 salidas)"); add("bahia", bahia, nombre="Ascenso y descenso")
-add("caseta", caseta_res, nombre="Acceso residentes"); add("servicio", servicio, nombre="Servicio y vivero")
-PROG = ["Parque 1 · juegos, asadores y parque para perros", "Parque 2 · explanada, gimnasio al aire libre y huerto"]
-for i, p in enumerate(parques): add("parque", p["g"], nombre=PROG[i], arboles=p["arboles"])
+add("comercio", super_, nombre="Mini súper"); add("estacionamiento", estac_vis, nombre="Visitas")
+add("caseta", caseta, nombre="Caseta")
+for i, p in enumerate(parques): add("parque", p["g"], nombre=f"Parque {i + 1}", arboles=p["arboles"])
 for i, g in enumerate(plazas, 1): add("plaza", g, nombre=f"Plaza {i} · juegos y bancas")
 for L in comercial: add("comercio", L["g"], nombre="", m2=round(L["g"].area))
 for i, L in enumerate(lotes, 1):
