@@ -82,3 +82,4 @@ Calibración, con anuncios de 2025–2026: 50 ha con 1,100 nogales en Matamoros,
 El límite de N6 está en `etiquetas/n6_limite.geojson`.
 ./venv/bin/python scripts/n6_direcciones.py data ../public/n6       # diseño simple (acceso, súper, club, parques) + nombres de calles y direcciones → public/n6/confort.geojson
 python3 scripts/n6_casa.py                                          # casa muestra → public/n6/casa.html
+python3 scripts/n6_acceso.py                                        # entrada: plano y cálculo de hora pico → public/n6/acceso.html (el trazo vive en n6_acceso_calc.py)

@@ -41,7 +41,7 @@
   <nav class="nav" aria-label="Pestañas del proyecto">
     <a href="../">Nogaleras</a>
     <a href="./" aria-current="page">N6 · diseño</a>
-    <a href="casa.html">Casa muestra</a>
+    <a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a>
     <a href="base.html">N6 · base</a>
     <a href="tamanos.html">N6 · tamaños</a>
   </nav>
@@ -109,10 +109,13 @@
     juegos: { color: "#000", weight: 1, fillColor: "#9a9a9a", fillOpacity: 1 },
     bahia: { color: "#000", weight: 1, fillColor: "#8a8a8a", fillOpacity: 1 },
     servicio: { color: "#000", weight: 1, fillColor: "#8a8a8a", fillOpacity: 1 },
+    isla: { color: "#000", weight: 1, fillColor: "#fff", fillOpacity: 1 },
+    carril: { color: "#fff", weight: 1.2, dashArray: "6 5" },
+    pluma: { color: "#000", weight: 3 },
     comercio: { color: "#000", weight: 2.5, fillColor: "#fff", fillOpacity: 1 },
     rentable: { color: "#000", weight: 2.5, dashArray: "6 3", fillColor: "#fff", fillOpacity: 0.85 }
   };
-  var orden = ["pista", "vial", "bulevar", "arroyo", "sendero", "comunal", "plaza_acceso", "parque", "plaza", "servicio", "lote", "comercio", "estacionamiento", "salon", "alberca", "tenis", "padel", "juegos", "bahia", "caseta", "rentable", "limite"];
+  var orden = ["pista", "vial", "bulevar", "arroyo", "sendero", "comunal", "plaza_acceso", "parque", "plaza", "servicio", "lote", "comercio", "estacionamiento", "salon", "alberca", "tenis", "padel", "juegos", "bahia", "rentable", "isla", "carril", "pluma", "caseta", "limite"];
   var capaArboles = L.layerGroup();
   var rotulos = L.layerGroup();
   var verArboles = true;

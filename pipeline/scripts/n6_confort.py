@@ -146,15 +146,28 @@ def extremos(c):
 # 1) Un acceso, frente a la Calzada José Vasconcelos (u≈-280, borde sur)
 c_pri = min(cruces, key=lambda c: abs(c - (-280)))
 v_pri, _ = extremos(c_pri)
-acc_calles = [box(c_pri - 5.5, v_pri - 2, c_pri + 5.5, v_pri + TRAIL + 2)]
-v_gate = v_pri + 55                                          # caseta 55 m adentro: cola de autos dentro del terreno, no en la calle
+import os as _os; sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+from n6_acceso_calc import CARRILES, CASETA_V, ISLA_V0, RETORNO, ANCHO
+v_gate = v_pri + CASETA_V                                    # plumas a 60 m del límite: la fila de la hora pico queda dentro del terreno
+acc_calles = [box(c_pri + ANCHO[0], v_pri - 2, c_pri + ANCHO[1], v_gate + 12),          # 4 carriles de entrada, 2 de salida e islas
+              box(c_pri - 5.5, v_gate + 12, c_pri + 5.5, v_gate + 25)]                 # después de las plumas: calle normal de 2 carriles
 # 2) Plaza de acceso (antes de la caseta): mini súper con frente a la calle y puerta peatonal desde adentro
-plaza_acc = box(c_pri - 80, v0 - 5, c_pri + 80, v_gate + 22).intersection(inner).difference(box(c_pri - 5.5, v0 - 5, c_pri + 5.5, v1))
+plaza_acc = box(c_pri - 80, v0 - 5, c_pri + 80, v_gate + 22).intersection(inner).difference(box(c_pri + ANCHO[0], v0 - 5, c_pri + ANCHO[1], v1))
 plaza_acc = max(getattr(plaza_acc, "geoms", [plaza_acc]), key=lambda g: g.area) if plaza_acc.geom_type != "Polygon" else plaza_acc
-plaza_acc = unary_union([g for g in getattr(box(c_pri - 80, v0 - 5, c_pri + 80, v_gate + 22).intersection(inner).difference(box(c_pri - 5.5, v0 - 5, c_pri + 5.5, v1)), "geoms", [plaza_acc])])
-super_ = box(c_pri - 58, v_pri + 8, c_pri - 9, v_pri + 30).intersection(inner)          # mini súper ≈ 1,000 m²
-estac_vis = box(c_pri + 9, v_pri + 8, c_pri + 62, v_pri + 28).intersection(inner)       # visitas y clientes del súper
-caseta = box(c_pri - 3, v_gate - 5, c_pri + 3, v_gate + 5)                            # isla: 2 entradas y 2 salidas
+plaza_acc = unary_union([g for g in getattr(box(c_pri - 80, v0 - 5, c_pri + 80, v_gate + 22).intersection(inner).difference(box(c_pri + ANCHO[0], v0 - 5, c_pri + ANCHO[1], v1)), "geoms", [plaza_acc])])
+super_ = box(c_pri - 62, v_pri + 8, c_pri - 18, v_pri + 30).intersection(inner)          # mini súper ≈ 1,000 m²
+estac_vis = box(c_pri + 19, v_pri + 8, c_pri + 66, v_pri + 28).intersection(inner)       # visitas y clientes del súper
+islas, casetas, lineas = [], [], []
+for n, a, b, t in CARRILES:
+    if t == "isla":
+        islas += [box(c_pri + a, v_pri + ISLA_V0, c_pri + b, v_pri + RETORNO[0]), box(c_pri + a, v_pri + RETORNO[1], c_pri + b, v_gate + 6)]
+        casetas.append(box(c_pri + a + 0.3, v_gate - 2.5, c_pri + b - 0.3, v_gate + 2.5))
+    elif t in ("entra", "sale"):
+        lineas.append(("pluma", shapely.LineString([(c_pri + a, v_gate), (c_pri + b - 0.4, v_gate)])))
+for (n1, a1, b1, t1), (n2, a2, b2, t2) in zip(CARRILES[:-1], CARRILES[1:]):
+    if t1 == t2 and t1 in ("entra", "sale"):
+        lineas.append(("carril", shapely.LineString([(c_pri + b1, v_pri + 2), (c_pri + b1, v_gate + 10)])))
+caseta = unary_union(casetas)
 # 3) Club sobre la hilera vacía, de los dos lados de la calle de acceso
 def celda_en(u, v):
     for c in celdas:
@@ -298,7 +311,11 @@ CAPA = {"salon": "salon", "gimnasio": "salon", "alberca": "alberca", "estacionam
         "tenis": "tenis", "padel1": "padel", "padel2": "padel", "multicancha": "tenis", "juegos": "juegos"}
 for k, g in el.items(): add(CAPA[k], g, nombre=NOM[k])
 add("comercio", super_, nombre="Mini súper"); add("estacionamiento", estac_vis, nombre="Visitas")
-add("caseta", caseta, nombre="Caseta")
+for g in islas: add("isla", g)
+for i, g in enumerate(casetas): add("caseta", g, nombre=["Caseta de salida", "Caseta de visitas"][i])
+for tipo, ln in lineas:
+    c_ = [[round(x, 6), round(y, 6)] for x, y in stf(to_w, geo(ln)).coords]
+    feats.append({"type": "Feature", "properties": {"capa": tipo}, "geometry": {"type": "LineString", "coordinates": c_}})
 for i, p in enumerate(parques): add("parque", p["g"], nombre=f"Parque {i + 1}", arboles=p["arboles"])
 for i, g in enumerate(plazas, 1): add("plaza", g, nombre=f"Plaza {i} · juegos y bancas")
 for L in comercial: add("comercio", L["g"], nombre="", m2=round(L["g"].area))
