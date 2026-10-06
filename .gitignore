@@ -1,0 +1,7 @@
+node_modules/
+.wrangler/
+.DS_Store
+# Datos intermedios del proceso (pesan gigas; se regeneran con pipeline/)
+pipeline/data/
+pipeline/venv/
+__pycache__/

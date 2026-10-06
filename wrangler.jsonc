@@ -1,0 +1,16 @@
+// Cloudflare Workers para nogalera.capitaltorreon.com
+// Sitio estático: Cloudflare publica la carpeta public/ tal cual con `npx wrangler deploy`.
+// No hay paso de build ni código de servidor. public/_headers pone las cabeceras.
+{
+  // Debe coincidir con el nombre del Worker en Cloudflare (Workers & Pages → nogalera).
+  "name": "nogalera",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./public"
+  },
+  // Al publicar, Cloudflare conecta el subdominio y crea el registro DNS y el certificado.
+  // Requiere que la zona capitaltorreon.com esté en la misma cuenta de Cloudflare.
+  "routes": [
+    { "pattern": "nogalera.capitaltorreon.com", "custom_domain": true }
+  ]
+}

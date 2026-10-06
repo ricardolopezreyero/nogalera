@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // Capa de datos lista para analítica (por ejemplo, Google Tag Manager). Hoy no se carga ningún contenedor.
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ site_id: "nogalera", site_name: "Nogaleras de La Laguna", page_type: "mapa", content_group: "mapa", language: "es-MX" });
+  // slTrack(evento, parámetros): esquema fijo; lo que no aplica se limpia para que no se herede.
+  window.slTrack = function (e, p) {
+    var o = { event: e, nogalera_id: undefined, nogalera_estado: undefined, link_url: undefined, orden: undefined };
+    if (p) for (var k in p) o[k] = p[k];
+    window.dataLayer.push(o);
+  };
+</script>
+<title>Nogaleras de La Laguna</title>
+<meta name="description" content="Mapa de todas las nogaleras de Torreón, Gómez Palacio, Lerdo y alrededores: dónde están, cuánto miden y cuánto podrían costar.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Nogaleras de La Laguna">
+<meta property="og:description" content="Mapa de nogaleras de Torreón, Gómez Palacio, Lerdo y alrededores, con superficie y precio estimado.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="map" role="region" aria-label="Mapa de nogaleras"></div>
+
+<section class="panel" id="panel" aria-labelledby="titulo">
+  <h1 id="titulo">Nogaleras <span>Torreón, Gómez, Lerdo y alrededores</span></h1>
+  <p class="stats" id="stats">Cargando…</p>
+  <ul class="legend" aria-label="Qué se muestra">
+    <li><label><input type="checkbox" data-estado="activa" checked> <i class="sw sw-activa" aria-hidden="true"></i> Nogalera <b id="n-activa"></b></label></li>
+    <li><label><input type="checkbox" data-estado="desmontada" checked> <i class="sw sw-desmontada" aria-hidden="true"></i> Ya sin nogales <b id="n-desmontada"></b></label></li>
+    <li><label><input type="checkbox" data-estado="urbanizada" checked> <i class="sw sw-urbanizada" aria-hidden="true"></i> Urbanizada <b id="n-urbanizada"></b></label></li>
+  </ul>
+  <div class="actions">
+    <button type="button" id="btn-lista" aria-expanded="false" aria-controls="lista">Lista</button>
+    <button type="button" id="btn-ubicacion">Mi ubicación</button>
+    <button type="button" id="btn-info" aria-haspopup="dialog">Cómo se hizo</button>
+  </div>
+</section>
+
+<aside class="lista" id="lista" hidden aria-labelledby="lista-titulo">
+  <div class="lista-head">
+    <h2 id="lista-titulo">Cerca de <span id="ref-nombre">Real del Nogalar</span></h2>
+    <button type="button" class="cerrar" id="cerrar-lista" aria-label="Cerrar lista">×</button>
+  </div>
+  <div class="lista-orden">
+    <label for="orden">Ordenar por</label>
+    <select id="orden">
+      <option value="dist">Distancia</option>
+      <option value="area">Tamaño</option>
+      <option value="precio">Precio por m²</option>
+      <option value="valor">Valor</option>
+    </select>
+  </div>
+  <ol id="items"></ol>
+</aside>
+
+<dialog id="info" aria-labelledby="info-titulo">
+  <div class="info-head">
+    <h2 id="info-titulo">Cómo se hizo este mapa</h2>
+    <button type="button" class="cerrar" id="cerrar-info" aria-label="Cerrar">×</button>
+  </div>
+  <div class="info-body">
+    <p><b>Qué hay:</b> todas las huertas de nogal que pude detectar en la Comarca Lagunera, de Nazas y Lerdo a San Pedro y de Tlahualilo a Viesca. Cada polígono es una huerta o un bloque de huerta; si varios bloques se tocan, el recuadro de la nogalera dice cuánto suman.</p>
+    <p><b>Cómo las encontré:</b> en OpenStreetMap solo había 6 nogaleras dibujadas, así que las saqué de imágenes de satélite. Usé el mapa de altura de árboles a 1&nbsp;m de Meta y el WRI (imágenes de 2018 a 2020) y la serie de Sentinel-2 de diciembre de 2025 a septiembre de 2026. Una nogalera se reconoce por su cuadrícula de árboles altos, que tiran la hoja en invierno y están verdes de abril a septiembre. Revisé a ojo cerca de 800 casos, sobre todo los grandes y los dudosos. Calculo que acierta en 9 de cada 10: puede colarse alguna arboleda de río y faltar alguna nogalera muy joven o muy rala. Las de confianza media conviene verlas en persona.</p>
+    <p><b>Medidas:</b> la superficie es la de la arboleda vista desde el satélite (cuadros de 10&nbsp;m), no la de la escritura. Espera un error de ±5 a 10&nbsp;%. Largo y ancho son los del rectángulo que la envuelve.</p>
+    <p><b>Precio, a ojo de buen cubero:</b> una nogalera en producción lejos de la ciudad vale unos $90/m² (≈ $900 mil por hectárea). El precio sube conforme está más cerca de la mancha urbana: hasta unos $800/m² pegada a Torreón, $600 a Gómez o Lerdo y $300 a los pueblos. Las huertas grandes bajan un poco por m². El rango va de −35&nbsp;% a +50&nbsp;%. Lo calibré con anuncios de 2025 y 2026: 50&nbsp;ha en Matamoros a $34.5&nbsp;millones (avalúo de $40.1&nbsp;millones), 30&nbsp;ha en La Loma, Lerdo, a $40.5&nbsp;millones, y lotes urbanizados de Torreón a $3,500–3,750/m². <b>No es un avalúo.</b> El agua (pozo y derechos), la edad de los árboles, el tipo de tenencia (ejido o propiedad privada) y el acceso mueven mucho el precio.</p>
+    <p><b>Ya sin nogales y urbanizadas:</b> huertas que había en 2018–2020 y que en 2026 ya no tienen árboles. «Urbanizada» quiere decir que ya hay calles o casas; si no, quedó desmontada o se cambió a cultivo. Las que se urbanizaron antes de 2018 no aparecen: para eso hacen falta imágenes de satélite más viejas.</p>
+    <p><b>Fuentes:</b> mapa de altura de árboles de Meta y WRI; Sentinel-2 (Copernicus, ESA); ESA WorldCover 2021; Copernicus DEM; OpenStreetMap, vía Overture Maps (septiembre de 2026), para caminos, ríos, construcciones y nombres de localidades. Fondo del mapa: © colaboradores de OpenStreetMap.</p>
+    <p><b>Descargar datos:</b> <a href="nogaleras.geojson" download data-descarga>GeoJSON</a> · <a href="nogaleras.csv" download data-descarga>CSV</a>. Actualizado el 6 de octubre de 2026.</p>
+  </div>
+</dialog>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
