@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>N6 · Diseño con confort</title>
+<title>N6 · Diseño base</title>
 <meta name="description" content="Diseño de N6 (La Paz, Torreón) alineado a la cuadrícula de nogales: lotes, bulevar, parques, pista y área comunal.">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../vendor/leaflet/leaflet.css">
@@ -33,35 +33,32 @@
 <section class="panel" id="panel" aria-labelledby="titulo">
   <nav class="nav" aria-label="Pestañas del proyecto">
     <a href="../">Nogaleras</a>
-    <a href="./" aria-current="page">N6 · diseño</a>
-    <a href="base.html">N6 · base</a>
+    <a href="./">N6 · diseño</a>
+    <a href="base.html" aria-current="page">N6 · base</a>
     <a href="tamanos.html">N6 · tamaños</a>
   </nav>
-  <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · diseño con confort, alineado a los nogales</span></h1>
+  <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · diseño base alineado a los nogales (sin el programa de confort)</span></h1>
   <dl class="kpis" id="kpis"><div><dt>Cargando…</dt><dd></dd></div></dl>
   <div class="leyenda" aria-hidden="true">
     <span><i style="background:#fafafa"></i>Lote</span>
-    <span><i style="background:#f0f0f0;border-width:2px"></i>Lote frente a verde</span>
     <span><i style="background:#c8c8c8"></i>Calle</span>
     <span><i style="background:#7a7a7a"></i>Bulevar</span>
     <span><i style="background:#e6e6e6;border-style:dashed"></i>Pista</span>
-    <span><i style="background:#b9b9b9"></i>Parque y plaza</span>
-    <span><i style="background:#111"></i>Club</span>
-    <span><i style="background:#fff;border-width:2px;border-style:double"></i>Comercio</span>
+    <span><i style="background:#b9b9b9"></i>Parque</span>
+    <span><i style="background:#111"></i>Comunal</span>
     <span><b class="p" style="background:#000"></b>Nogal que se queda</span>
     <span><b class="p" style="background:#fff;border:2px solid #000"></b>Nogal a reubicar</span>
   </div>
   <label class="chk"><input type="checkbox" id="chk-arboles" checked> Mostrar nogales (al acercar el mapa)</label>
   <div class="notas">
-    <p><b>Para 1,076 familias (unas 4,000 personas), esto es lo que cambia:</b></p>
-    <p><b>Tres accesos.</b> Con uno solo habría filas en las horas pico. El <b>principal</b> va frente a la Calzada José Vasconcelos: la caseta (2 entradas y 2 salidas) está 55 m adentro, para que la fila de autos quede dentro del terreno y no en la calle. Justo pasando la caseta hay una bahía de ascenso y descenso (camión escolar, taxis y paquetería). El de <b>residentes</b> sale al camino del noroeste, con tag. El de <b>servicio</b> da al sureste: mudanzas, basura y mantenimiento no cruzan el fraccionamiento, y desde ahí hay paso peatonal a Fontanal.</p>
-    <p><b>Súper, café y farmacia</b> en la plaza de acceso, antes de la caseta: abren a la calle y se venden o rentan como comercio, y los vecinos entran caminando por una puerta peatonal. Los lotes pegados a la Calle Juan Agustín de Espinoza pasan a <b>frente comercial hacia afuera</b> (consultorios, guardería, restaurantes): nadie vive junto a la avenida y ese terreno vale casi el doble.</p>
-    <p><b>Club social junto al acceso:</b> salón en planta baja y oficinas de la administración arriba (la administración atiende sin que los proveedores entren al fraccionamiento), <b>gimnasio de 2 niveles</b> y alberca con chapoteadero y asoleadero bajo los nogales. <b>Club deportivo</b> enfrente: tenis, 2 de pádel, multicancha y juegos. Los dos van en la hilera vacía, así que casi no se tumban árboles, y tienen estacionamiento entre hileras.</p>
-    <p><b>Ninguna casa a más de 140 m de un lugar para jugar</b> (en promedio, 64 m). Dos parques grandes: uno con juegos, asadores y parque para perros; otro con explanada, gimnasio al aire libre y huerto. Además, 9 plazas de bolsillo con juegos y bancas repartidas por todo el conjunto.</p>
-    <p><b>Calles cómodas:</b> a 30 km/h, con cruces elevados en las esquinas, banquetas de 2 m bajo los nogales y cuadras de 170 m (se camina todo). En el bulevar, ciclovía y sendero al centro.</p>
-    <p><b>Patio de servicio</b> junto al acceso de servicio: mantenimiento, acopio de basura y un vivero donde se replantan los nogales que se reubican.</p>
-    <p><b>Lo que cuesta:</b> el margen baja de $346 a ≈ $271 millones (28 % sobre inversión). Se dejan de vender 91 lotes para plazas, club, accesos y comercio, y las amenidades suben a $66 millones. Lo compensan en parte los lotes frente a parque (+8 %), los de bulevar (+5 %) y el comercio ($6,000/m²). El verde pasa de 12 % a 17 %, que seguramente ya cumple la donación municipal; el diseño base quizá no la cumplía. No supuse que todo el fraccionamiento se venda más caro por tener club, aunque en la práctica suele pasar: con 2 % más de precio general se recuperarían unos $25 millones.</p>
-    <p>Supuestos: terreno $670/m²; calles $1,400/m²; redes $250/m² bruto; reubicar cada nogal $12,000; ventas y permisos 12 %; lote de 328 m² a ≈ $3,340/m². Lindero por confirmar con catastro.</p>
+    <p><b>La idea:</b> no se le impone un trazo a la huerta; el trazo sale de la huerta. Los nogales están en cuadrícula de 12.6 × 12.7 m, así que:</p>
+    <p><b>Calles</b> sobre las líneas libres entre hileras, cada 5 hileras. El arroyo de 7 m pasa entre troncos y los nogales quedan en la banqueta: calles arboladas desde el día uno.</p>
+    <p><b>Lotes de una columna de árboles de frente</b> (12.7 m) y 25.9 m de fondo: unos 328 m². Los nogales caen sobre los linderos laterales, y la casa, de hasta 9.7 m de ancho, va entre ellos. Cada lote conserva unos 3 nogales compartidos. Los de esquina son más anchos.</p>
+    <p><b>Bulevar central</b> sobre la hilera que ya falta (la calle interna actual): sendero peatonal al centro, dos carriles de 7 m y una hilera de nogales a cada lado.</p>
+    <p><b>Área comunal junto al acceso</b>, en la otra hilera vacía: salón en planta baja con oficinas arriba, tenis y 2 de pádel en línea, sin tumbar árboles; estacionamiento entre dos hileras.</p>
+    <p><b>Dos parques</b> en las manzanas con los nogales más grandes, de lados opuestos del bulevar. <b>Pista para correr</b> de 3.3 km por el perímetro, bajo los árboles, más 1.3 km del sendero del bulevar.</p>
+    <p><b>Por qué no 295 m²:</b> en el barrido, entre 280 y 330 m² casi no cambiaban los m² vendibles. Pero un lote de 10.9 m de frente corta las columnas de árboles: había que mover unos 860 nogales solo por las casas. Alineado a la huerta son unos 350 en total. Además, quitar la calle perimetral (la pista y la barda cierran el conjunto) sube lo vendible a 64 %.</p>
+    <p><b>Números rápidos:</b> terreno $670/m²; calles $1,400/m²; redes y verde $250/m² bruto; amenidades $32 millones; reubicar cada nogal $12,000; ventas y permisos 12 %. Lote de 328 m² a ≈ $3,340/m². Verde de 12 %: hay que confirmar el mínimo de donación de Torreón. Lindero por confirmar con catastro. La detección de árboles puede contar de más algunos, así que el número de reubicaciones es un tope alto.</p>
   </div>
 </section>
 
@@ -90,37 +87,30 @@
     padel: { color: "#000", weight: 1, fillColor: "#444", fillOpacity: 1 },
     parque: { color: "#000", weight: 1, fillColor: "#b9b9b9", fillOpacity: 1 },
     caseta: { color: "#000", weight: 1, fillColor: "#000", fillOpacity: 1 },
-    lote: { color: "#000", weight: 0.6, fillColor: "#fafafa", fillOpacity: 1 },
-    plaza: { color: "#000", weight: 1, fillColor: "#b9b9b9", fillOpacity: 1 },
-    plaza_acceso: { color: "#000", weight: 1, fillColor: "#e9e9e9", fillOpacity: 1 },
-    alberca: { color: "#000", weight: 1, fillColor: "#fff", fillOpacity: 1, dashArray: "2 2" },
-    juegos: { color: "#000", weight: 1, fillColor: "#9a9a9a", fillOpacity: 1 },
-    bahia: { color: "#000", weight: 1, fillColor: "#8a8a8a", fillOpacity: 1 },
-    servicio: { color: "#000", weight: 1, fillColor: "#8a8a8a", fillOpacity: 1 },
-    comercio: { color: "#000", weight: 2.5, fillColor: "#fff", fillOpacity: 1 }
+    lote: { color: "#000", weight: 0.6, fillColor: "#fafafa", fillOpacity: 1 }
   };
-  var orden = ["pista", "vial", "bulevar", "arroyo", "sendero", "comunal", "plaza_acceso", "parque", "plaza", "servicio", "lote", "comercio", "estacionamiento", "salon", "alberca", "tenis", "padel", "juegos", "bahia", "caseta", "limite"];
+  var orden = ["pista", "vial", "bulevar", "arroyo", "sendero", "comunal", "parque", "lote", "estacionamiento", "salon", "tenis", "padel", "caseta", "limite"];
   var capaArboles = L.layerGroup();
   var rotulos = L.layerGroup();
   var verArboles = true;
   function verRotulos() { if (map.getZoom() >= 17) rotulos.addTo(map); else map.removeLayer(rotulos);
     if (verArboles && map.getZoom() >= 16) capaArboles.addTo(map); else map.removeLayer(capaArboles); }
   map.on("zoomend", verRotulos);
-  Promise.all([fetch("confort.geojson").then(function (r) { return r.json(); }), fetch("arboles_confort.json").then(function (r) { return r.json(); })]).then(function (res) {
+  Promise.all([fetch("final.geojson").then(function (r) { return r.json(); }), fetch("arboles.json").then(function (r) { return r.json(); })]).then(function (res) {
     var fc = res[0], arb = res[1], s = fc.resumen, todo;
     orden.forEach(function (capa) {
       var g = L.geoJSON({ type: "FeatureCollection", features: fc.features.filter(function (f) { return f.properties.capa === capa; }) }, {
-        style: capa === "lote" ? function (f) { return f.properties.premio === "parque" ? { color: "#000", weight: 1.6, fillColor: "#f0f0f0", fillOpacity: 1 } : estilo.lote; } : estilo[capa], renderer: lienzo, interactive: capa === "lote",
+        style: estilo[capa], renderer: lienzo, interactive: capa === "lote",
         onEachFeature: capa === "lote" ? function (f, l) {
           var p = f.properties;
-          l.bindPopup("<b>Lote " + p.n + "</b><br>" + nf0.format(p.m2) + " m² · " + nf1.format(p.ancho) + " × " + nf1.format(p.fondo) + " m<br>Frente a " + (p.frente === "bulevar" ? "bulevar" : "calle") + " · " + p.arboles + " nogales en sus linderos" + (p.premio === "parque" ? "<br>Frente a parque o plaza (+8 %)" : ""));
+          l.bindPopup("<b>Lote " + p.n + "</b><br>" + nf0.format(p.m2) + " m² · " + nf1.format(p.ancho) + " × " + nf1.format(p.fondo) + " m<br>Frente a " + (p.frente === "bulevar" ? "bulevar" : "calle") + " · " + p.arboles + " nogales en sus linderos");
         } : null
       }).addTo(map);
       if (capa === "limite") todo = g;
     });
     fc.features.forEach(function (f) {
       var n = f.properties.nombre;
-      if (!n) return;
+      if (!n || f.properties.capa === "comunal") return;
       if (n === "Pádel" && f.properties._dup) return;
       L.marker(L.geoJSON(f).getBounds().getCenter(), { icon: L.divIcon({ className: "estrella", html: n, iconSize: null }), interactive: false }).addTo(rotulos);
     });
@@ -134,11 +124,11 @@
       "<div><dt>Lotes (casas)</dt><dd>" + nf0.format(s.lotes) + "</dd></div>" +
       "<div><dt>Lote típico</dt><dd>12.7 × 25.9 m · " + nf0.format(s.lote_mediana) + " m²</dd></div>" +
       "<div><dt>Vendible</dt><dd>" + nf1.format(s.vendible_m2 / 1e4) + " ha (" + nf1.format(s.pct_vendible) + " %)</dd></div>" +
-      "<div><dt>Verde y amenidades</dt><dd>" + nf1.format(s.verde_pct) + " %</dd></div>" +
-      "<div><dt>Casa más lejos de un parque</dt><dd>" + s.dist_verde_max_m + " m (prom. " + s.dist_verde_media_m + " m)</dd></div>" +
-      "<div><dt>Lotes frente a verde</dt><dd>" + nf0.format(s.lotes_premio_parque) + "</dd></div>" +
+      "<div><dt>Calles · verde</dt><dd>" + nf1.format(s.vial_pct) + " % · " + nf1.format(s.verde_pct) + " %</dd></div>" +
       "<div><dt>Nogales que se quedan</dt><dd>" + nf0.format(quedan) + " de " + nf0.format(s.arboles) + " (" + nf0.format(100 * quedan / s.arboles) + " %)</dd></div>" +
-      "<div><dt>Comercio</dt><dd>" + nf0.format(s.predio_comercial_m2) + " m²</dd></div>" +
+      "<div><dt>A reubicar</dt><dd>" + nf0.format(s.reubicar) + " (casas " + s.reubicar_casas + ", calles " + s.reubicar_calles + ", comunal " + s.reubicar_comunal + ")</dd></div>" +
+      "<div><dt>Parques</dt><dd>2 · " + nf1.format(s.parque_m2 / 1e4) + " ha · " + s.arboles_parques + " nogales</dd></div>" +
+      "<div><dt>Pista para correr</dt><dd>" + nf1.format(s.pista_km) + " km + " + nf1.format(s.sendero_bulevar_km) + " km</dd></div>" +
       "<div><dt>Venta total</dt><dd>$" + nf0.format(s.venta / 1e6) + " millones</dd></div>" +
       "<div><dt>Margen</dt><dd>$" + nf0.format(s.margen / 1e6) + " millones (" + nf1.format(s.roi) + " %)</dd></div>";
     var p = document.getElementById("panel").getBoundingClientRect();

@@ -80,3 +80,4 @@ Calibración, con anuncios de 2025–2026: 50 ha con 1,100 nogales en Matamoros,
 ```
 
 El límite de N6 está en `etiquetas/n6_limite.geojson`.
+./venv/bin/python scripts/n6_confort.py data ../public/n6           # diseño con confort (accesos, club, súper, gimnasio, plazas) → public/n6/confort.geojson
