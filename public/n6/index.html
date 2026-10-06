@@ -10,7 +10,8 @@
 <link rel="stylesheet" href="../style.css">
 <style>
   .tabs { display: flex; gap: 0; margin: 0.5rem 0 0.25rem; border: 1px solid var(--linea); }
-  .tabs a, .tabs button { flex: 1; text-align: center; border: 0; border-right: 1px solid var(--linea); padding: 0.375rem 0.25rem; font-size: 0.8125rem; text-decoration: none; min-height: 2rem; }
+  .tabs-lote { flex-wrap: wrap; }
+  .tabs a, .tabs button { flex: 1 0 16%; text-align: center; border: 0; border-right: 1px solid var(--linea); padding: 0.375rem 0.25rem; font-size: 0.8125rem; text-decoration: none; min-height: 2rem; }
   .tabs > :last-child { border-right: 0; }
   .tabs [aria-pressed="true"], .tabs [aria-current="page"] { background: var(--tinta); color: var(--papel); }
   .nav { display: flex; border: 1px solid var(--linea); margin-bottom: 0.625rem; }
@@ -22,7 +23,8 @@
   .cmp { width: 100%; border-collapse: collapse; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
   .cmp th, .cmp td { border-bottom: 1px solid var(--suave); padding: 0.2rem 0.25rem; text-align: right; }
   .cmp th:first-child, .cmp td:first-child { text-align: left; }
-  .cmp tr.sel td { font-weight: 700; }
+  .cmp tr.sel td { font-weight: 700; background: var(--suave); }
+  .cmp tbody tr { cursor: pointer; }
   .cmp-wrap { overflow-x: auto; }
   .notas { font-size: 0.75rem; color: var(--gris); margin: 0.5rem 0 0; }
   .notas p { margin: 0.3rem 0; }
@@ -43,29 +45,26 @@
   <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · borradores de lotificación</span></h1>
   <p class="stats" id="bruto">Cargando…</p>
   <div class="leyenda" aria-hidden="true">
-    <span><i style="background:#fff"></i>Límite</span>
-    <span><i style="background:#9a9a9a"></i>Corredor central</span>
-    <span><i style="background:#111"></i>Casa club</span>
-    <span><i style="background:#e8e8e8"></i>Lotes</span>
+    <span><i style="background:#cfcfcf"></i>Calles</span>
+    <span><i style="background:#fff;border-style:dashed"></i>Pista para correr</span>
+    <span><i style="background:#9a9a9a"></i>Bulevar con nogales</span>
+    <span><i style="background:#bdbdbd"></i>Parques</span>
+    <span><i style="background:#111"></i>Área comunal</span>
+    <span><i style="background:#f0f0f0"></i>Lotes</span>
   </div>
-  <div class="tabs" role="group" aria-label="Tamaño de lote" id="tabs">
-    <button type="button" data-m2="300">300 m²</button>
-    <button type="button" data-m2="350">350 m²</button>
-    <button type="button" data-m2="400">400 m²</button>
-    <button type="button" data-m2="450">450 m²</button>
-    <button type="button" data-m2="500">500 m²</button>
-  </div>
+  <div class="tabs tabs-lote" role="group" aria-label="Tamaño de lote" id="tabs"></div>
   <dl class="kpis" id="kpis"></dl>
   <div class="cmp-wrap">
     <table class="cmp" id="cmp">
-      <thead><tr><th>Lote</th><th>Lotes</th><th>Vendible</th><th>Margen</th><th>$/m² bruto</th><th>Retorno</th></tr></thead>
+      <thead><tr><th>Lote</th><th>Medida</th><th>Lotes</th><th>m² vendibles</th><th>Margen</th><th>Retorno</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
   <div class="notas">
-    <p><b>Trazo:</b> el límite sigue la cuadrícula de nogales completa vista desde el satélite (altura de árboles a 1 m). Mide más que las 40 ha del mapa general porque incluye la parte oriente, de árboles más chicos. El lindero legal hay que confirmarlo con catastro.</p>
-    <p><b>Diseño:</b> bulevar central de 36 m sobre la calle interna que ya existe (2 carriles de 9 m y un parque de 18 m con nogales), casa club de 100 × 75 m sobre el bulevar, circuito perimetral y calles locales de 12 m, cerradas cada 170 m. Lotes de 25 m de fondo (300–400 m²) o de 30 m (450–500 m²).</p>
-    <p><b>Números rápidos:</b> terreno a $670/m²; calles a $1,400/m²; redes y áreas verdes a $250/m² bruto; ventas y permisos, 12 %. Lote de $3,400/m² (300 m²) a $3,000/m² (500 m²). Área verde de 12 a 15 %: confirmar el mínimo de donación de Torreón. Es un primer borrador.</p>
+    <p><b>Resultado:</b> entre 280 y 330 m² casi no cambian los m² vendibles (338 a 340 mil, 57 % del terreno). Lo que más pesa es el <b>fondo de 27 m</b>. Dentro de los 300, el que más vende es <b>295 m² (10.9 × 27 m)</b>; el de 300 m² (10 × 30 m) queda 0.3 % abajo.</p>
+    <p><b>Amenidades:</b> circuito vehicular perimetral de 12 m, pista para correr de 5 m alrededor de todo el terreno (≈ 3.2 km por vuelta), bulevar central de 36 m con nogales, dos parques de 0.9 ha y área comunal de 100 × 80 m: salón en planta baja y oficinas del complejo arriba, cancha de tenis, 2 de pádel y estacionamiento.</p>
+    <p><b>Trazo:</b> el límite sigue la cuadrícula de nogales (59.7 ha); el lindero legal hay que confirmarlo con catastro. Cuadras con un número exacto de lotes (≈ 170 m) y calles locales de 12 m. Frente mínimo de 10 m.</p>
+    <p><b>Números rápidos:</b> terreno $670/m²; calles $1,400/m²; redes y verde $250/m² bruto; amenidades ≈ $32 millones; ventas y permisos 12 %. Lote a $3,400/m² en 300 m² (sube o baja $2/m² por cada m² menos o más de lote). Es un borrador.</p>
   </div>
 </section>
 
@@ -81,55 +80,73 @@
   map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
   var lienzo = L.canvas({ padding: 0.5 });
-  var lotes = L.layerGroup().addTo(map), datos, actual = 300;
-
+  var lotes = L.layerGroup().addTo(map), datos, cache = {}, pedido = 0;
   function margenes() {
     var p = document.getElementById("panel").getBoundingClientRect();
     return window.matchMedia("(max-width: 40rem)").matches ? { paddingTopLeft: [12, p.bottom + 12], paddingBottomRight: [12, 12] } : { paddingTopLeft: [p.right + 12, 12], paddingBottomRight: [60, 12] };
   }
-  function mostrar(m2) {
-    actual = m2;
-    document.querySelectorAll("#tabs button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.m2) === m2)); });
+  function dibujarLotes(fc) {
     lotes.clearLayers();
-    L.geoJSON({ type: "FeatureCollection", features: datos.features.filter(function (f) { return f.properties.capa === "lote" && f.properties.esc === m2; }) },
-      { style: { color: "#000", weight: 0.6, fillColor: "#e8e8e8", fillOpacity: 0.85 }, renderer: lienzo, interactive: false }).addTo(lotes);
+    L.geoJSON(fc, { style: { color: "#000", weight: 0.5, fillColor: "#f0f0f0", fillOpacity: 0.9 }, renderer: lienzo, interactive: false }).addTo(lotes);
+  }
+  function mostrar(m2) {
+    document.querySelectorAll("#tabs button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.m2) === m2)); });
+    document.querySelectorAll("#cmp tbody tr").forEach(function (tr) { tr.className = Number(tr.dataset.m2) === m2 ? "sel" : ""; });
     var e = datos.escenarios.filter(function (x) { return x.m2 === m2; })[0];
     document.getElementById("kpis").innerHTML =
       "<div><dt>Lotes (casas)</dt><dd>" + nf0.format(e.lotes) + "</dd></div>" +
       "<div><dt>Medida del lote</dt><dd>" + nf1.format(e.frente) + " × " + nf0.format(e.fondo) + " m</dd></div>" +
-      "<div><dt>Vendible</dt><dd>" + nf0.format(e.vendible_m2 / 1e4) + " ha (" + nf1.format(e.pct_vendible) + " %)</dd></div>" +
-      "<div><dt>Calles · verde</dt><dd>" + nf1.format(e.vial_pct) + " % · " + nf1.format(e.verde_pct) + " %</dd></div>" +
+      "<div><dt>Vendible</dt><dd>" + nf0.format(e.vendible_m2) + " m² (" + nf1.format(e.pct_vendible) + " %)</dd></div>" +
+      "<div><dt>Calles · verde y amenidades</dt><dd>" + nf1.format(e.vial_pct) + " % · " + nf1.format(e.verde_pct) + " %</dd></div>" +
       "<div><dt>Precio del lote</dt><dd>≈ $" + nf1.format(e.precio_lote / 1e6) + " millones</dd></div>" +
       "<div><dt>Nogales por lote</dt><dd>≈ " + nf1.format(e.nogales_por_lote) + "</dd></div>" +
       "<div><dt>Venta total</dt><dd>" + mill(e.venta) + "</dd></div>" +
       "<div><dt>Margen</dt><dd>" + mill(e.margen) + " (" + nf1.format(e.roi) + " %)</dd></div>";
-    document.querySelectorAll("#cmp tbody tr").forEach(function (tr) { tr.className = Number(tr.dataset.m2) === m2 ? "sel" : ""; });
     try { history.replaceState(null, "", "#l" + m2); } catch (err) { /* sin historial */ }
+    var n = ++pedido;
+    if (cache[m2]) return dibujarLotes(cache[m2]);
+    fetch("lotes-" + m2 + ".geojson").then(function (r) { return r.json(); }).then(function (fc) {
+      cache[m2] = fc; if (n === pedido) dibujarLotes(fc);
+    });
   }
   document.getElementById("tabs").addEventListener("click", function (ev) {
     var b = ev.target.closest("button[data-m2]"); if (b) mostrar(Number(b.dataset.m2));
+  });
+  document.querySelector("#cmp tbody").addEventListener("click", function (ev) {
+    var tr = ev.target.closest("tr[data-m2]"); if (tr) mostrar(Number(tr.dataset.m2));
   });
   fetch("n6.geojson").then(function (r) { return r.json(); }).then(function (fc) {
     datos = fc;
     var estilo = {
       limite: { color: "#000", weight: 3, fill: false },
-      corredor: { color: "#000", weight: 1, fillColor: "#9a9a9a", fillOpacity: 0.8 },
-      club: { color: "#000", weight: 1, fillColor: "#111", fillOpacity: 0.9 }
+      calle_perimetral: { stroke: false, fillColor: "#cfcfcf", fillOpacity: 0.9 },
+      pista: { color: "#000", weight: 1, dashArray: "4 3", fillColor: "#fff", fillOpacity: 0.9 },
+      corredor: { color: "#000", weight: 1, fillColor: "#9a9a9a", fillOpacity: 0.85 },
+      parque: { color: "#000", weight: 1, fillColor: "#bdbdbd", fillOpacity: 0.85 },
+      comunal: { color: "#000", weight: 1, fillColor: "#e0e0e0", fillOpacity: 0.9 },
+      salon: { color: "#000", weight: 1, fillColor: "#111", fillOpacity: 0.95 },
+      estacionamiento: { color: "#000", weight: 1, fillColor: "#777", fillOpacity: 0.9 },
+      tenis: { color: "#000", weight: 1, fillColor: "#444", fillOpacity: 0.95 },
+      padel: { color: "#000", weight: 1, fillColor: "#444", fillOpacity: 0.95 }
     };
-    var base = L.geoJSON({ type: "FeatureCollection", features: fc.features.filter(function (f) { return f.properties.capa !== "lote"; }) },
-      { style: function (f) { return estilo[f.properties.capa]; }, renderer: lienzo, interactive: false }).addTo(map);
-    var club = fc.features.filter(function (f) { return f.properties.capa === "club"; })[0];
-    var c = L.geoJSON(club).getBounds().getCenter();
-    L.marker(c, { icon: L.divIcon({ className: "estrella", html: "Casa club", iconSize: null }), interactive: false }).addTo(map);
-    document.getElementById("bruto").textContent = nf1.format(fc.bruto_m2 / 1e4) + " ha brutas · " + nf0.format(fc.bruto_m2) + " m²";
-    var mejor = fc.escenarios.slice().sort(function (a, b) { return b.margen - a.margen; })[0].m2;
+    var base = L.geoJSON(fc, { style: function (f) { return estilo[f.properties.capa]; }, renderer: L.canvas({ padding: 0.5 }), interactive: false }).addTo(map);
+    fc.features.forEach(function (f) {
+      var n = f.properties.nombre;
+      if (!n || f.properties.capa === "padel" && f !== fc.features.filter(function (x) { return x.properties.capa === "padel"; })[0]) return;
+      L.marker(L.geoJSON(f).getBounds().getCenter(), { icon: L.divIcon({ className: "estrella", html: n === "Pádel" ? "Pádel ×2" : n, iconSize: null }), interactive: false }).addTo(map);
+    });
+    var am = fc.amenidades;
+    document.getElementById("bruto").textContent = nf1.format(fc.bruto_m2 / 1e4) + " ha brutas · pista de " + nf1.format(am.pista_m / 1000) + " km · parques " + nf1.format(am.parque_m2 / 1e4) + " ha";
+    var maxV = fc.escenarios.slice().sort(function (a, b) { return b.vendible_m2 - a.vendible_m2; })[0].m2;
+    var maxM = fc.escenarios.slice().sort(function (a, b) { return b.margen - a.margen; })[0].m2;
+    document.getElementById("tabs").innerHTML = fc.escenarios.map(function (e) { return '<button type="button" data-m2="' + e.m2 + '">' + e.m2 + "</button>"; }).join("");
     document.querySelector("#cmp tbody").innerHTML = fc.escenarios.map(function (e) {
-      return '<tr data-m2="' + e.m2 + '"><td>' + e.m2 + " m²" + (e.m2 === mejor ? " ★" : "") + "</td><td>" + nf0.format(e.lotes) + "</td><td>" + nf1.format(e.pct_vendible) +
-        " %</td><td>$" + nf0.format(e.margen / 1e6) + " M</td><td>$" + nf0.format(e.margen_m2_bruto) + "</td><td>" + nf1.format(e.roi) + " %</td></tr>";
-    }).join("");
+      return '<tr data-m2="' + e.m2 + '"><td>' + e.m2 + (e.m2 === maxV ? " ★" : "") + (e.m2 === maxM ? " $" : "") + "</td><td>" + nf1.format(e.frente) + "×" + e.fondo + "</td><td>" + nf0.format(e.lotes) +
+        "</td><td>" + nf0.format(e.vendible_m2) + "</td><td>$" + nf0.format(e.margen / 1e6) + " M</td><td>" + nf1.format(e.roi) + " %</td></tr>";
+    }).join("") + '<tr><td colspan="6" style="text-align:left;color:var(--gris)">★ más m² vendibles · $ más margen. Toca una fila para verla.</td></tr>';
     map.fitBounds(base.getBounds(), margenes());
     var m = /^#l(\d{3})$/.exec(location.hash);
-    mostrar(m ? Number(m[1]) : mejor);
+    mostrar(m && fc.escenarios.some(function (e) { return e.m2 === Number(m[1]); }) ? Number(m[1]) : 295);
   });
 })();
 </script>
