@@ -489,8 +489,8 @@ E.nogal(57.15, 6.4, 1.0, alza=1.4)
 for i in range(9): E.lote(SEQ[(i + 4) % 9], -57.15 + (i + 1) * LOTE_W, -5.5, math.pi, auto=False); E.nogal(-57.15 + i * LOTE_W, -6.4, 1.0)
 E.nogal(57.15, -6.4, 1.0)
 for xx in (-45, -20, 5, 30, 55): E.arbotante(xx, -4.6, 6.0, 1.3, 1)
-VF["lejos"] = ojo((-110, -22, 2.2), (10, 8, 4.0), 24)                  # la cuadra de lejos, con lente larga
-VF["cuadra"] = ojo((-70, -30, 12), (0, 8, 3.0), 34)
+VF["lejos"] = ojo((-96, -4.2, 2.0), (20, 6.5, 3.6), 26)                # la cuadra de lejos, desde la banqueta de enfrente con lente larga
+VF["cuadra"] = ojo((-51, -1.5, 7.5), (12, 9, 3.2), 42)                   # la cuadra en escorzo, desde la calle y un poco en alto
 VF["alta"] = ojo((-60, -55, 38), (0, 10, 2.0), 40)
 INDICE.append(guardar(E, dict(titulo="Las nueve fachadas", porque="Una cuadra con las nueve fachadas seguidas, de frente y en escorzo, de cerca y de lejos: la imagen de concurso de cada una.",
     hora="tarde", centro=[0, 8, 3], dist=40, suelo_z=-0.32, contornos=0.5, bruma=[60, 180], cam=VF["f9_horizonte"], vistas=VF)))

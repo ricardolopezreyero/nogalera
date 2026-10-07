@@ -18,7 +18,7 @@ const HORAS = {
   dia:       { sol: [-0.3, -0.62, 0.72], int: 4.0, colSol: 0xfff4e6, hemi: [0xbfd8f2, 0x8a7a5a, 0.6], turb: 2.5, ray: 1.1, mie: 0.003, mieG: 0.8, expo: 0.8, env: 0.06, bloom: [0.05, 0.4, 1.0], bruma: 0.0012, noche: false, pl: 0, emis: 0 },
   tarde:     { sol: [-0.6, -0.58, 0.48], int: 3.6, colSol: 0xffe2b8, hemi: [0xb9d0ec, 0x8a7a5a, 0.55], turb: 4, ray: 1.6, mie: 0.005, mieG: 0.82, expo: 0.85, env: 0.07, bloom: [0.07, 0.4, 1.0], bruma: 0.0015, noche: false, pl: 0, emis: 0 },
   atardecer: { sol: [-0.9, -0.32, 0.2], int: 2.8, colSol: 0xffb978, hemi: [0x7f93b8, 0x6e5a44, 0.45], turb: 9, ray: 3.0, mie: 0.02, mieG: 0.9, expo: 0.85, env: 0.07, bloom: [0.15, 0.5, 0.9], bruma: 0.002, noche: false, pl: 1.5, emis: 1.2 },
-  noche:     { sol: [-0.3, -0.4, 0.87], int: 0.3, colSol: 0x8aa0ff, hemi: [0x1c2a4a, 0x0c0f16, 0.5], turb: 2, ray: 0.5, mie: 0.001, mieG: 0.7, expo: 1.3, env: 0.15, bloom: [0.3, 0.6, 0.75], bruma: 0.0025, noche: true, pl: 8.0, emis: 1.4 }
+  noche:     { sol: [-0.3, -0.4, 0.87], int: 0.6, colSol: 0x8aa0ff, hemi: [0x1c2a4a, 0x0c0f16, 0.5], turb: 2, ray: 0.5, mie: 0.001, mieG: 0.7, expo: 1.3, env: 0.15, bloom: [0.3, 0.6, 0.75], bruma: 0.0025, noche: true, pl: 8.0, emis: 1.4 }
 };
 const COPAS = new Set(["#4f8f3c", "#5a9a44", "#467f36", "#5f9e4b", "#7fae5a", "#9bbf6a", "#6a9c4e"]);
 const ARBUSTOS = new Set(["#6f9a4a", "#5f8c42", "#8aa85e", "#4f7d3a"]);
@@ -222,7 +222,7 @@ export class Foto3D {
   }
   /* carga la escena: geometría por material, follaje instanciado, luces */
   async cargar(esc) {
-    this.esc = esc; this.luces = esc.luces || [];
+    this.esc = esc; this.luces = esc.luces || []; this.lamparas = [];
     const scene = this.scene = new THREE.Scene();
     const grupos = {}; const copas = []; const arbustos = [];
     for (const p of esc.prismas) {
@@ -230,6 +230,7 @@ export class Foto3D {
       if (p[4] === "autos" && !this.opciones.autos) continue;
       const k = clase(p);
       if (k === "copa" || k === "arbusto") { copas.push(p); continue; }
+      if (p[4] === "luz" && (p[3] === "#e6e6e6" || p[3] === "#eaeaea") && p[0].length === 4) { const [cx, cy] = centroRadio(p[0]); this.lamparas.push([cx, cy, p[1] - 0.15]); }
       const uvEsc = 1; const g = prismaGeo(p[0], p[1], p[2], uvEsc);
       const key = k + "|" + p[3].slice(0, 7) + "|" + (p[4] === "muebles" ? "m" : "");
       (grupos[key] = grupos[key] || { k, hex: p[3].slice(0, 7), a: col(p[3])[3], geos: [] }).geos.push(g);
@@ -257,7 +258,7 @@ export class Foto3D {
     const M = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), s = new THREE.Vector3(), pos = new THREE.Vector3(), c = new THREE.Color();
     let i = 0;
     for (const [cx, cy, r, z0, h, n0, hex] of info) {
-      const n = Math.max(4, Math.round(n0 * f)), base = new THREE.Color(hex), tam = r < 0.9 ? Math.max(0.4, r * 0.9) : Math.min(1.5, Math.max(0.7, r * 0.42));
+      const n = Math.max(4, Math.round(n0 * f)), base = new THREE.Color(hex), tam = (r < 0.9 ? Math.max(0.4, r * 0.9) : Math.min(1.5, Math.max(0.7, r * 0.42))) * Math.min(3, 1 / Math.sqrt(f));   // con menos tarjetas por copa (escenas grandes), tarjetas más grandes
       for (let k = 0; k < n; k++) {
         // posición uniforme en el elipsoide del lóbulo, un poco más densa hacia afuera (las hojas están en la periferia)
         const u = rnd(), v = rnd(), w = Math.cbrt(rnd()) * 0.9 + 0.1, th = u * Math.PI * 2, ph = Math.acos(2 * v - 1);
@@ -302,12 +303,14 @@ export class Foto3D {
     sol.shadow.camera.near = 1; sol.shadow.camera.far = 2000; sol.shadow.bias = -0.0004; sol.shadow.normalBias = 0.02 + ext / 4000; sol.shadow.radius = 2;
     const hemi = new THREE.HemisphereLight(H.hemi[0], H.hemi[1], H.hemi[2]); hemi.position.set(0, 0, 1); L.add(hemi);
     // luces de la escena (noche y atardecer): las más cercanas a la cámara
+    const luces = this.luces.length ? this.luces : this.lamparas.map(l => [l[0], l[1], l[2], 2.6, "#ffd9a0"]);
+    for (const m of scene.children) if (m.isMesh && m.material.transparent && m.material.isMeshPhysicalMaterial) { m.material.emissive = new THREE.Color(0xffd9a0); m.material.emissiveIntensity = H.noche && !this.luces.length ? 0.9 : 0; }
     if (H.noche || hora === "atardecer") {
-      const cerca = this.luces.map(l => [Math.hypot(l[0] - cam.cx, l[1] - cam.cy), l]).sort((a, b) => a[0] - b[0]).slice(0, 48);
+      const cerca = luces.map(l => [Math.hypot(l[0] - cam.cx, l[1] - cam.cy), l]).sort((a, b) => a[0] - b[0]).slice(0, 48);
       for (const [, l] of cerca) { const pl = new THREE.PointLight(l[4] || 0xffd9a0, H.pl * l[3], l[3] * 12, 2); pl.position.set(l[0], l[1], l[2]); L.add(pl); }
     }
     for (const m of scene.children) if (m.isMesh && m.material.emissive && m.material.emissiveIntensity !== undefined && m.material.userData.luz) m.material.emissiveIntensity = H.emis;
-    scene.fog = new THREE.FogExp2(H.noche ? 0x0a1226 : (hora === "atardecer" ? 0xe8c9a8 : 0xdbe6f0), H.bruma * (this.esc.bruma && this.esc.bruma[1] ? 1 : 0.6));
+    scene.fog = new THREE.FogExp2(H.noche ? 0x0a1226 : (hora === "atardecer" ? 0xe8c9a8 : 0xdbe6f0), H.bruma * Math.min(1, 60 / Math.max(1, cam.dist)) * (this.esc.bruma && this.esc.bruma[1] ? 1 : 0.6));
     this.renderer.toneMappingExposure = H.expo; this.H = H;
   }
   /* cámara con los mismos parámetros que render3d.js (az, el, zoom, dist, cx, cy, cz) */
