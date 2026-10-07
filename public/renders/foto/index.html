@@ -21,9 +21,20 @@
   <label>Hora <select id="f-hora" class="sel"><option value="dia">Mediodía</option><option value="tarde">Tarde</option><option value="atardecer">Atardecer</option><option value="noche">Noche</option></select></label>
   <label>Tamaño <select id="f-res" class="sel"><option value="1280x720">1280 × 720</option><option value="1920x1080" selected>1920 × 1080</option><option value="2560x1440">2560 × 1440</option><option value="3840x2160">3840 × 2160</option></select></label>
   <label><input type="checkbox" id="f-autos"> autos</label><label><input type="checkbox" id="f-gente"> gente</label>
-  <button type="button" id="f-render" class="boton">Renderizar</button><button type="button" id="f-descargar">Descargar JPG</button><button type="button" data-pase="depth">Profundidad</button><button type="button" data-pase="normal">Normales</button><button type="button" data-pase="lineart">Líneas</button>
+  <button type="button" id="f-caminar" class="boton" style="background:#1f6f43;color:#fff;border-color:#1f6f43">🚶 Caminar en el modelo</button><button type="button" id="f-render" class="boton">Renderizar</button><button type="button" id="f-descargar">Descargar JPG</button><button type="button" data-pase="depth">Profundidad</button><button type="button" data-pase="normal">Normales</button><button type="button" data-pase="lineart">Líneas</button>
 </div>
 <p id="f-estado" class="nota">Cargando…</p>
+<div id="f-paseo" hidden style="border:1px solid var(--linea);padding:.5rem .75rem;margin:.5rem 0;display:grid;gap:.4rem;max-width:72rem">
+  <b>Modo caminar</b> <span class="nota">Flechas o WASD para avanzar y girar · arrastra el ratón (o toca y arrastra) para mirar · Shift corre · Q/E sube y baja la vista · Esc sale. Un clic en el lienzo captura el ratón.</span>
+  <div class="foto-ctl">
+    <label>Altura de la vista <select id="p-alt" class="sel"><option value="1.65">A pie (1.65 m)</option><option value="2">2 m</option><option value="4">Desde un balcón (4 m)</option><option value="10">10 m</option><option value="25">Vuelo bajo (25 m)</option></select></label>
+    <label>Velocidad <select id="p-vel" class="sel"><option value="1.4">Caminando (1.4 m/s)</option><option value="4">Trote</option><option value="12">Auto (12 m/s)</option><option value="40">Rápido</option></select></label>
+    <label>Ir a <select id="p-ir" class="sel"></select></label>
+    <label>Calidad al moverse <select id="p-cal" class="sel"><option value="0.5">Ligera</option><option value="0.75" selected>Media</option><option value="1">Completa</option></select></label>
+    <button type="button" id="p-foto">Foto de aquí (JPG)</button><button type="button" id="p-salir">Salir del modo caminar</button>
+  </div>
+  <p class="nota" id="p-pos"></p>
+</div>
 <canvas id="foto-canvas" width="1920" height="1080"></canvas>
 </div>
 <script type="module">
@@ -61,7 +72,51 @@ API.listo = (async () => {
   if (q("vista")) $("f-vista").value = q("vista"); if (q("hora")) $("f-hora").value = q("hora");
   return true;
 })();
-$("f-escena").addEventListener("change", () => cargarEscena($("f-escena").value));
+$("f-escena").addEventListener("change", () => { paseo.parar(); cargarEscena($("f-escena").value); });
+/* ---------- modo caminar: cámara en primera persona, en tiempo real ---------- */
+const paseo = (() => {
+  const P = { activo: false, az: 0, el: 0, x: 0, y: 0, z: 1.65, teclas: {}, ult: 0, raf: 0, arr: null };
+  const caja = $("f-paseo"), pos = $("p-pos");
+  function entrar() {
+    if (!F) return; const c = F.esc.cam, sa = Math.sin(c.az), ca = Math.cos(c.az), ce = Math.cos(c.el), se = Math.sin(c.el);
+    P.x = c.cx - sa * ce * c.dist; P.y = c.cy - ca * ce * c.dist; P.az = c.az; P.el = 0; P.z = +$("p-alt").value;
+    const v = $("p-ir"); v.innerHTML = '<option value="">(vista actual)</option>' + Object.keys(F.esc.vistas || {}).map(k => `<option value="${k}">${k}</option>`).join("");
+    P.activo = true; caja.hidden = false; F.iluminar($("f-hora").value, { cx: P.x, cy: P.y, cz: P.z, dist: 60 }); F.follaje({ az: P.az, el: 0, dist: 0.01, cx: P.x, cy: P.y, cz: P.z }); F.briznas({ az: P.az, el: 0, dist: 0.01, cx: P.x, cy: P.y, cz: P.z });
+    P.ult = performance.now(); cuadro(); cv.focus(); estado.textContent = "Modo caminar: usa las flechas. Clic en la imagen para mirar con el ratón.";
+  }
+  function parar() { if (!P.activo) return; P.activo = false; caja.hidden = true; cancelAnimationFrame(P.raf); if (document.pointerLockElement === cv) document.exitPointerLock(); }
+  function camAhora() { return { az: P.az, el: P.el, zoom: 0, fov: 52, dist: 0.01, cx: P.x + Math.sin(P.az) * Math.cos(P.el) * 0.01, cy: P.y + Math.cos(P.az) * Math.cos(P.el) * 0.01, cz: P.z - Math.sin(P.el) * 0.01 }; }
+  let contRefrescar = 0;
+  function cuadro() {
+    if (!P.activo) return; const t = performance.now(), dt = Math.min(0.5, (t - P.ult) / 1000); P.ult = t;
+    const vel = +$("p-vel").value * (P.teclas["Shift"] ? 3 : 1), k = P.teclas; let mv = 0, lat = 0;
+    if (k["ArrowUp"] || k["w"] || k["W"]) mv += 1; if (k["ArrowDown"] || k["s"] || k["S"]) mv -= 1;
+    if (k["a"] || k["A"]) lat -= 1; if (k["d"] || k["D"]) lat += 1;
+    if (k["ArrowLeft"]) P.az -= 1.2 * dt; if (k["ArrowRight"]) P.az += 1.2 * dt;
+    if (k["q"] || k["Q"]) P.z = Math.max(0.5, P.z - 3 * dt); if (k["e"] || k["E"]) P.z += 3 * dt;
+    const sa = Math.sin(P.az), ca = Math.cos(P.az);
+    P.x += (sa * mv + ca * lat) * vel * dt; P.y += (ca * mv - sa * lat) * vel * dt;
+    const movio = mv || lat || k["ArrowLeft"] || k["ArrowRight"] || P.arr;
+    if (movio && ++contRefrescar % 90 === 0) { F.follaje(camAhora()); F.briznas(camAhora()); }
+    const esc = movio ? +$("p-cal").value : 1; const w = Math.round(cv.clientWidth * esc) || 960, h = Math.round(w * 9 / 16);
+    F.rapido(camAhora(), w, h, movio && esc < 1);
+    pos.textContent = "x " + P.x.toFixed(1) + " · y " + P.y.toFixed(1) + " · altura " + P.z.toFixed(2) + " m · rumbo " + Math.round((P.az * 180 / Math.PI) % 360) + "°";
+    P.raf = requestAnimationFrame(cuadro);
+  }
+  document.addEventListener("keydown", e => { if (!P.activo) return; if (e.key === "Escape") return parar(); P.teclas[e.key] = true; if (e.key.startsWith("Arrow") || e.key === " ") e.preventDefault(); });
+  document.addEventListener("keyup", e => { P.teclas[e.key] = false; });
+  cv.addEventListener("click", () => { if (P.activo && document.pointerLockElement !== cv) cv.requestPointerLock && cv.requestPointerLock(); });
+  cv.addEventListener("mousemove", e => { if (!P.activo) return; if (document.pointerLockElement === cv) { P.az += e.movementX * 0.0025; P.el = Math.max(-1.2, Math.min(1.2, P.el + e.movementY * 0.0025)); P.arr = true; setTimeout(() => P.arr = false, 100); } });
+  let t0 = null; cv.addEventListener("touchstart", e => { if (P.activo) t0 = [e.touches[0].clientX, e.touches[0].clientY, P.az, P.el]; }, { passive: true });
+  cv.addEventListener("touchmove", e => { if (!P.activo || !t0) return; P.az = t0[2] + (e.touches[0].clientX - t0[0]) * 0.006; P.el = Math.max(-1.2, Math.min(1.2, t0[3] + (e.touches[0].clientY - t0[1]) * 0.006)); P.arr = true; }, { passive: true });
+  cv.addEventListener("touchend", () => { P.arr = false; });
+  $("p-alt").addEventListener("change", () => { P.z = +$("p-alt").value; });
+  $("p-ir").addEventListener("change", () => { const v = F.esc.vistas[$("p-ir").value]; if (!v) return; const sa = Math.sin(v.az), ca = Math.cos(v.az), ce = Math.cos(v.el), se = Math.sin(v.el); P.x = v.cx - sa * ce * v.dist; P.y = v.cy - ca * ce * v.dist; P.z = Math.max(0.5, v.cz + se * v.dist); P.az = v.az; P.el = v.el; $("p-alt").value = ""; F.follaje(camAhora()); F.briznas(camAhora()); });
+  $("p-foto").addEventListener("click", () => { const [w, h] = $("f-res").value.split("x").map(Number); const url = F.imagen({ cam: camAhora(), hora: $("f-hora").value, w, h }); ultimo = url; const a = document.createElement("a"); a.href = url; a.download = "nogalera-paseo-" + escena.id + ".jpg"; a.click(); });
+  $("p-salir").addEventListener("click", parar); $("f-caminar").addEventListener("click", entrar);
+  return { parar, entrar };
+})();
+if (q("caminar")) API.listo.then(() => setTimeout(paseo.entrar, 300));
 $("f-render").addEventListener("click", async () => {
   const [w, h] = $("f-res").value.split("x").map(Number); estado.textContent = "Renderizando " + w + " × " + h + "…";
   await new Promise(r => setTimeout(r, 30));

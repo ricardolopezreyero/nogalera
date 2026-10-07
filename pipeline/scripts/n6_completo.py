@@ -292,6 +292,84 @@ for f in capa("comunal"):
     for k in range(8): E.persona(u0 + 6 + r.random() * (u1 - u0 - 12), v1 - 29 + r.random() * 8, r.choice([1.7, 1.65, 1.75]))
     E.perro(u0 + 20, v1 - 25)
 
+# ---------- 11 · objetos de realismo en calles, parques, club y acceso ----------
+ancho_vial = {}
+for nombre, vc in V_CALLE.items():
+    if nombre == "Nogal": continue
+    us = [q[0] for f in capa("lote") if f["properties"]["dir"].rsplit(" ", 1)[0] == nombre for q in poly(f)]
+    if not us: continue
+    a, b = min(us) - 6, max(us) + 6; ancho_vial[nombre] = (a, b)
+    E.raya_central(a + 10, b - 10, vc)                                                          # raya central amarilla
+    for k in range(int((b - a) / 70)):                                                            # registros y bocas de tormenta
+        xx = a + 35 + k * 70; E.registro(xx, vc + 1.5); E.boca_tormenta(xx + 12, vc + 3.15); E.boca_tormenta(xx + 12, vc - 3.5)
+    for uc in U_CRUCE.values():                                                                   # en cada cruce: paso peatonal, rampas, alto, nomenclatura, bolardos, bote
+        if not (a < uc < b): continue
+        for s_ in (-1, 1):
+            E.cruce_peatonal(uc - 5.5, vc + s_ * 3.6 - (3.0 if s_ < 0 else 0) - 0.3, 11, 0, 3.0) if False else None
+        E.cruce_peatonal(uc - 6.5, vc - 1.5, 3.0, 1.5708, 3.0); E.cruce_peatonal(uc + 3.5, vc - 1.5, 3.0, 1.5708, 3.0)
+        E.cruce_peatonal(uc - 1.5, vc - 6.5, 3.0, 0.0, 3.0); E.cruce_peatonal(uc - 1.5, vc + 3.5, 3.0, 0.0, 3.0)
+        for sx, sy in ((-1, -1), (1, -1), (-1, 1), (1, 1)):
+            E.rampa_banqueta(uc + sx * 4.2 - 0.75, vc + sy * 4.2 - 0.6); E.bolardo(uc + sx * 5.3, vc + sy * 5.3)
+        E.poste_senal(uc + 4.6, vc - 4.6, "alto"); E.poste_senal(uc - 4.6, vc + 4.6, "alto"); E.poste_senal(uc + 4.9, vc + 4.9, "nomenclatura", 0.0); E.bote(uc - 5.0, vc - 5.0)
+    for k in range(int((b - a) / 90)): E.poste_senal(a + 50 + k * 90, vc - 4.9, "velocidad"); E.flecha_piso(a + 20 + k * 90, vc - 1.8, 0.0); E.flecha_piso(a + 24 + k * 90, vc + 1.8, 3.1416)
+    for k in range(int((b - a) / 40)):                                                            # pedestales de fibra, bicis y tambos en la banqueta
+        xx = a + 15 + k * 40 + r.random() * 10
+        if r.random() < 0.3: E.pedestal_fibra(xx, vc + r.choice([-5.2, 5.2]))
+        if r.random() < 0.15: E.bicicleta(xx, vc + r.choice([-4.8, 4.8]), r.random() * 6.28)
+for uc in U_CRUCE.values():
+    vs = [q[1] for f in capa("lote") if f["properties"]["dir"].rsplit(" ", 1)[0] in U_CRUCE and abs((caja_de(poly(f))[0] + caja_de(poly(f))[1]) / 2 - uc) < 40 for q in poly(f)]
+    a, b = (min(vs) - 6, max(vs) + 6) if vs else (vmin + 8, vmax - 8)
+    k = a + 10
+    while k < b - 10: E.caja(uc - 0.06, k, -0.465, 0.12, 2.0, 0.006, "#f1d35a", "suelo", "suelo"); k += 5.0
+    for kk in range(int((b - a) / 70)): E.registro(uc + 1.5, a + 30 + kk * 70)
+# alcorques alrededor de los nogales que quedan en banqueta (a menos de 2 m de la guarnición)
+for a_ in ARB:
+    if a_[2]: continue
+    u, v = uv(a_[0], a_[1])
+    for vc in V_CALLE.values():
+        if 3.6 < abs(v - vc) < 5.6: E.alcorque(u, v, 0.8); break
+# parques: bebedero, ciclopuerto, aparatos de ejercicio, estación de la pista, fuente, kiosco, picnic, área de perros, cancha, señal
+for f in capa("parque"):
+    pts = poly(f); u0, u1, v0, v1 = caja_de(pts); cu, cv = (u0 + u1) / 2, (v0 + v1) / 2
+    E.bebedero(cu + 8, cv + 14); E.ciclopuerto(cu - 14, v0 + 2.5, 5, 0.0); E.poste_senal(u0 + 3, v0 + 3, "parque", 0.0)
+    for k in range(3): E.aparato_ejercicio(u0 + 12 + k * 3.5, v1 - 8, 0.0)
+    E.caja(u0 + 10, v1 - 10, -0.35, 14, 5, 0.01, "#5fa8d3", "suelo", "suelo")
+    E.estacion_pista(cu - 30, cv - 1.5, 1, 0.0); E.fuente(cu - 22, cv, 2.6); E.kiosco(cu + 32, cv + 2, 3.2)
+    for k in range(3): E.mesa_picnic(cu + 40 + k * 4, cv - 12, 0.3)
+    E.cerca_baja(u1 - 50, v1 - 14, 22, 0.0, 1.0); E.cerca_baja(u1 - 50, v1 - 2.5, 22, 0.0, 1.0); E.cerca_baja(u1 - 50, v1 - 14, 11.5, 1.5708, 1.0); E.cerca_baja(u1 - 28, v1 - 14, 11.5, 1.5708, 1.0)
+    for k in range(3): E.perro(u1 - 46 + k * 7, v1 - 9 + r.random() * 3)
+    E.persona(u1 - 40, v1 - 6, 1.7, "#3d5a80"); E.bote(u1 - 29, v1 - 3)
+    if (u1 - u0) > 140: E.cancha_basquet(u0 + 30, v1 - 20); E.porteria(u0 + 32, v1 - 11, 0.0); E.porteria(u0 + 56, v1 - 11, 0.0); E.gradas(u0 + 30, v1 - 24, 28, 2)
+    for k in range(5): E.arbol_joven(u0 + 6 + k * 8, v0 + 2.2, 2.4 + r.random())
+    for k in range(6): E.arbusto_bola(cu - 10 + k * 4, cv - 3.2, 0.45)
+    E.pajaros(cu, cv, 14, 6)
+# club: alberca con camastros, sombrillas y palmeras; fuente; gradas; malla sombra en pádel; letrero; ciclopuerto; pluma; contenedores
+for f in capa("comunal"):
+    u0, u1, v0, v1 = caja_de(poly(f)); cu = (u0 + u1) / 2
+    if "social" in f["properties"]["nombre"]:
+        E.caja(u0 + 6, v0 + 6, -0.33, 42, 24, 0.03, "#e4e0d6", "suelo", "suelo"); E.alberca(u0 + 10, v0 + 10, 25, 12, borde=False)
+        for k in range(8): E.camastro(u0 + 10 + k * 3, v0 + 24.5, 0.0); E.camastro(u0 + 10 + k * 3, v0 + 7.5, 0.0)
+        for k in range(4): E.sombrilla(u0 + 11.5 + k * 6, v0 + 26.5, 1.3, "#e9e2cf")
+        for k in range(6): E.palmera(u0 + 8 + k * 7, v0 + 3, 6.5 + r.random() * 2)
+        E.palmera(u0 + 50, v0 + 8, 8); E.palmera(u0 + 50, v0 + 22, 7.5); E.fuente(u0 + 60, v0 + 15, 2.8)
+        for k in range(6): E.persona(u0 + 12 + r.random() * 20, v0 + 12 + r.random() * 8, 1.7)
+    else:
+        E.gradas(u0 + 12, v0 + 2, 36, 3, 0.0); E.ciclopuerto(u0 + 4, v1 - 6, 6, 0.0)
+    E.poste_senal(u0 + 3, v1 - 3, "parque", 0.0); E.bote(u0 + 5, v1 - 5); E.bote(u1 - 5, v1 - 5)
+for f in capa("padel"):
+    u0, u1, v0, v1 = caja_de(poly(f)); E.malla_sombra(u0, v0, u1 - u0, v1 - v0, 5.0)
+for f in capa("estacionamiento"):
+    u0, u1, v0, v1 = caja_de(poly(f)); E.caja(u0 + 2, v1 - 0.4, 0.6, 0.1, 0.1, 0.5, COL["poste"], "mob"); E.caja(u0 + 2, v1 - 0.35, 0.95, 3.5, 0.08, 0.08, "#f0f0f0", "mob"); E.bolardo(u0 + 1, v1 - 1); E.bolardo(u1 - 1, v1 - 1)
+# acceso: astas, bancas de espera, macetones con flores en las islas, cámaras en el pórtico, cajones de visitas, topes
+VL = v_frente(U_ACC)
+for k in range(3): E.asta(U_ACC - 24 - k * 2.5, VL + 6, 9.0 - k * 0.8, ["#006847", "#f4f4f4", "#ce1126"][k])
+E.banca(U_ACC + 13.5, VL + 56, 1.5708); E.banca(U_ACC + 13.5, VL + 50, 1.5708); E.maceta(U_ACC + 12.2, VL + 62, 0.45, 0.6)
+for xx in (U_ACC - 5.5, U_ACC + 3.6): E.flores(xx, VL + 14, 1.6, 10, 16); E.flores(xx, VL + 44, 1.6, 8, 12)
+for xx in (U_ACC - 1.0, U_ACC + 15.0): E.caja(xx, VL + ACP.PORTICO_V - 0.2, ACP.PORTICO_H + 0.5, 0.25, 0.25, 0.25, "#f0f0f0", "edif")
+for k in range(6): E.caja(U_ACC + 20 + k * 2.6, VL + 8, -0.35, 0.1, 5.0, 0.005, "#f0f0f0", "suelo", "suelo")
+E.poste_senal(U_ACC + 16, VL + 20, "velocidad"); E.poste_senal(U_ACC - 16, VL + 68, "alto"); E.bote(U_ACC + 16.5, VL + 30); E.bote(U_ACC - 16.5, VL + 30)
+E.pajaros(U_ACC + 40, VL + 30, 18, 7); E.pajaros(-200, 60, 22, 5); E.pajaros(300, -100, 20, 6)
+
 # ---------- cámaras y guardado ----------
 PG = next(f for f in capa("parque") if "Garza" in f["properties"]["nombre"]); pu0, pu1, pv0, pv1 = caja_de(poly(PG)); pcu, pcv = (pu0 + pu1) / 2, (pv0 + pv1) / 2
 pv_calle = max([vc for vc in V_CALLE.values() if vc < pv0] or [pv0 - 6])

@@ -374,7 +374,7 @@ export class Foto3D {
   camara(c, w, h) {
     const sa = Math.sin(c.az), ca = Math.cos(c.az), se = Math.sin(c.el), ce = Math.cos(c.el), f = new THREE.Vector3(sa * ce, ca * ce, -se);
     const centro = new THREE.Vector3(c.cx, c.cy, c.cz), ojo = centro.clone().addScaledVector(f, -c.dist);
-    const F = Math.min(w, h) / 32 * Math.pow(1.15, c.zoom) * c.dist, fov = 2 * Math.atan(h / (2 * F)) * 180 / Math.PI;
+    const F = Math.min(w, h) / 32 * Math.pow(1.15, c.zoom) * c.dist, fov = c.fov || 2 * Math.atan(h / (2 * F)) * 180 / Math.PI;   // c.fov: campo vertical en grados (modo caminar)
     const cam = new THREE.PerspectiveCamera(fov, w / h, Math.max(0.2, c.dist / 400), 30000); cam.up.set(0, 0, 1); cam.position.copy(ojo); cam.lookAt(centro); cam.updateMatrixWorld(); return cam;
   }
   briznas(cam) {
@@ -433,6 +433,13 @@ export class Foto3D {
     return this.cv;
   }
   imagen(o) { this.render(o); return this.cv.toDataURL(o.tipo || "image/jpeg", o.calidad || 0.92); }
+  /* cuadro en tiempo real para el modo caminar: sin posproceso; `ligero` baja la resolución mientras hay movimiento */
+  rapido(cam, w, h, ligero) {
+    if (!this.H) this.iluminar(this.esc.hora || "dia", cam);
+    const camera = this.camara(cam, w, h); this.renderer.setPixelRatio(1); this.renderer.setSize(w, h, false);
+    this.renderer.shadowMap.autoUpdate = !ligero || (this._sombraCada = ((this._sombraCada || 0) + 1) % 6) === 0;
+    this.renderer.render(this.scene, camera); this.renderer.shadowMap.autoUpdate = true;
+  }
   /* mapas de control para ControlNet: "depth" (cerca = blanco), "normal" (espacio de cámara) y "lineart" (bordes por profundidad y normales, negro sobre blanco) */
   pase(o, tipo) {
     const w = o.w || 1920, h = o.h || 1080, cam = Object.assign({}, this.esc.cam, o.cam || {}), camera = this.camara(cam, w, h), scene = this.scene;

@@ -174,6 +174,136 @@ class Escena:
         for k in range(6): self.caja(x + 10.5 + k * 0.7, y + 8.5, -0.36, 0.08, 0.08, 1.0 + 0.2 * k, "#118ab2", "mob")                          # trepador de barras
         self.caja(x + 10.5, y + 8.5, 1.5, 4.2, 0.08, 0.08, "#ef476f", "mob")
         self.caja(x + 5, y + 9.5, -0.36, 1.6, 1.4, 1.5, "#f4a261", "mob"); self.caja(x + 4.9, y + 9.4, 1.4, 1.8, 1.6, 0.1, "#e63946", "mob")       # casita
+    # ================= objetos de realismo =================
+    def poste_senal(self, x, y, tipo="alto", rot=0.0):
+        """Señal vertical: alto (octágono rojo), velocidad 30 (círculo blanco), nomenclatura (placa verde), parque (placa café)."""
+        self.cil(x, y, 0.03, -0.32, 2.4, "#7a7a7a", "mob", n=5)
+        if tipo == "alto": self.cil(x, y + 0.03, 0.35, 2.0, 0.06, "#c8102e", "mob", n=8)
+        elif tipo == "velocidad": self.cil(x, y + 0.03, 0.3, 2.0, 0.06, "#f4f4f4", "mob", n=12); self.cil(x, y + 0.03, 0.31, 2.03, 0.02, "#c8102e", "mob", n=12)
+        elif tipo == "nomenclatura": self.caja(x - 0.45, y, 2.1, 0.9, 0.03, 0.22, "#1f6f43", "mob", rot=rot, px=x, py=y); self.caja(x - 0.4, y - 0.005, 2.14, 0.8, 0.04, 0.14, "#f4f4f4", "mob", rot=rot, px=x, py=y)
+        else: self.caja(x - 0.6, y, 1.4, 1.2, 0.04, 0.8, "#6b4f2a", "mob", rot=rot, px=x, py=y); self.caja(x - 0.55, y - 0.005, 1.45, 1.1, 0.05, 0.7, "#e9e2cf", "mob", rot=rot, px=x, py=y)
+    def cruce_peatonal(self, x, y, largo, rot=0.0, ancho=3.0):
+        for k in range(int(ancho / 0.8)): self.caja(x, y + k * 0.8, -0.465, largo, 0.4, 0.006, "#f2f2f2", "suelo", "suelo", rot=rot, px=x, py=y)
+    def raya_central(self, x0, x1, y, eje="x"):
+        k = x0
+        while k < x1:
+            if eje == "x": self.caja(k, y - 0.06, -0.465, 2.0, 0.12, 0.006, "#f1d35a", "suelo", "suelo")
+            else: self.caja(y - 0.06, k, -0.465, 0.12, 2.0, 0.006, "#f1d35a", "suelo", "suelo")
+            k += 5.0
+    def flecha_piso(self, x, y, rot=0.0):
+        self.caja(x, y - 0.15, -0.465, 2.2, 0.3, 0.006, "#f2f2f2", "suelo", "suelo", rot=rot, px=x, py=y); self.caja(x + 2.0, y - 0.6, -0.465, 0.5, 1.2, 0.006, "#f2f2f2", "suelo", "suelo", rot=rot, px=x, py=y)
+    def registro(self, x, y, redondo=True, color="#4a4a4a"):
+        if redondo: self.cil(x, y, 0.35, -0.466, 0.012, color, "suelo", n=12)
+        else: self.caja(x - 0.3, y - 0.3, -0.315, 0.6, 0.6, 0.012, color, "suelo")
+    def boca_tormenta(self, x, y, rot=0.0):
+        self.caja(x, y, -0.47, 1.0, 0.35, 0.02, "#2a2a2a", "suelo", rot=rot, px=x, py=y)
+        for k in range(6): self.caja(x + 0.1 + k * 0.15, y + 0.02, -0.45, 0.05, 0.3, 0.012, "#5a5a5a", "suelo", rot=rot, px=x, py=y)
+    def rampa_banqueta(self, x, y, rot=0.0):
+        self.caja(x, y, -0.47, 1.5, 1.2, 0.08, "#c0bcb3", "suelo", "suelo", rot=rot, px=x, py=y); self.caja(x + 0.2, y + 0.2, -0.39, 1.1, 0.8, 0.012, "#f1d35a", "suelo", "suelo", rot=rot, px=x, py=y)
+    def bolardo(self, x, y, h=0.9, color="#3a3a3a"): self.cil(x, y, 0.07, -0.32, h, color, "mob", n=8); self.cil(x, y, 0.08, -0.32 + h - 0.05, 0.05, "#b3bac1", "mob", n=8)
+    def bote(self, x, y, color="#4a4a4a"): self.cil(x, y, 0.3, -0.34, 0.95, color, "mob", n=8); self.cil(x, y, 0.32, 0.55, 0.06, "#2a2a2a", "mob", n=8)
+    def tambo(self, x, y, color=None, rot=0.0):
+        """Contenedor de basura con ruedas, de 240 l."""
+        c = color or self.rnd.choice(["#2f6b3a", "#2a4a7f", "#4a4a4a", "#7a7a7a"]); self.caja(x, y, -0.32 + 0.1, 0.58, 0.72, 0.95, c, "mob", rot=rot, px=x, py=y); self.caja(x - 0.02, y - 0.02, 0.72, 0.62, 0.76, 0.06, c, "mob", rot=rot, px=x, py=y)
+        for dx in (0.06, 0.46): self.cil(x + dx, y + 0.1, -0.32, 0.1, 0.2, "#1e1e1e", "mob", n=6)
+    def alcorque(self, x, y, r=0.9):
+        """Cajete del nogal en la banqueta: cuadro de tierra con borde."""
+        self.caja(x - r, y - r, -0.33, 2 * r, 2 * r, 0.015, COL["tierra"], "suelo", "suelo"); 
+        for a, b, w, d in ((x - r - 0.08, y - r - 0.08, 2 * r + 0.16, 0.08), (x - r - 0.08, y + r, 2 * r + 0.16, 0.08), (x - r - 0.08, y - r, 0.08, 2 * r), (x + r, y - r, 0.08, 2 * r)): self.caja(a, b, -0.32, w, d, 0.06, "#8a8578", "suelo")
+    def pedestal_fibra(self, x, y): self.caja(x - 0.2, y - 0.12, -0.32, 0.4, 0.24, 0.9, "#8a8f94", "mob")
+    def medidor_luz(self, x, y, rot=0.0): self.caja(x, y, 1.2, 0.3, 0.12, 0.42, "#9a9a9a", "casa", rot=rot, px=x, py=y); self.caja(x + 0.05, y - 0.01, 1.3, 0.2, 0.02, 0.2, "#2a2a2a", "casa", rot=rot, px=x, py=y)
+    def interfon(self, x, y, rot=0.0): self.caja(x, y, 1.3, 0.1, 0.03, 0.18, "#8a8f94", "casa", rot=rot, px=x, py=y)
+    def tapete(self, x, y, rot=0.0): self.caja(x, y, -0.29, 0.8, 0.5, 0.02, "#5a4a3a", "casa", rot=rot, px=x, py=y)
+    def maceta(self, x, y, r=0.3, h=0.45, color=None, planta=True):
+        self.cil(x, y, r, -0.32, h, color or self.rnd.choice(["#b05a3a", "#d9d2c6", "#3a3a3a", "#7a5a3a"]), "mob", n=10)
+        if planta: self.cil(x, y, r * 1.1, -0.32 + h, r * 1.6, self.rnd.choice(["#4f7d3a", "#5f8c42", "#6f9a4a"]), "plantas", n=7, fase=self.rnd.random())
+    def baliza_jardin(self, x, y): self.cil(x, y, 0.025, -0.32, 0.4, "#2a2a2a", "luz", n=5); self.caja(x - 0.05, y - 0.05, 0.05, 0.1, 0.1, 0.06, "#eaeaea", "luz")
+    def llave_manguera(self, x, y): self.cil(x, y, 0.02, -0.32, 0.5, "#8a8f94", "casa", n=5); self.cil(x, y, 0.22, -0.32, 0.12, "#2f6b3a", "casa", n=10)
+    def asador(self, x, y, rot=0.0): self.caja(x, y, -0.32, 0.9, 0.5, 0.9, "#2a2a2a", "mob", rot=rot, px=x, py=y); self.caja(x - 0.05, y - 0.05, 0.56, 1.0, 0.6, 0.04, "#8a8f94", "mob", rot=rot, px=x, py=y)
+    def mesa_jardin(self, x, y, sillas=4, rot=0.0):
+        self.cil(x, y, 0.55, 0.38, 0.03, "#d9d2c6", "mob", n=12); self.cil(x, y, 0.04, -0.32, 0.7, "#5a5a5a", "mob", n=6)
+        for k in range(sillas):
+            a = rot + k * 6.28 / sillas; sx, sy = x + 0.95 * math.cos(a), y + 0.95 * math.sin(a)
+            self.caja(sx - 0.22, sy - 0.22, 0.08, 0.44, 0.44, 0.04, "#5a5a5a", "mob", rot=a, px=sx, py=sy); self.caja(sx + 0.16, sy - 0.22, 0.08, 0.04, 0.44, 0.45, "#5a5a5a", "mob", rot=a, px=sx, py=sy)
+            for dx, dy in ((-0.2, -0.2), (0.18, -0.2), (-0.2, 0.18), (0.18, 0.18)): self.caja(sx + dx, sy + dy, -0.32, 0.03, 0.03, 0.4, "#5a5a5a", "mob", rot=a, px=sx, py=sy)
+    def sombrilla(self, x, y, r=1.3, color=None):
+        self.cil(x, y, 0.025, -0.32, 2.3, "#8a8f94", "mob", n=6); self.cil(x, y, r, 1.9, 0.1, color or self.rnd.choice(["#e9e2cf", "#c8102e", "#2a4a7f", "#2f7a5c"]), "mob", n=10); self.cil(x, y, r * 0.6, 2.0, 0.1, color or "#e9e2cf", "mob", n=10)
+    def camastro(self, x, y, rot=0.0): self.caja(x, y, -0.32 + 0.3, 1.9, 0.65, 0.08, "#e9e2cf", "mob", rot=rot, px=x, py=y); self.caja(x, y, 0.06, 0.5, 0.65, 0.45, "#e9e2cf", "mob", rot=rot, px=x, py=y)
+    def alberca(self, x, y, w, d, borde=True):
+        self.caja(x - 0.4, y - 0.4, -0.33, w + 0.8, d + 0.8, 0.03, "#e4e0d6", "suelo", "suelo") if borde else None
+        self.caja(x, y, -0.5, w, d, 0.02, "#3aa3c9", "suelo", "suelo"); self.caja(x, y, -0.48, w, d, 0.16, "#7fd0e8c8", "suelo", "")
+        for k in range(3): self.caja(x + w - 0.3, y + 0.2 + k * 0.3, -0.5, 0.3, 0.08, 0.2 + k * 0.1, "#e4e0d6", "suelo")
+    def palmera(self, x, y, h=7.0):
+        r = self.rnd; self.cil(x, y, 0.22, -0.36, h, "#8a7a62", "arboles", n=7)
+        for k in range(14):
+            a = k * 0.45 + r.random() * 0.3; d = 1.6 + r.random() * 0.8; t = 0.2 + r.random() * 0.6
+            self.cil(x + d * math.cos(a), y + d * math.sin(a), 0.5, -0.36 + h - 0.4 - t, 0.5, r.choice(["#4f8f3c", "#5a9a44", "#3f7a32"]) + "e0", "arboles_lod", n=6)
+        self.copa((x, y, -0.36 + h + 0.3), 2.6, 2.6, 1.0, "#4f8f3c")
+    def arbol_joven(self, x, y, h=2.6):
+        c = self.rnd.choice(["#7fae5a", "#9bbf6a", "#6a9c4e"]); self.cil(x, y, 0.05, -0.34, h * 0.55, "#7a5a3a", "plantas", n=5); self.cil(x, y, h * 0.22, h * 0.5, h * 0.45, c, "plantas", n=8, fase=self.rnd.random())
+        for dx, dy in ((-0.3, 0), (0.3, 0)): self.cil(x + dx, y + dy, 0.02, -0.34, h * 0.5, "#c9b08a", "plantas", n=4)     # tutores
+        self.caja(x - 0.3, y - 0.012, h * 0.3, 0.6, 0.024, 0.024, "#c9b08a", "plantas")
+    def agave(self, x, y, r=0.6):
+        for k in range(10):
+            a = k * 0.63 + self.rnd.random() * 0.3; self.caja(x, y - 0.06, -0.33, r, 0.12, 0.25 + 0.2 * (k % 3), "#7a9a7a", "plantas", rot=a, px=x, py=y)
+        self.cil(x, y, 0.25, -0.33, 0.7, "#6f8f6f", "plantas", n=6)
+    def arbusto_bola(self, x, y, r=0.5): self.cil(x, y, r, -0.34, r * 1.4, self.rnd.choice(["#3f7a32", "#4f8f3c"]), "plantas", n=10, fase=self.rnd.random())
+    def seto(self, x, y, largo, rot=0.0, h=1.0): self.caja(x, y, -0.34, largo, 0.5, h, self.rnd.choice(["#3f7a32", "#4a8a3a"]), "plantas", rot=rot, px=x, py=y)
+    def grava_jardin(self, x, y, w, d): self.caja(x, y, -0.325, w, d, 0.01, "#b9b3a8", "suelo", "suelo")
+    def panel_solar(self, x, y, rot=0.0): self.caja(x, y, 6.9, 1.6, 1.0, 0.05, "#1f3a5f", "casa", rot=rot, px=x, py=y); self.caja(x, y + 0.9, 6.9, 1.6, 0.06, 0.45, "#8a8f94", "casa", rot=rot, px=x, py=y)
+    def antena(self, x, y): self.cil(x, y, 0.02, 6.9, 1.0, "#8a8f94", "casa", n=4); self.cil(x, y, 0.35, 7.6, 0.06, "#d8d8d8", "casa", n=10)
+    def domo(self, x, y): self.caja(x - 0.5, y - 0.5, 6.9, 1.0, 1.0, 0.35, "#bcd9e8b0", "casa")
+    def columpio_patio(self, x, y):
+        for dx in (0, 2.0): self.caja(x + dx, y, -0.32, 0.08, 0.08, 2.2, "#4a4a4a", "mob")
+        self.caja(x, y, 2.1, 2.08, 0.08, 0.08, "#4a4a4a", "mob"); self.caja(x + 0.75, y + 0.05, 0.15, 0.5, 0.2, 0.05, "#e63946", "mob")
+        for dx in (0.77, 1.21): self.caja(x + dx, y + 0.1, 0.2, 0.025, 0.025, 1.9, "#8a8a8a", "mob")
+    def trampolin(self, x, y): self.cil(x, y, 1.6, 0.5, 0.06, "#1e1e1e", "mob", n=14); self.cil(x, y, 1.62, 0.52, 0.04, "#2a4a7f", "mob", n=14)
+    def bebedero(self, x, y): self.caja(x - 0.2, y - 0.2, -0.32, 0.4, 0.4, 0.85, "#8a8f94", "mob"); self.cil(x, y, 0.04, 0.5, 0.15, "#b3bac1", "mob", n=5)
+    def ciclopuerto(self, x, y, n=4, rot=0.0):
+        for k in range(n): self.caja(x + k * 0.8, y, -0.32, 0.05, 0.7, 0.8, "#8a8f94", "mob", rot=rot, px=x, py=y); self.caja(x + k * 0.8, y, 0.4, 0.05, 0.7, 0.05, "#8a8f94", "mob", rot=rot, px=x, py=y)
+    def bicicleta(self, x, y, rot=0.0, color=None):
+        c = color or self.rnd.choice(["#c8102e", "#2a4a7f", "#1e1e1e", "#f4a261"])
+        for dx in (0, 1.0): self.caja(x + dx, y - 0.02, -0.32, 0.7, 0.04, 0.7, "#1e1e1e", "mob", rot=rot, px=x, py=y)
+        self.caja(x + 0.3, y, 0.15, 1.1, 0.04, 0.05, c, "mob", rot=rot, px=x, py=y); self.caja(x + 0.5, y, 0.1, 0.05, 0.04, 0.6, c, "mob", rot=rot, px=x, py=y); self.caja(x + 1.2, y - 0.2, 0.55, 0.05, 0.45, 0.04, "#1e1e1e", "mob", rot=rot, px=x, py=y)
+    def aparato_ejercicio(self, x, y, rot=0.0):
+        self.cil(x, y, 0.06, -0.32, 1.4, "#2a4a7f", "mob", n=6); self.caja(x - 0.5, y - 0.03, 1.3, 1.0, 0.06, 0.06, "#2a4a7f", "mob", rot=rot, px=x, py=y)
+        for dx in (-0.45, 0.45): self.caja(x + dx, y - 0.15, 0.1, 0.1, 0.3, 0.05, "#f4a261", "mob", rot=rot, px=x, py=y); self.cil(x + dx + 0.05, y, 0.025, 0.15, 1.15, "#8a8f94", "mob", n=5)
+    def estacion_pista(self, x, y, km, rot=0.0):
+        self.caja(x, y, -0.32, 0.15, 0.15, 1.6, "#2f6b3a", "mob", rot=rot, px=x, py=y); self.caja(x - 0.25, y + 0.02, 1.2, 0.65, 0.04, 0.4, "#e9e2cf", "mob", rot=rot, px=x, py=y); self.banca(x + 0.8, y, rot)
+    def fuente(self, x, y, r=3.0):
+        self.cil(x, y, r, -0.34, 0.45, "#c9c5bc", "mob", n=18); self.cil(x, y, r - 0.3, -0.34 + 0.45, 0.02, "#7fd0e8d0", "mob", n=18); self.cil(x, y, 0.5, -0.34, 1.4, "#c9c5bc", "mob", n=10); self.cil(x, y, 0.9, 1.0, 0.1, "#c9c5bc", "mob", n=10)
+    def kiosco(self, x, y, r=3.5):
+        for k in range(8):
+            a = k * 0.785; self.caja(x + r * math.cos(a) - 0.1, y + r * math.sin(a) - 0.1, -0.33, 0.2, 0.2, 3.0, "#e9e2cf", "edif")
+        self.cil(x, y, r + 0.3, -0.34, 0.3, "#c9c5bc", "suelo", n=8); self.cil(x, y, r + 0.5, 2.9, 0.25, "#8a5a2c", "edif", n=8); self.cil(x, y, r * 0.7, 3.15, 0.5, "#7a4a1c", "edif", n=8); self.cil(x, y, r * 0.35, 3.65, 0.5, "#7a4a1c", "edif", n=8)
+    def mesa_picnic(self, x, y, rot=0.0):
+        self.caja(x, y, 0.4, 1.8, 0.7, 0.05, COL["madera"], "mob", rot=rot, px=x, py=y)
+        for dy in (-0.55, 0.95): self.caja(x, y + dy, 0.1, 1.8, 0.3, 0.05, COL["madera"], "mob", rot=rot, px=x, py=y)
+        for dx in (0.2, 1.5): self.caja(x + dx, y - 0.5, -0.32, 0.08, 1.7, 0.42, COL["madera"], "mob", rot=rot, px=x, py=y)
+    def cerca_baja(self, x, y, largo, rot=0.0, h=1.0):
+        k = 0
+        while k < largo: self.caja(x + k, y, -0.32, 0.06, 0.06, h, "#6a5a4a", "mob", rot=rot, px=x, py=y); k += 2.0
+        self.caja(x, y + 0.02, -0.32 + h - 0.1, largo, 0.03, 0.06, "#6a5a4a", "mob", rot=rot, px=x, py=y); self.caja(x, y + 0.02, -0.32 + h * 0.45, largo, 0.03, 0.06, "#6a5a4a", "mob", rot=rot, px=x, py=y)
+    def cancha_basquet(self, x, y):
+        self.caja(x, y, -0.3, 28, 15, 0.04, "#2a7a5c", "suelo", "suelo"); self.caja(x + 1, y + 1, -0.25, 26, 0.08, 0.005, "#f1f1f1", "suelo", "suelo"); self.caja(x + 1, y + 14, -0.25, 26, 0.08, 0.005, "#f1f1f1", "suelo", "suelo"); self.caja(x + 14, y + 1, -0.25, 0.08, 13, 0.005, "#f1f1f1", "suelo", "suelo")
+        for xx in (x + 1.2, x + 26.8): self.cil(xx, y + 7.5, 0.08, -0.3, 3.5, "#4a4a4a", "mob", n=6); self.caja(xx - 0.9 if xx > x + 10 else xx, y + 7.5 - 0.9, 2.6, 0.06, 1.8, 1.05, "#f4f4f4", "mob"); self.cil(xx - 0.45 if xx > x + 10 else xx + 0.45, y + 7.5, 0.23, 2.75, 0.03, "#f4a261", "mob", n=10)
+    def porteria(self, x, y, rot=0.0):
+        for dy in (0, 3.0): self.caja(x, y + dy, -0.32, 0.08, 0.08, 2.0, "#f4f4f4", "mob", rot=rot, px=x, py=y)
+        self.caja(x, y, 1.95, 0.08, 3.08, 0.08, "#f4f4f4", "mob", rot=rot, px=x, py=y)
+    def gradas(self, x, y, largo, filas=3, rot=0.0):
+        for k in range(filas): self.caja(x, y + k * 0.8, -0.32, largo, 0.8, 0.4 * (k + 1), "#c9c5bc", "mob", rot=rot, px=x, py=y)
+    def malla_sombra(self, x, y, w, d, h=4.5):
+        for dx, dy in ((0, 0), (w, 0), (0, d), (w, d)): self.cil(x + dx, y + dy, 0.06, -0.32, h, "#4a4a4a", "mob", n=6)
+        self.caja(x - 0.5, y - 0.5, h - 0.4, w + 1, d + 1, 0.05, "#2f4f3fa0", "mob")
+    def asta(self, x, y, h=9.0, bandera="#006847"): self.cil(x, y, 0.05, -0.32, h, "#b3bac1", "mob", n=6); self.caja(x, y - 0.01, h - 1.6, 1.4, 0.02, 0.9, bandera, "mob")
+    def pajaros(self, x, y, z, n=5):
+        for k in range(n): px, py = x + self.rnd.uniform(-6, 6), y + self.rnd.uniform(-4, 4); self.caja(px, py, z + self.rnd.uniform(-1, 1), 0.35, 0.05, 0.04, "#2a2a2a", "mob"); self.caja(px + 0.3, py - 0.15, z, 0.3, 0.05, 0.04, "#2a2a2a", "mob", rot=0.5, px=px + 0.3, py=py)
+    def techo_cochera(self, x, y, w=5.85, d=5.5, rot=0.0, px=None, py=None):
+        """Pérgola sobre la cochera: dos columnas al frente y vigas de madera."""
+        for dx in (0.15, w - 0.35): self.caja(x + dx, y + 0.15, -0.3, 0.2, 0.2, 2.9, "#5a4632", "casa", rot=rot, px=px, py=py)
+        self.caja(x, y, 2.6, w, 0.22, 0.25, "#5a4632", "casa", rot=rot, px=px, py=py)
+        k = 0.3
+        while k < w: self.caja(x + k, y, 2.75, 0.12, d, 0.12, "#5a4632", "casa", rot=rot, px=px, py=py); k += 0.6
     def banca(self, x, y, rot=0.0):
         self.caja(x, y, -0.32 + 0.4, 1.8, 0.45, 0.05, COL["madera"], "mob", rot=rot, px=x, py=y); self.caja(x, y + 0.4, -0.32 + 0.45, 1.8, 0.05, 0.45, COL["madera"], "mob", rot=rot, px=x, py=y)
         for dx in (0.1, 1.6): self.caja(x + dx, y + 0.05, -0.32, 0.08, 0.35, 0.4, COL["poste"], "mob", rot=rot, px=x, py=y)
@@ -274,6 +404,30 @@ class Escena:
             E.arbusto(1.0 + r.random() * 2, LOTE_D - 3 - r.random() * 4, 0.6, 0.8)
             if r.random() < 0.6: E.flores(1.6, 0.3, 2.4, 1.0, 8)
             if r.random() < 0.4: E.flores(LOTE_W - 2.8, FRENTE + 16 + r.random() * 6, 2.0, 1.2, 8)
+            # frente: pérgola de cochera, medidores, interfón, tapete, macetas, balizas, llave, grava o agaves, seto, tambo de basura
+            if r.random() < 0.55: E.techo_cochera(LOTE_W - 0.3 - 5.85, 0.0)
+            E.medidor_luz((LOTE_W - W) / 2 + 0.2, FRENTE - 0.1); E.interfon((LOTE_W - W) / 2 + 4.05, FRENTE - 0.05); E.tapete((LOTE_W - W) / 2 + 4.4, FRENTE - 0.6)
+            E.maceta((LOTE_W - W) / 2 + 3.6, FRENTE - 0.5, 0.25, 0.45); E.maceta((LOTE_W - W) / 2 + 5.8, FRENTE - 0.5, 0.25, 0.45)
+            for k in range(3): E.baliza_jardin(1.65, 0.6 + k * 1.6)
+            E.llave_manguera(0.2, FRENTE + 0.6)
+            if r.random() < 0.3: E.grava_jardin(1.6, 0.2, 2.8, 2.6); E.agave(3.0, 1.4, 0.6)
+            elif r.random() < 0.5: E.arbusto_bola(2.4, 1.0, 0.45); E.arbusto_bola(3.6, 1.0, 0.45)
+            if r.random() < 0.5: E.seto(0.18, FRENTE + 1.2, 6.0, math.pi / 2 if False else 1.5708, 0.9)
+            if r.random() < 0.35: E.tambo(LOTE_W - 0.3 - 5.85 - 0.75, 0.3, rot=0.2)
+            # patio trasero: mesa y sillas, asador, sombrilla, juegos, trampolín, alberca, árbol frutal, perro
+            py0 = FRENTE + PA_D + 0.5
+            E.mesa_jardin((LOTE_W - W) / 2 + 2.5, py0 + 2.5, 4, r.random())
+            if r.random() < 0.5: E.asador((LOTE_W - W) / 2 + 7.5, py0 + 0.6)
+            if r.random() < 0.4: E.sombrilla((LOTE_W - W) / 2 + 2.5, py0 + 2.5, 1.3)
+            if r.random() < 0.18: E.columpio_patio((LOTE_W - W) / 2 + 5.5, py0 + 4.5)
+            elif r.random() < 0.12: E.trampolin((LOTE_W - W) / 2 + 6.0, py0 + 5.5)
+            if r.random() < 0.12 and LOTE_D - py0 > 7: E.alberca((LOTE_W - W) / 2 + 1.0, py0 + 4.0, 3.0, 5.0)
+            if r.random() < 0.3: E.arbol_joven((LOTE_W - W) / 2 + 7.8, LOTE_D - 3.5, 2.6 + r.random())
+            if r.random() < 0.12: E.perro((LOTE_W - W) / 2 + 4.0, py0 + 5.0)
+            # azotea: panel solar, antena, domo
+            if r.random() < 0.35: E.panel_solar((LOTE_W - W) / 2 + 1.0, FRENTE + 4.0); E.panel_solar((LOTE_W - W) / 2 + 2.8, FRENTE + 4.0)
+            if r.random() < 0.4: E.antena((LOTE_W - W) / 2 + 8.4, FRENTE + 1.2)
+            if r.random() < 0.3: E.domo((LOTE_W - W) / 2 + 4.5, FRENTE + 7.5)
         for p in E.P: self.P.append([girar(p[0], rot, 0, 0, x0, y0), p[1], p[2], p[3], p[4], p[5]])
         for l in E.luces: px, py = girar([(l[0], l[1])], rot, 0, 0, x0, y0)[0]; self.luces.append([px, py, l[2], l[3], l[4]])
         for rm in E.ramas: (ax, ay), (bx, by) = girar([(rm[0], rm[1]), (rm[3], rm[4])], rot, 0, 0, x0, y0); self.ramas.append([ax, ay, rm[2], bx, by, rm[5], rm[6], rm[7], rm[8]])
