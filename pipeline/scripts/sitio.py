@@ -887,9 +887,9 @@ def datos():
 <p>Todo lo que muestra el sitio sale de estos archivos, y estos salen del código en <code>pipeline/</code> del repositorio. Coordenadas en WGS 84 (longitud, latitud). Cifras en pesos de 2026 sin IVA.</p>
 {tabla(filas, ["Archivo", "Qué tiene", "Tamaño"], "spec")}
 <h2 id="prospectos">Prospectos de la página del cliente</h2>
-<p>Cada persona que deja sus datos en <a href="/inicio/">/inicio/</a> queda guardada en la base de datos del Worker de Cloudflare (un Durable Object con SQLite: no hay nada que crear ni pagar). Se descargan con la clave del secreto <code>ADMIN_CLAVE</code> del Worker (si no existe, sirve <code>RENDER_CLAVE</code>):</p>
+<p>Cada persona que deja sus datos en <a href="/inicio/">/inicio/</a> queda guardada en la base de datos del Worker de Cloudflare (un Durable Object con SQLite: no hay nada que crear ni pagar). Se descargan con una clave: mientras no haya secretos en el Worker, la clave es <b>123</b>; cuando pongas el secreto <code>ADMIN_CLAVE</code> (o <code>RENDER_CLAVE</code>), manda ese.</p>
 <ul>
-<li>Excel: <code>https://nogalera.capitaltorreon.com/api/prospectos?clave=LA_CLAVE&amp;formato=csv</code> (abre o descarga un CSV con fecha, nombre, celular, correo, primera o segunda casa, crédito, rapidez, mensaje, ciudad y página).</li>
+<li>Excel: <a href="/api/prospectos?clave=123&amp;formato=csv"><code>https://nogalera.capitaltorreon.com/api/prospectos?clave=123&amp;formato=csv</code></a> (abre o descarga un CSV con fecha, nombre, celular, correo, primera o segunda casa, crédito, rapidez, mensaje, ciudad y página).</li>
 <li>JSON: la misma dirección sin <code>&amp;formato=csv</code>.</li>
 <li>Aviso por correo de cada prospecto nuevo: poner en el Worker los secretos <code>RESEND_API_KEY</code> (cuenta de Resend) y <code>AVISO_CORREO</code> (uno o varios correos separados por coma); opcional <code>AVISO_DESDE</code>.</li>
 </ul>

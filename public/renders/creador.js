@@ -75,8 +75,9 @@
     try { ia.clave.value = localStorage.getItem("nogalera-render-clave") || ""; } catch (e) {}
     fetch("/datos/escenas/prompts_ia.json").then(function (x) { return x.json(); }).then(function (pr) { PROMPTS_IA = pr; promptIA(); });
     fetch("/api/render-ia").then(function (x) { return x.json(); }).then(function (st) {
-      if (!st.listo || !st.clave) ia.estado.textContent = "Falta configurar en Cloudflare: " + (!st.listo ? "OPENAI_API_KEY " : "") + (!st.clave ? "RENDER_CLAVE" : "") + " (Worker nogalera → Settings → Variables and Secrets).";
-      else ia.estado.textContent = "Listo: escribe la clave, revisa el prompt y genera.";
+      if (st.provisional && !ia.clave.value) ia.clave.value = "123";
+      if (!st.listo) ia.estado.textContent = "Falta la llave OPENAI_API_KEY en Cloudflare (Worker nogalera → Settings → Variables and Secrets)." + (st.provisional ? " La clave provisional es 123." : "");
+      else ia.estado.textContent = "Listo: revisa el prompt y genera." + (st.provisional ? " Clave provisional: 123 (pon el secreto RENDER_CLAVE para cambiarla)." : "");
     }).catch(function () { ia.estado.textContent = "El endpoint /api/render-ia no responde (¿el Worker ya se publicó con worker/index.js?)."; });
     function promptIA() { if (!esc) return; var base = PROMPTS_IA[esc.id] || ""; var h = { dia: "a media mañana", tarde: "en la tarde", atardecer: "al atardecer", noche: "de noche" }[selHora.value] || ""; ia.prompt.value = base + (h ? " Hora: " + h + "." : ""); }
     selEsc.addEventListener("change", function () { setTimeout(promptIA, 400); }); selHora.addEventListener("change", promptIA);

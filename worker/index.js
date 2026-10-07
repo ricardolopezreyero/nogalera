@@ -1,7 +1,7 @@
 /* La Nogalera · Worker de Cloudflare: sirve el sitio estático (public/) y expone tres rutas:
      POST /api/render-ia   renders fotorrealistas con el modelo de imágenes de OpenAI (secretos OPENAI_API_KEY y RENDER_CLAVE)
      POST /api/prospecto   guarda los datos que deja un cliente en /inicio/ (base de datos: Durable Object `Prospectos` con SQLite, sin nada que crear)
-     GET  /api/prospectos  descarga los prospectos (?clave=ADMIN_CLAVE, &formato=csv): la clave es el secreto ADMIN_CLAVE (o RENDER_CLAVE si no hay)
+     GET  /api/prospectos  descarga los prospectos (?clave=ADMIN_CLAVE, &formato=csv): la clave es el secreto ADMIN_CLAVE (o RENDER_CLAVE si no hay; sin secretos, "123")
    Opcional: con los secretos RESEND_API_KEY y AVISO_CORREO, cada prospecto nuevo se avisa por correo (API de Resend). */
 import { DurableObject } from "cloudflare:workers";
 
@@ -15,6 +15,10 @@ export default {
   }
 };
 
+/* Clave provisional mientras no se ponen los secretos ADMIN_CLAVE y RENDER_CLAVE en Cloudflare: en cuanto existen, mandan ellos. */
+const CLAVE_PROVISIONAL = "123";
+const claveRender = env => env.RENDER_CLAVE || CLAVE_PROVISIONAL;
+const claveAdmin = env => env.ADMIN_CLAVE || env.RENDER_CLAVE || CLAVE_PROVISIONAL;
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 
 /* ---------- prospectos: la base de datos ---------- */
@@ -76,9 +80,7 @@ async function avisar(env, p, n, repetido) {
 
 async function listarProspectos(request, env) {
   const url = new URL(request.url);
-  const clave = env.ADMIN_CLAVE || env.RENDER_CLAVE;
-  if (!clave) return json({ error: "Falta el secreto ADMIN_CLAVE (o RENDER_CLAVE) en el Worker." }, 503);
-  if ((url.searchParams.get("clave") || request.headers.get("x-clave")) !== clave) return json({ error: "Clave incorrecta" }, 401);
+  if ((url.searchParams.get("clave") || request.headers.get("x-clave")) !== claveAdmin(env)) return json({ error: "Clave incorrecta" }, 401);
   if (!env.PROSPECTOS) return json({ error: "Falta la base de datos (binding PROSPECTOS)." }, 503);
   const stub = env.PROSPECTOS.get(env.PROSPECTOS.idFromName("todos"));
   const filas = await stub.listar();
@@ -93,14 +95,13 @@ async function listarProspectos(request, env) {
 
 /* ---------- renders con IA ---------- */
 async function renderIA(request, env) {
-  if (request.method === "GET") return json({ listo: !!env.OPENAI_API_KEY, clave: !!env.RENDER_CLAVE });
+  if (request.method === "GET") return json({ listo: !!env.OPENAI_API_KEY, clave: true, provisional: !env.RENDER_CLAVE });
   if (request.method !== "POST") return json({ error: "Usa POST" }, 405);
   if (!env.OPENAI_API_KEY) return json({ error: "Falta el secreto OPENAI_API_KEY en el Worker (Settings → Variables and Secrets, o npx wrangler secret put OPENAI_API_KEY)." }, 503);
-  if (!env.RENDER_CLAVE) return json({ error: "Falta el secreto RENDER_CLAVE en el Worker: es la contraseña que pide el creador para generar." }, 503);
   let cuerpo;
   try { cuerpo = await request.json(); } catch (e) { return json({ error: "Cuerpo inválido" }, 400); }
   const clave = request.headers.get("x-clave") || cuerpo.clave || "";
-  if (clave !== env.RENDER_CLAVE) return json({ error: "Clave incorrecta" }, 401);
+  if (clave !== claveRender(env)) return json({ error: "Clave incorrecta" }, 401);
   const prompt = String(cuerpo.prompt || "").slice(0, 6000);
   if (prompt.length < 20) return json({ error: "Falta el prompt" }, 400);
   const modelo = /^[a-z0-9.-]+$/i.test(cuerpo.modelo || "") ? cuerpo.modelo : "gpt-image-2";
