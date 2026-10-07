@@ -1,7 +1,7 @@
 [
  {
   "id": "calle",
-  "prismas": 2869,
+  "prismas": 2734,
   "titulo": "La calle bajo los nogales",
   "porque": "Es lo que nadie más puede ofrecer en Torreón: una calle de casas nuevas ya sombreada por nogales de 10 m. Vende el lugar antes que la casa.",
   "hora": "dia",
@@ -67,7 +67,7 @@
  },
  {
   "id": "casa",
-  "prismas": 2096,
+  "prismas": 2142,
   "titulo": "Modelo Nogal · fachada Horizonte",
   "porque": "La casa que se vende: 4 recámaras con baño, 243 m², y la fachada que la hace distinta de la de al lado. Con la vecina de ladrillo y la de duela se ve que no hay dos iguales.",
   "hora": "tarde",
@@ -133,7 +133,7 @@
  },
  {
   "id": "aerea",
-  "prismas": 21606,
+  "prismas": 21432,
   "titulo": "La Nogalera desde el aire",
   "porque": "Las 1,105 casas entre 1,943 nogales, el bulevar, el club, los parques y la pista alrededor: el comprador entiende el tamaño y el orden del lugar en una sola imagen.",
   "hora": "tarde",
@@ -265,7 +265,7 @@
  },
  {
   "id": "bulevar",
-  "prismas": 3009,
+  "prismas": 2977,
   "titulo": "Bulevar Nogal",
   "porque": "La calle principal con camellón que es jardín de lluvia y sendero: el paseo del fraccionamiento, donde se camina, se corre y se saluda. Da la escala de un lugar con vida de barrio.",
   "hora": "dia",
@@ -322,7 +322,7 @@
  },
  {
   "id": "parque",
-  "prismas": 2677,
+  "prismas": 2701,
   "titulo": "Parque Garza, bajo la huerta",
   "porque": "Un parque que ya tiene árboles grandes el día que se inaugura: pérgola, juegos, bancas, un sendero circular y la pista cruzándolo, con las casas enfrente. Vende familia: niños, sombra y seguridad a la vista.",
   "hora": "dia",
@@ -643,7 +643,7 @@
  },
  {
   "id": "noche",
-  "prismas": 2711,
+  "prismas": 2820,
   "titulo": "La calle de noche",
   "porque": "Los nogales iluminados desde abajo, los arbotantes y las ventanas encendidas: la seguridad y el cuidado se ven. Nadie en Torreón vende una calle así de noche.",
   "hora": "noche",
@@ -700,7 +700,7 @@
  },
  {
   "id": "fachadas",
-  "prismas": 2202,
+  "prismas": 2276,
   "titulo": "Las nueve fachadas",
   "porque": "Una cuadra con las nueve fachadas seguidas, de frente y en escorzo, de cerca y de lejos: la imagen de concurso de cada una.",
   "hora": "tarde",
@@ -919,7 +919,7 @@
  },
  {
   "id": "completo",
-  "prismas": 178769,
+  "prismas": 179553,
   "titulo": "El fraccionamiento completo",
   "porque": "Todo el modelo con la geometría real: cada casa con su fachada, los nogales en su sitio, luminarias, parques, club, acceso y barda. Escena pesada: para el render fotorrealista.",
   "hora": "tarde",

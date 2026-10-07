@@ -45,7 +45,7 @@ for nombre, uc in U_CRUCE.items():
     E.suelo(uc - 3.5, a, uc + 3.5, b, -0.47, COL["asfalto"])
     for s_ in (-1, 1): E.caja(uc + s_ * 3.5 - (0.15 if s_ < 0 else 0), a, -0.47, 0.15, b - a, 0.16, COL["guarnicion"], "suelo")
 for f in capa("bulevar"): E.prisma(poly(f), -0.4, 0.05, COL["banqueta"], "suelo", "suelo")
-for f in capa("arroyo"): E.prisma(poly(f), -0.47, 0.07, COL["asfalto"], "suelo", "suelo")
+for f in capa("arroyo"): E.prisma(poly(f), -0.405, 0.06, COL["asfalto"], "suelo", "suelo")
 for f in capa("sendero"): E.prisma(poly(f), -0.42, 0.04, COL["grava"], "suelo", "suelo")
 for f in capa("sendero"):
     u0, u1, v0, v1 = caja_de(poly(f)); vc = (v0 + v1) / 2
