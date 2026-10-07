@@ -338,3 +338,14 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .switch input { width: 1.1rem; height: 1.1rem; margin: 0; accent-color: var(--tinta); }
 .switch span { color: var(--gris); font-size: 0.8125rem; }
 .doc.con .v-sin, .doc.sin .v-con { display: none; }
+
+/* acceso y barda */
+svg .carrilc { fill: #e3e3e3; stroke: #000; stroke-width: 0.6; } svg .barda { stroke: #000; stroke-width: 5; } svg .reja { stroke: #000; stroke-width: 3; stroke-dasharray: 7 3; }
+svg .nombre { fill: #000; } svg .acopio { fill: #777; } svg .lockers { fill: #fff; stroke: #000; stroke-width: 1; } svg .nogalp { fill: none; stroke: #000; stroke-width: 0.6; stroke-dasharray: 2 2; }
+svg .bolardo { fill: #000; } svg .torn { fill: #000; } svg .cam { fill: #fff; stroke: #000; stroke-width: 1.2; } svg .rfid { stroke: #000; stroke-width: 1.5; stroke-dasharray: 2 2; }
+svg .portico { stroke: #000; stroke-width: 6; } svg .mesar { fill: url(#mesa); stroke: #000; stroke-width: 0.8; }
+svg .casetaA { fill: #bbb; stroke: #000; stroke-width: 0.8; } svg .vidrioA { fill: #e8e8e8; } svg .muroA { fill: #e6e6e6; stroke: #000; stroke-width: 1; } svg .muroC { fill: #e6e6e6; stroke: #000; stroke-width: 1; }
+svg .pilastra, svg .castillo, svg .pilar, svg .trabe { fill: #444; } svg .remate { fill: #000; } svg .barrote { stroke: #000; stroke-width: 1.2; } svg .cerca { stroke: #000; stroke-width: 0.7; }
+svg .nombreA { font-size: 22px; font-weight: 700; letter-spacing: 0.12em; fill: #000; } svg .trabeT { font-size: 13px; font-weight: 700; letter-spacing: 0.16em; fill: #fff; }
+svg .plumaA { stroke: #000; stroke-width: 2.5; } svg .cimiento { fill: #999; stroke: #000; stroke-width: 0.8; } svg .dala, svg .dalaA { fill: #555; } svg .pistaC { fill: #fff; stroke: #000; stroke-width: 0.6; } svg .reveal { fill: #d2d2d2; }
+.alzado-acceso svg .a { font-size: 20px; fill: #333; } .alzado-acceso svg .r { font-size: 24px; font-weight: 700; } .alzado-acceso svg .c { font-size: 17px; } .alzado-acceso svg .nombreA { font-size: 30px; } .alzado-acceso svg .trabeT { font-size: 18px; }

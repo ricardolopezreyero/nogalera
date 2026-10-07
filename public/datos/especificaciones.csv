@@ -38,9 +38,20 @@ Electricidad,Transformadores trifásicos,"Pedestal trifásico para club, acceso 
 Electricidad,Aportación y obras de conexión CFE,Por confirmar con la factibilidad de CFE,1,lote,6000000,6000000
 Alumbrado,Arbotantes de calle,Ya contados en la capa de iluminación (los de paisaje y acceso se suman aparte),427,pza,26000,11102000
 Telecomunicaciones,Ductería,"3 ductos PAD Ø 2"" (2 para operadores y 1 de reserva) bajo la banqueta norte, registro cada 50 m; red abierta a cualquier operador de fibra",12825.0,m,210,2693251
-Barda y accesos,Barda perimetral,"Block de concreto 15 cm, 2.8 m de alto, castillos cada 3 m, aplanado y pintura; cimentación corrida",3261.7,m,4800,15656045
-Barda y accesos,Salida de emergencia,"Portón de 6 m con cerradura de bomberos, a la calle del norte",1,pza,180000,180000
+Barda y accesos,Muro de identidad (frente a la calzada),"3.0 m: block de concreto 15 cm aplanado y pintado, pilastras de 40 × 40 cada 6 m, remate de concreto, dala intermedia y de cerramiento, cimiento corrido de 60 × 40 cm; el nombre del fraccionamiento en letras de acero junto al acceso",678.5,m,6800,4613588
+Barda y accesos,Reja junto al acceso,"40 m a cada lado del acceso: reja de acero de 3.0 m sobre murete de 60 cm, barrotes verticales cada 12 cm; deja ver los nogales de la plaza desde la calzada",80.0,m,9500,760000
+Barda y accesos,"Muro ciego (norte, oriente y detrás del frente comercial)","3.0 m: block de concreto 15 cm, castillos K1 cada 3 m, dala intermedia a 1.5 m y dala de cerramiento 15 × 20, cimiento corrido de 60 × 40 cm, aplanado por fuera y pintura; vertedor del vaso de tormentas en el muro norte",2503.2,m,5200,13016677
+Barda y accesos,Cerca electrificada,"6 hilos sobre la barda (0.6 m), energizadores por sector de 500 m con batería y alarma a la caseta",3261.7,m,380,1239437
+Barda y accesos,Cámaras perimetrales,"Cámara fija con analítica de cruce de línea e infrarrojo, en poste de 6 m del lado de la pista, cada 60 m; fibra a la caseta",54,pza,42000,2268000
+Barda y accesos,Pórtico y muro de identidad del acceso,"Pórtico de concreto sobre los carriles (5.5 m libres para bomberos y mudanzas), muro del nombre con letras de acero iluminadas, jardín del desierto y bolardos fijos frente a las casetas",1,lote,4200000,4200000
+Barda y accesos,Casetas de control,"Caseta principal de 3 × 6 m (baño, lockers, monitoreo con 2 monitores, cristal laminado antiimpacto, aire) y caseta de salida de 2 × 3 m",1,lote,2600000,2600000
+Barda y accesos,Control de acceso,"6 plumas rápidas con lazo inductivo, 6 lectores RFID UHF (tag de parabrisas, lectura a 10 m), 6 cámaras de placas (LPR), interfón y QR de la app en los carriles de visitas, torniquete de cuerpo completo en la puerta peatonal, UPS",1,lote,2400000,2400000
+Barda y accesos,Cámaras y monitoreo del acceso,"12 cámaras en la plaza, carriles, casetas y estacionamiento; grabación de 30 días; monitor en la caseta y en la administración",1,lote,650000,650000
+Barda y accesos,Planta de emergencia del acceso,"30 kVA con transferencia automática: plumas, casetas, cámaras, cerca y alumbrado del acceso siguen con la luz cortada",1,pza,520000,520000
+Barda y accesos,Lockers de paquetería,"24 lockers inteligentes en la plaza, antes de las plumas: el repartidor no entra",1,lote,380000,380000
+Barda y accesos,Carril de desaceleración y bahía de vuelta,"En la calzada, frente al acceso: carril de desaceleración de 60 m, bahía de vuelta izquierda de 40 m y carril de aceleración de 40 m (proyecto vial, con permiso municipal; por confirmar con el derecho de vía)",1,lote,3100000,3100000
+Barda y accesos,Acceso de obra temporal,"Portón de 8 m con caseta provisional en la calle del norte, en el mismo claro de la salida de emergencia: los camiones de la obra y las mudanzas de las etapas 1 a 4 no pasan por el acceso principal",1,pza,450000,450000
 Barda y accesos,Acopio de basura y reciclaje,"Cuarto ventilado con 6 contenedores y lavado, junto a la salida y antes de las plumas: el camión no entra",1,pza,650000,650000
-Indirectos,Proyecto ejecutivo y estudios,"Topografía, mecánica de suelos, prueba de infiltración, proyecto ejecutivo de todas las redes y trámites",1,global,11080787,11080787
-Indirectos,Supervisión y laboratorio,"Control de calidad de concretos, compactaciones y pruebas de hermeticidad y presión",1,global,8864630,8864630
-Indirectos,Imprevistos,5 % sobre la obra,1,global,22161574,22161574
+Indirectos,Proyecto ejecutivo y estudios,"Topografía, mecánica de suelos, prueba de infiltración, proyecto ejecutivo de todas las redes y trámites",1,global,11589828,11589828
+Indirectos,Supervisión y laboratorio,"Control de calidad de concretos, compactaciones y pruebas de hermeticidad y presión",1,global,9271863,9271863
+Indirectos,Imprevistos,5 % sobre la obra,1,global,23179657,23179657

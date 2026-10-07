@@ -29,7 +29,7 @@ ha = lambda m2: f"{m2/1e4:,.1f} ha"
 # ======================= estructura =======================
 SECCIONES = [
     ("", "Resumen", "01"), ("terreno", "El terreno", "02"), ("plan", "Plan maestro", "03"), ("calles", "Calles y direcciones", "04"),
-    ("acceso", "Acceso", "05"), ("casa", "Casa Modelo Nogal", "06"), ("fachadas", "Fachadas", "07"), ("servicios", "Servicios", "08"), ("agua", "Agua: pozos, red y presión", "09"),
+    ("acceso", "Acceso y barda", "05"), ("casa", "Casa Modelo Nogal", "06"), ("fachadas", "Fachadas", "07"), ("servicios", "Servicios", "08"), ("agua", "Agua: pozos, red y presión", "09"),
     ("iluminacion", "Iluminación", "10"), ("pista", "Pista y gimnasio", "11"), ("numeros", "Números y fideicomiso", "12"), ("porque", "Por qué $522 por m²", "13"), ("etapas", "Etapas y siguientes pasos", "14"),
     None, ("nogaleras", "Nogaleras de La Laguna", "A"), ("datos", "Datos para descargar", "B"),
 ]
@@ -222,7 +222,7 @@ def resumen():
     tarj = [("terreno", "El terreno", f"{ha(GROSS)} de nogalera en La Paz, al oriente de Torreón; {f0(R['arboles'])} nogales mapeados uno por uno."),
             ("plan", "Plan maestro", f"Mapa interactivo con los {f0(N)} lotes, calles, club, parques, nogales, iluminación y redes."),
             ("calles", "Calles y direcciones", "Nombres, numeración, secciones de calle y bulevar, cruces elevados."),
-            ("acceso", "Acceso", "Entrada calculada para la hora pico: carriles, casetas, filas y esperas."),
+            ("acceso", "Acceso y barda", "La entrada en seis zonas con plano y alzado, calculada para la hora pico, y la barda por tramos con su estructura, cerca y cámaras."),
             ("casa", "Casa Modelo Nogal", "Modelo 3D a color para girar y destapar, plantas amuebladas, azotea, corte, conjunto y fachadas: todos los planos."),
             ("fachadas", "Fachadas", "Nueve fachadas distintas sobre la misma casa, y cómo se reparten en cada cuadra."),
             ("servicios", "Servicios", "Drenaje pluvial y sanitario, planta de tratamiento, agua, luz y fibra, con especificaciones y presupuesto."),
@@ -362,44 +362,6 @@ def calles():
 """
     pagina("calles", "Calles y direcciones", "04 · Calles y direcciones", "Ocho calles largas con nombre de árbol, nueve transversales con nombre de ave y una dirección de una palabra y un número.", cuerpo,
            [("nombres", "Nombres y direcciones"), ("numeros", "Cómo van los números"), ("secciones", "Secciones de calle"), ("presupuesto", "Lo que cuestan")])
-
-# ======================= ACCESO =======================
-def acceso():
-    man, tar = AC.man, AC.tar
-    def fila(t, d):
-        if d.get("espera_s") is None: return (t, f"{d['rho']*100:.0f} %", "<b>se satura</b>", "la fila no deja de crecer")
-        return (t, f"{d['rho']*100:.0f} %", f"{d['espera_s']} s", f"{d['fila95']} autos · {d['fila95_m']} m")
-    cuerpo = f"""
-{kpis([("Entrada", "2 + 2 carriles", "residentes con tag · visitas con registro"), ("Salida", "1 + 1 carriles", "pluma arriba en la hora pico"), ("Casetas", f"a {AC.CASETA_V} m", "la fila queda dentro del terreno"),
-       ("Tarde, hora pico", f"{tar['entran_h']} autos/h", "entran"), ("Mañana, hora pico", f"{man['salen_h']} autos/h", "salen"), ("Espera del residente", f"≈ {tar['entrada_residentes_2_carriles']['espera_s']} s", "al entrar en la tarde"), ("Ancho del acceso", f"{AC.ANCHO[1]-AC.ANCHO[0]:.0f} m", "con islas y banqueta")])}
-<h2 id="plano">Plano</h2>
-<div class="scroll sec plano-acceso">{AC.plano()}</div>
-<ul>
-<li><b>Se maneja por la derecha.</b> Los residentes entran por los 2 carriles del centro, con tag, y la pluma abre sola. Las visitas van por los 2 carriles de la derecha y se registran en la caseta, que queda entre los dos grupos de carriles.</li>
-<li><b>Las plumas van a {AC.CASETA_V} m de la calle.</b> En el peor cuarto de hora de la tarde, 95 de cada 100 veces la fila es de {tar['entrada_residentes_2_carriles']['fila95']} autos o menos por carril de residentes y de {tar['entrada_visitas_2_carriles']['fila95']} o menos por carril de visitas (hasta {tar['entrada_visitas_2_carriles']['fila95_m']} m): nunca llega a la calle ni tapa la entrada del súper.</li>
-<li><b>Retorno antes de las plumas:</b> la visita que no está registrada se regresa por el hueco de las islas sin dar reversa.</li>
-<li><b>El súper y su estacionamiento quedan antes de las plumas.</b> Sus clientes de afuera no pasan por la caseta; los vecinos llegan caminando por la puerta peatonal. El acopio de basura también queda afuera: el camión no entra.</li>
-<li><b>Salida 1 + 1.</b> De 6:30 a 9:00 la pluma de residentes se queda arriba y una cámara lee las placas. El resto del día abre con el tag.</li>
-<li>Pasando las plumas, la calle vuelve a ser de 2 carriles, como el resto del fraccionamiento.</li>
-</ul>
-<h2 id="calculo">Cálculo de hora pico</h2>
-<p>Viajes por casa en la hora pico: 0.85 en la mañana (75 % salen) y 1.0 en la tarde (63 % entran): tasas de tráfico residencial de casas solas, un poco arriba por la ida a la escuela. Se usa el cuarto de hora más cargado (factor 0.85). Visitas, servicios y apps: 15 % de lo que entra y 8 % de lo que sale. Las cuentas son por carril, con un modelo de colas conservador.</p>
-<h3>Tarde · entrada ({tar['entran_h']} autos/h)</h3>
-{tabla([fila(f"Residentes, 1 carril ({tar['res_entran']}/h)", tar['entrada_residentes_1_carril']), fila("Residentes, <b>2 carriles</b>", tar['entrada_residentes_2_carriles']),
-        fila(f"Visitas, 1 carril ({tar['vis_entran']}/h)", tar['entrada_visitas_1_carril']), fila("Visitas, <b>2 carriles</b>", tar['entrada_visitas_2_carriles'])], ["", "Ocupación", "Espera media", "Fila (95 %)"])}
-<h3>Mañana · salida ({man['salen_h']} autos/h)</h3>
-{tabla([fila(f"Residentes, 1 carril con pluma ({man['res_salen']}/h)", man['salida_residentes_pluma']), fila("Residentes, 1 carril, <b>pluma arriba en hora pico</b>", man['salida_residentes_libre']),
-        fila(f"Visitas, 1 carril ({man['vis_salen']}/h)", man['salida_visitas_1_carril'])], ["", "Ocupación", "Espera media", "Fila (95 %)"])}
-<p>Capacidad por carril: residentes con tag, {AC.CAP['res_entra']} autos/h (6 s por auto); visitas con registro en caseta, {AC.CAP['vis_entra_registro']}/h (40 s), o {AC.CAP['vis_entra_qr']}/h con QR de la app del fraccionamiento (15 s); salida con pluma, {AC.CAP['res_sale_pluma']}/h; con la pluma arriba, {AC.CAP['res_sale_libre']}/h. Cada auto ocupa {AC.AUTO_M} m de fila.</p>
-<ul>
-<li><b>Un solo carril de residentes no alcanza:</b> en la tarde llegan {tar['res_entran']} autos/h a un carril que da para {AC.CAP['res_entra']}, y la fila nunca se vacía. Con 2 carriles se espera unos segundos.</li>
-<li><b>Visitas: 2 carriles.</b> Uno solo se satura si cada registro tarda 40 s. Con QR bastaría uno; el segundo queda para paquetería y apps.</li>
-<li><b>La salida de la mañana es el punto fino:</b> con pluma, la fila llega a {man['salida_residentes_pluma']['fila95_m']} m dentro del fraccionamiento; con la pluma arriba baja a {man['salida_residentes_libre']['fila95_m']} m.</li>
-</ul>
-<p class="nota">Por confirmar: el derecho de vía entre el terreno y la Calzada José Vasconcelos (≈ 30 m) y el permiso de conexión con el municipio. La vuelta a la izquierda para salir a la calzada es lo que más puede frenar la salida; conviene pedir semáforo o glorieta en ese cruce. La salida de emergencia va en el lado norte (ver <a href="/servicios/#barda">Servicios</a>).</p>
-"""
-    pagina("acceso", "Acceso", "05 · Acceso", "Dos carriles de residentes y dos de visitas para entrar, uno y uno para salir, calculados para la hora pico de las 1,105 casas.".replace("1,105", f0(N)), cuerpo,
-           [("plano", "Plano"), ("calculo", "Cálculo de hora pico")])
 
 # ======================= CASA =======================
 def casa():
@@ -603,6 +565,7 @@ def servicios():
 exec(open(os.path.join(AQUI, "sitio_extra.py"), encoding="utf-8").read())
 exec(open(os.path.join(AQUI, "sitio_porque.py"), encoding="utf-8").read())
 exec(open(os.path.join(AQUI, "sitio_agua.py"), encoding="utf-8").read())
+exec(open(os.path.join(AQUI, "sitio_acceso.py"), encoding="utf-8").read())
 
 # ======================= NÚMEROS Y FIDEICOMISO =======================
 def esquema_fideicomiso(con=False):

@@ -144,13 +144,13 @@
       pluvial: ["plu_parque", "plu_jardin", "plu_cajas", "vaso", "plu_zanja", "plu_flujo", "plu_flujo_punta", "plu_pozo"],
       sanitario: ["ptar_planta", "san_atarjea", "san_colector", "san_pozo", "san_llegada"],
       agua: ["ptar_planta", "agua_tanque", "agua_pozo", "agua_conduccion", "morada", "agua_linea", "hidrante", "agua_nodo"],
-      luz: ["acopio", "mesa", "emergencia", "trafo", "trafo_esp", "emergencia_p"]
+      luz: ["barda_tramo", "camara_perim", "acopio", "mesa", "emergencia", "trafo", "trafo_esp", "emergencia_p", "acceso_obra"]
     };
     var NOTA = {
       pluvial: "Las calles bajan a los cruces (bocas de tormenta y pozos de absorción) y de ahí al bulevar. El camellón es un jardín de lluvia; los parques tienen un bordo de 30 cm; hay zanja bajo la pista, cajas bajo los estacionamientos y un vaso en la punta oriente. El agua de La Nogalera se queda en La Nogalera.",
       sanitario: "Todo por gravedad hacia la punta oriente, el punto más bajo: atarjeas de 20 cm en cada calle, colector bajo la pista y la calle Tórtola, pozos de visita en cada cruce y a no más de 100 m, y planta de tratamiento.",
       agua: "Dos pozos (cuadros rayados) mandan a la cisterna por líneas de 6\" (punto y raya); de ahí, bombeo a presión constante a la red en circuitos: 8\" por el bulevar, 6\" en las transversales, 4\" en las calles. Los círculos son los nodos con su presión; hidrantes a tresbolillo. Punteado: agua tratada de la planta, que riega los nogales.",
-      luz: "Transformadores de pedestal (uno cada ≈ 16 casas) y trifásicos para club, acceso y planta; cruces elevados; salida de emergencia al norte y acopio de basura antes de las plumas."
+      luz: "Transformadores de pedestal (uno cada ≈ 16 casas) y trifásicos para club, acceso y planta; cruces elevados; la barda por tramos (gruesa: muro de identidad) con sus cámaras perimetrales cada 60 m; acceso de obra y salida de emergencia al norte; acopio de basura antes de las plumas."
     };
     function estiloServ(f) {
       var c = f.properties.capa, d = f.properties.d || 0;
@@ -170,6 +170,7 @@
         case "morada": return { color: "#000", weight: d >= 100 ? 3 : 2, dashArray: "6 4" };
         case "mesa": return { color: "#000", weight: 1, fillColor: "#000", fillOpacity: 1 };
         case "emergencia": return { color: "#000", weight: 6 };
+        case "barda_tramo": return { color: "#000", weight: f.properties.lado === "sur" ? 5 : 2.5, dashArray: f.properties.lado === "poniente" ? "8 4" : null };
       }
       return { color: "#000", weight: 1 };
     }
@@ -181,10 +182,12 @@
       else if (c === "hidrante") { o.radius = 3.6; o.fillColor = "#000"; }
       else if (c === "agua_nodo") { o.radius = f.properties.fuente ? 6 : 3.2; o.fillColor = "#fff"; o.weight = 1.2; }
       else if (c === "trafo") { o.radius = 3; o.fillColor = "#000"; o.weight = 0; }
+      else if (c === "camara_perim") { o.radius = 2.4; o.fillColor = "#fff"; o.weight = 1.2; }
+      else if (c === "acceso_obra") { o.radius = 7; o.fillColor = "#000"; o.color = "#fff"; o.weight = 2; }
       else { o.radius = 6; o.fillColor = "#000"; o.color = "#fff"; o.weight = 2; }
       return L.circleMarker(ll, o);
     }
-    var NOMBRES = { plu_pozo: "Boca de tormenta y pozo de absorción", san_pozo: "Pozo de visita", hidrante: "Hidrante", trafo: "Transformador pedestal 75 kVA", mesa: "Cruce elevado" };
+    var NOMBRES = { plu_pozo: "Boca de tormenta y pozo de absorción", san_pozo: "Pozo de visita", hidrante: "Hidrante", trafo: "Transformador pedestal 75 kVA", mesa: "Cruce elevado", camara_perim: "Cámara perimetral (poste de 6 m, del lado de la pista)" };
     function verServ(g) {
       if (capaServ) { map.removeLayer(capaServ); capaServ = null; }
       $("map").classList.toggle("serv", !!g);

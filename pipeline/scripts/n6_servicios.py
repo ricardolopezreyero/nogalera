@@ -440,6 +440,31 @@ v_em = tramo_v(x_em)[1]
 F("emergencia", LineString([(x_em, v_em - 2), (x_em, v_em + TRAIL + 6)]), nombre=f"Salida de emergencia (calle {CRUCES[cruces.index(x_em)]})")
 F("emergencia_p", Point(x_em, v_em + TRAIL / 2), nombre=f"Salida de emergencia · {CRUCES[cruces.index(x_em)]}")
 barda = R.exterior.length - (ANCHO[1] - ANCHO[0])
+# tramos de la barda por orientación: sur = calzada (muro de identidad), poniente = frente comercial (Espinoza), norte = calle del norte, oriente = colindancia
+_ext = list(R.exterior.coords); _b = R.bounds; _umid, _vmid = (_b[0] + _b[2]) / 2, (_b[1] + _b[3]) / 2
+BARDA_TRAMOS = {"sur": 0.0, "poniente": 0.0, "norte": 0.0, "oriente": 0.0}
+def _lado(a, b):
+    mu, mv = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
+    if mv < _b[1] + 60: return "sur"
+    if mv > _b[3] - 60: return "norte"
+    return "poniente" if mu < _umid else "oriente"
+for _a, _b2 in zip(_ext[:-1], _ext[1:]):
+    L_ = math.dist(_a, _b2)
+    if L_ < 1: continue
+    lado = _lado(_a, _b2); BARDA_TRAMOS[lado] += L_
+    F("barda_tramo", LineString([_a, _b2]), lado=lado, nombre={"sur": "Muro de identidad · frente a la calzada", "poniente": "Muro ciego · detrás del frente comercial (Espinoza)", "norte": "Muro ciego · calle del norte", "oriente": "Muro ciego · colindancia"}[lado], largo=round(L_))
+BARDA_TRAMOS["sur"] -= (ANCHO[1] - ANCHO[0])
+REJA_ACCESO = 80.0                                               # 40 m de reja a cada lado del acceso: se ven los nogales desde la calzada
+# cámaras perimetrales cada 60 m sobre poste de 6 m, del lado de la pista; ninguna en el claro del acceso
+CAM_CADA = 60.0; camaras_perim = []
+_s = 0.0
+while _s < R.exterior.length:
+    pt = R.exterior.interpolate(_s)
+    if not (c_pri + ANCHO[0] - 10 < pt.x < c_pri + ANCHO[1] + 10 and pt.y < v_pri + 15): camaras_perim.append((pt.x, pt.y))
+    _s += CAM_CADA
+for p in camaras_perim: F("camara_perim", Point(p))
+F("acceso_obra", Point(x_em, v_em + TRAIL / 2), nombre=f"Acceso de obra (temporal, etapas 1 a 4) y salida de emergencia · {CRUCES[cruces.index(x_em)]}")
+print("barda", {k: round(v) for k, v in BARDA_TRAMOS.items()}, "cámaras perimetrales", len(camaras_perim))
 
 # ======================= cantidades =======================
 A_pav = float(pavimento.area); A_pav_bul = float(arroyos_bul.area + sum(g.area for g in acc_calles))
@@ -491,8 +516,19 @@ partida("Electricidad", "Transformadores trifásicos", "Pedestal trifásico para
 partida("Electricidad", "Aportación y obras de conexión CFE", "Por confirmar con la factibilidad de CFE", 1, "lote", 6_000_000)
 partida("Alumbrado", "Arbotantes de calle", "Ya contados en la capa de iluminación (los de paisaje y acceso se suman aparte)", luz["cuenta"]["calle"], "pza", TIPOS["calle"][1])
 partida("Telecomunicaciones", "Ductería", "3 ductos PAD Ø 2\" (2 para operadores y 1 de reserva) bajo la banqueta norte, registro cada 50 m; red abierta a cualquier operador de fibra", L_calles_tot, "m", 210)
-partida("Barda y accesos", "Barda perimetral", "Block de concreto 15 cm, 2.8 m de alto, castillos cada 3 m, aplanado y pintura; cimentación corrida", barda, "m", 4800)
-partida("Barda y accesos", "Salida de emergencia", "Portón de 6 m con cerradura de bomberos, a la calle del norte", 1, "pza", 180000)
+partida("Barda y accesos", "Muro de identidad (frente a la calzada)", "3.0 m: block de concreto 15 cm aplanado y pintado, pilastras de 40 × 40 cada 6 m, remate de concreto, dala intermedia y de cerramiento, cimiento corrido de 60 × 40 cm; el nombre del fraccionamiento en letras de acero junto al acceso", BARDA_TRAMOS["sur"] - REJA_ACCESO, "m", 6800)
+partida("Barda y accesos", "Reja junto al acceso", "40 m a cada lado del acceso: reja de acero de 3.0 m sobre murete de 60 cm, barrotes verticales cada 12 cm; deja ver los nogales de la plaza desde la calzada", REJA_ACCESO, "m", 9500)
+partida("Barda y accesos", "Muro ciego (norte, oriente y detrás del frente comercial)", "3.0 m: block de concreto 15 cm, castillos K1 cada 3 m, dala intermedia a 1.5 m y dala de cerramiento 15 × 20, cimiento corrido de 60 × 40 cm, aplanado por fuera y pintura; vertedor del vaso de tormentas en el muro norte", BARDA_TRAMOS["norte"] + BARDA_TRAMOS["oriente"] + BARDA_TRAMOS["poniente"], "m", 5200)
+partida("Barda y accesos", "Cerca electrificada", "6 hilos sobre la barda (0.6 m), energizadores por sector de 500 m con batería y alarma a la caseta", barda, "m", 380)
+partida("Barda y accesos", "Cámaras perimetrales", "Cámara fija con analítica de cruce de línea e infrarrojo, en poste de 6 m del lado de la pista, cada 60 m; fibra a la caseta", len(camaras_perim), "pza", 42000)
+partida("Barda y accesos", "Pórtico y muro de identidad del acceso", "Pórtico de concreto sobre los carriles (5.5 m libres para bomberos y mudanzas), muro del nombre con letras de acero iluminadas, jardín del desierto y bolardos fijos frente a las casetas", 1, "lote", 4_200_000)
+partida("Barda y accesos", "Casetas de control", "Caseta principal de 3 × 6 m (baño, lockers, monitoreo con 2 monitores, cristal laminado antiimpacto, aire) y caseta de salida de 2 × 3 m", 1, "lote", 2_600_000)
+partida("Barda y accesos", "Control de acceso", "6 plumas rápidas con lazo inductivo, 6 lectores RFID UHF (tag de parabrisas, lectura a 10 m), 6 cámaras de placas (LPR), interfón y QR de la app en los carriles de visitas, torniquete de cuerpo completo en la puerta peatonal, UPS", 1, "lote", 2_400_000)
+partida("Barda y accesos", "Cámaras y monitoreo del acceso", "12 cámaras en la plaza, carriles, casetas y estacionamiento; grabación de 30 días; monitor en la caseta y en la administración", 1, "lote", 650000)
+partida("Barda y accesos", "Planta de emergencia del acceso", "30 kVA con transferencia automática: plumas, casetas, cámaras, cerca y alumbrado del acceso siguen con la luz cortada", 1, "pza", 520000)
+partida("Barda y accesos", "Lockers de paquetería", "24 lockers inteligentes en la plaza, antes de las plumas: el repartidor no entra", 1, "lote", 380000)
+partida("Barda y accesos", "Carril de desaceleración y bahía de vuelta", "En la calzada, frente al acceso: carril de desaceleración de 60 m, bahía de vuelta izquierda de 40 m y carril de aceleración de 40 m (proyecto vial, con permiso municipal; por confirmar con el derecho de vía)", 1, "lote", 3_100_000)
+partida("Barda y accesos", "Acceso de obra temporal", "Portón de 8 m con caseta provisional en la calle del norte, en el mismo claro de la salida de emergencia: los camiones de la obra y las mudanzas de las etapas 1 a 4 no pasan por el acceso principal", 1, "pza", 450000)
 partida("Barda y accesos", "Acopio de basura y reciclaje", "Cuarto ventilado con 6 contenedores y lavado, junto a la salida y antes de las plumas: el camión no entra", 1, "pza", 650000)
 sub = sum(x["importe"] for x in P_)
 partida("Indirectos", "Proyecto ejecutivo y estudios", "Topografía, mecánica de suelos, prueba de infiltración, proyecto ejecutivo de todas las redes y trámites", 1, "global", round(sub * 0.025))
