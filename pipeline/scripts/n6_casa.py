@@ -11,59 +11,17 @@ N_LOTES = len(_lt); N_CABE = sum(1 for p in _lt if p["ancho"] >= 12.0 and p["fon
 LOTE_W, LOTE_D = 12.7, 25.8          # lote muestra (cerca del promedio de los lotes)
 CASA_W = 9.0                         # deja 1.85 m libres a cada lado (1.5 m en lotes de 12.0 m)
 FRENTE = 5.5                         # cochera para 2 autos
-PB_D, PA_D = 11.0, 14.0              # planta baja cerrada y planta alta (vuela 3 m sobre el portal)
 RUMBO_FONDO = {"norte": 329.0, "sur": 149.0}   # hacia dónde mira el jardín según el lado de la calle
 SOL = {"ver_med": 87.9, "inv_med": 41.0, "equ_med": 64.4, "ver_puesta": 296.2, "inv_puesta": 243.8, "ver_salida": 63.8, "inv_salida": 116.2}
-PB = [("Recámara 1", 0, 0, 3.9, 3.6), ("Baño 1", 0, 3.6, 3.9, 5.4), ("Escalera y vestíbulo", 3.9, 0, 5.7, 5.4),
-      ("Cocina", 5.7, 0, 9.0, 5.4), ("Sala", 0, 5.4, 5.0, 11.0), ("Comedor", 5.0, 5.4, 9.0, 11.0)]
-PA = [("Recámara 2", 0, 0, 3.9, 3.6), ("Baño 2", 0, 3.6, 3.9, 5.4), ("Escalera", 3.9, 0, 5.7, 5.4),
-      ("Recámara 3", 5.7, 0, 9.0, 3.6), ("Baño 3", 5.7, 3.6, 9.0, 5.4), ("Estancia familiar", 0, 5.4, 9.0, 7.6),
-      ("Recámara principal", 0, 7.6, 5.4, 14.0), ("Baño y vestidor", 5.4, 7.6, 9.0, 14.0)]
-PORTAL = (0, PB_D, CASA_W, PA_D)
-area = lambda r: (r[3] - r[1]) * (r[4] - r[2])
+import n6_casa_planta as CP
+PB_D, PA_D = CP.PB_D, CP.PA_D        # planta baja cerrada y planta alta (vuela 3 m sobre el portal)
 m2_pb, m2_pa = CASA_W * PB_D, CASA_W * PA_D
-jardin = LOTE_W * LOTE_D - CASA_W * PA_D - 5.85 * FRENTE   # lo que no es casa ni cochera (incluye portal y jardín frontal)
+bx0, by0, bx1, by1 = CP.BODEGA_EXT
+m2_bodega = (bx1 - bx0) * (by1 - by0)
+jardin = LOTE_W * LOTE_D - CASA_W * PA_D - 5.85 * FRENTE - (bx1 - bx0) * 5.2   # sin casa, cochera, bodega ni patio de servicio (incluye portal y jardín frontal)
+sala_m2 = sum((c["r"][2] - c["r"][0]) * (c["r"][3] - c["r"][1]) for c in CP.PB if c["n"] in ("Sala", "Comedor", "Cocina"))
 
 def esc(t): return t.replace("&", "&amp;").replace("<", "&lt;")
-
-# ---------- planta (casa) ----------
-def planta(rooms, titulo, portal=False, S=34):
-    W, D = CASA_W, PA_D
-    pad = 26; w, h = W * S + 2 * pad, D * S + 2 * pad + 22
-    Y = lambda y: pad + 22 + (D - y) * S           # frente abajo, jardín arriba
-    X = lambda x: pad + x * S
-    o = [f'<svg viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="{esc(titulo)}">', f'<text x="{pad}" y="16" class="t">{esc(titulo)}</text>']
-    if portal:
-        x0, y0, x1, y1 = PORTAL
-        o.append(f'<rect x="{X(x0)}" y="{Y(y1)}" width="{(x1-x0)*S}" height="{(y1-y0)*S}" class="portal"/>')
-        o.append(f'<text x="{X(4.5)}" y="{Y(12.6)}" class="r" text-anchor="middle">Portal techado · 27 m²</text>')
-        o.append(f'<text x="{X(4.5)}" y="{Y(12.6)+13}" class="a" text-anchor="middle">(abajo de la recámara principal)</text>')
-    for n, x0, y0, x1, y1 in rooms:
-        o.append(f'<rect x="{X(x0)}" y="{Y(y1)}" width="{(x1-x0)*S}" height="{(y1-y0)*S}" class="cuarto"/>')
-        cx, cy = X((x0 + x1) / 2), Y((y0 + y1) / 2)
-        if n.startswith("Escalera"):
-            pass
-        else:
-            o.append(f'<text x="{cx}" y="{cy-2}" class="r" text-anchor="middle">{esc(n)}</text>')
-            o.append(f'<text x="{cx}" y="{cy+12}" class="a" text-anchor="middle">{(x1-x0):.1f} × {(y1-y0):.1f} m · {area((n,x0,y0,x1,y1)):.0f} m²</text>')
-        if n.startswith("Escalera"):
-            for k in range(1, 12):
-                yy = y0 + 0.4 + k * 0.38
-                o.append(f'<line x1="{X(x0+0.15)}" y1="{Y(yy)}" x2="{X(x1-0.15)}" y2="{Y(yy)}" class="esc"/>')
-    hd = PB_D if portal else PA_D
-    o.append(f'<rect x="{X(0)}" y="{Y(hd)}" width="{W*S}" height="{hd*S}" class="muro"/>')
-    # ventanas: frente y fondo (cristal = línea doble blanca sobre el muro)
-    def vent(x0, x1, y):
-        o.append(f'<line x1="{X(x0)}" y1="{Y(y)}" x2="{X(x1)}" y2="{Y(y)}" class="vidrio"/>')
-    if portal:
-        vent(0.6, 3.3, 0); vent(6.3, 8.4, 0); vent(0.5, 8.5, PB_D)                     # cancel corredizo a todo lo ancho al portal
-        o.append(f'<line x1="{X(4.25)}" y1="{Y(0)}" x2="{X(5.35)}" y2="{Y(0)}" class="puerta"/>')
-        o.append(f'<line x1="{X(5.0)}" y1="{Y(5.4)}" x2="{X(5.0)}" y2="{Y(11.0)}" class="div"/>')
-    else:
-        vent(0.6, 3.3, 0); vent(6.1, 8.6, 0); vent(0.6, 4.8, PA_D); vent(6.2, 8.4, PA_D)
-    o.append(f'<text x="{X(4.5)}" y="{h-4}" class="a" text-anchor="middle">↓ calle{" · entrada por la escalera" if portal else ""}</text>')
-    o.append("</svg>")
-    return "\n".join(o)
 
 # ---------- emplazamiento con sol ----------
 def flecha(cx, cy, rumbo_rel, L, cls, texto):
@@ -84,8 +42,14 @@ def emplazamiento(lado, S=13):
     o.append(f'<rect x="{X(0)}" y="{Y(LOTE_D)}" width="{LOTE_W*S}" height="{LOTE_D*S}" class="lote"/>')
     o.append(f'<rect x="{X(-3)}" y="{Y(0)}" width="{(LOTE_W+6)*S}" height="{0.9*S}" class="calle"/>')
     o.append(f'<text x="{X(LOTE_W/2)}" y="{Y(0)+0.9*S+13}" class="a" text-anchor="middle">calle</text>')
-    o.append(f'<rect x="{X(0.3)}" y="{Y(FRENTE)}" width="{5.85*S}" height="{(FRENTE-0.3)*S}" class="cochera"/>')
-    o.append(f'<text x="{X(3.2)}" y="{Y(2.8)}" class="a" text-anchor="middle">cochera</text>')
+    xc = LOTE_W - 0.3 - 5.85
+    o.append(f'<rect x="{X(xc)}" y="{Y(FRENTE)}" width="{5.85*S}" height="{(FRENTE-0.3)*S}" class="cochera"/>')
+    o.append(f'<text x="{X(xc + 2.9)}" y="{Y(2.8)}" class="a" text-anchor="middle">cochera</text>')
+    o.append(f'<rect x="{X(hx + CASA_W)}" y="{Y(FRENTE + 3.0)}" width="{(LOTE_W - hx - CASA_W)*S}" height="{3.0*S}" class="cochera"/>')
+    o.append(f'<rect x="{X(hx + bx0)}" y="{Y(FRENTE + by1)}" width="{(bx1 - bx0)*S}" height="{(by1 - by0)*S}" class="casa"/>')
+    o.append(f'<text x="{X(LOTE_W) + 6}" y="{Y(FRENTE + 1.5) + 4}" class="a">patio de servicio</text>')
+    o.append(f'<text x="{X(LOTE_W) + 6}" y="{Y(FRENTE + 4.1) + 4}" class="a">bodega</text>')
+    o.append(f'<text x="{X(hx / 2)}" y="{Y(2.8)}" class="a" text-anchor="middle">jardín</text>')
     o.append(f'<rect x="{X(hx)}" y="{Y(FRENTE+PA_D)}" width="{CASA_W*S}" height="{PA_D*S}" class="casa"/>')
     o.append(f'<rect x="{X(hx)}" y="{Y(FRENTE+PA_D)}" width="{CASA_W*S}" height="{3*S}" class="portal2"/>')
     o.append(f'<text x="{X(LOTE_W/2)}" y="{Y(FRENTE+5)}" class="r inv" text-anchor="middle">CASA</text>')
@@ -296,10 +260,15 @@ SOMBRA_DE = {"Cantera": "ventanas remetidas en su marco", "Celosía": "la celos�
              "Ladrillo": "el hueco hondo del ladrillo", "Hacienda": "el muro grueso y las vigas", "Horizonte": "las losas voladas",
              "Lamas": "las lamas", "Concreto": "el cajón y la ranura"}
 
+def patio(d):
+    """Costado derecho: bodega de servicio detrás de la reja de madera del patio de servicio."""
+    d.r(9.0, 10.7, 0, 2.6, "#e4e4e4", "#000", 1.0)
+    d.r(9.08, 10.62, 0, 2.15, "url(#p-madera)", "#000", 1.0)
+
 def fachada(nombre):
     d = Dib(0.9, 7.5)
-    DIBUJO[nombre](d); d.suelo(-0.8, 9.8)
-    w, h = (9 + 1.8) * S, 7.85 * S
+    patio(d); DIBUJO[nombre](d); d.suelo(-0.8, 11.2)
+    w, h = (9 + 0.9 + 2.2) * S, 7.85 * S
     return f'<svg viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="Fachada {nombre}">' + "".join(d.o) + "</svg>"
 
 def cuadra(n=6, calle_i=0, lado_norte=True, calle="Álamo"):
@@ -308,7 +277,7 @@ def cuadra(n=6, calle_i=0, lado_norte=True, calle="Álamo"):
     tipos = [fachada_de(k, lado_norte, calle_i) for k in range(n)]
     o = []
     for k, t in enumerate(tipos):
-        d = Dib(mx + k * LOTE_W + (LOTE_W - CASA_W) / 2, zt); DIBUJO[t](d); o += d.o
+        d = Dib(mx + k * LOTE_W + (LOTE_W - CASA_W) / 2, zt); patio(d); DIBUJO[t](d); o += d.o
         num = 2 * k + (1 if lado_norte else 2)
         o.append(f'<text x="{(mx + k * LOTE_W + LOTE_W / 2) * S:.0f}" y="{(zt + 0.75) * S:.0f}" font-size="26" font-weight="700" fill="#000" text-anchor="middle">{calle} {num} · {t}</text>')
     d = Dib(mx, zt)
@@ -321,8 +290,6 @@ def cuadra(n=6, calle_i=0, lado_norte=True, calle="Álamo"):
     w, h = (n * LOTE_W + 2 * mx) * S, (zt + 1.3) * S
     return f'<svg class="cuadra" viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="Una cuadra de {calle}">' + "".join(o) + "</svg>"
 
-rows_pb = "".join(f"<tr><td>{n}</td><td>{area((n,a,b,c,d)):.0f} m²</td></tr>" for n, a, b, c, d in PB)
-rows_pa = "".join(f"<tr><td>{n}</td><td>{area((n,a,b,c,d)):.0f} m²</td></tr>" for n, a, b, c, d in PA)
 
 HTML = f"""<!doctype html>
 <html lang="es-MX">
@@ -355,8 +322,21 @@ HTML = f"""<!doctype html>
   svg .r {{ font-size: 11px; font-weight: 700; fill: currentColor; }}
   svg .a {{ font-size: 9.5px; fill: var(--gris); }}
   svg .inv {{ fill: #fff; }}
-  svg .cuarto {{ fill: #fff; stroke: #000; stroke-width: 1.2; }}
-  svg .muro {{ fill: none; stroke: #000; stroke-width: 4; }}
+  svg .cuarto {{ fill: #fff; }} svg .cuarto.guardar {{ fill: #f1f1f1; }} svg .cuarto.bano {{ fill: #fafafa; }}
+  svg .muroE {{ fill: #1a1a1a; }} svg .hueco {{ fill: #fff; }} svg .ventana {{ fill: #fff; stroke: #000; stroke-width: 0.8; }}
+  svg .hoja {{ stroke: #000; stroke-width: 1.4; }} svg .arco {{ fill: none; stroke: #000; stroke-width: 0.6; stroke-dasharray: 3 2; }}
+  svg .mueble {{ fill: #fff; stroke: #000; stroke-width: 0.9; }} svg .cubierta {{ fill: #e6e6e6; stroke: #000; stroke-width: 0.9; }}
+  svg .closet {{ fill: #d9d9d9; stroke: #000; stroke-width: 0.9; }} svg .barra {{ stroke: #000; stroke-width: 0.8; stroke-dasharray: 5 3; }}
+  svg .fino {{ stroke: #555; stroke-width: 0.5; fill: none; }} svg .fino2 {{ fill: none; stroke: #000; stroke-width: 0.7; }}
+  svg .almohada {{ fill: #fff; stroke: #000; stroke-width: 0.6; }} svg .respaldo {{ fill: #cfcfcf; stroke: #000; stroke-width: 0.6; }}
+  svg .silla {{ fill: #fff; stroke: #000; stroke-width: 0.6; }} svg .regadera {{ fill: #fff; stroke: #000; stroke-width: 0.9; }}
+  svg .negro {{ fill: #000; }} svg .corte {{ stroke: #000; stroke-width: 1.2; }} svg .barandal {{ stroke: #000; stroke-width: 2; }}
+  svg .m {{ font-size: 7.5px; fill: #333; }}
+  svg text.r, svg text.a {{ paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }} svg text.inv {{ stroke: none; }}
+  table.cuartos {{ max-width: none; }} table.cuartos td {{ vertical-align: top; }} table.cuartos td:nth-child(2), table.cuartos td:nth-child(3) {{ white-space: nowrap; text-align: right; }}
+  td.izq, th.izq {{ text-align: left !important; }}
+  .guardado {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 0.75rem 1.5rem; padding: 0; list-style: none; max-width: none; }}
+  .guardado li {{ border-top: 2px solid var(--tinta); padding-top: 0.35rem; margin: 0; }} .guardado b {{ display: block; }}
   svg .portal {{ fill: #ededed; stroke: #000; stroke-width: 1; stroke-dasharray: 4 3; }}
   svg .vidrio {{ stroke: #fff; stroke-width: 2.5; }}
   svg .puerta {{ stroke: #fff; stroke-width: 4; }}
@@ -401,12 +381,12 @@ HTML = f"""<!doctype html>
   </nav>
   <h1>Casa muestra · Modelo Nogal <span>Un solo modelo para todo el fraccionamiento, con 9 fachadas distintas.</span></h1>
   <dl class="datos">
-    <div><dt>Recámaras</dt><dd>4, cada una con baño</dd></div>
-    <div><dt>Construcción</dt><dd>{m2_pb + m2_pa:.0f} m² en 2 niveles</dd></div>
-    <div><dt>Sala-comedor</dt><dd>50 m², abierta al jardín</dd></div>
+    <div><dt>Recámaras</dt><dd>4, cada una con clóset y baño</dd></div>
+    <div><dt>Construcción</dt><dd>{m2_pb + m2_pa:.0f} m² en 2 niveles + bodega de {m2_bodega:.1f} m²</dd></div>
+    <div><dt>Sala, comedor y cocina</dt><dd>{sala_m2:.0f} m² abiertos al portal</dd></div>
+    <div><dt>Para guardar</dt><dd>{len(CP.GUARDADO)} lugares, 2 cuartos de blancos</dd></div>
     <div><dt>Portal techado</dt><dd>27 m²</dd></div>
     <div><dt>Jardín (sin casa ni cochera)</dt><dd>≈ {jardin:.0f} m²</dd></div>
-    <div><dt>Lote muestra</dt><dd>12.7 × 25.8 m · 328 m²</dd></div>
     <div><dt>Cochera</dt><dd>2 autos</dd></div>
     <div><dt>Lotes donde cabe</dt><dd>{N_CABE:,} de {N_LOTES:,} ({100*N_CABE/N_LOTES:.0f} %)</dd></div>
   </dl>
@@ -415,16 +395,34 @@ HTML = f"""<!doctype html>
   <p>Todos los lotes miden casi lo mismo: el promedio es de {M2_MEDIO:.0f} m², y {N_CABE:,} lotes miden al menos 12.0 × 24.0 m. La casa mide 9 m de ancho y deja 1.5 m o más libres a cada lado, así que entra igual en todos. Un solo juego de planos, de moldes y de compras: se construye más rápido y más barato. Los {N_LOTES - N_CABE} lotes que no la aceptan son remates angostos en las esquinas; conviene unirlos con el lote vecino o venderlos como lote sin casa.</p>
   <p>Las calles corren al ENE–OSO (rumbo 59°), así que los lotes solo pueden mirar de dos maneras: jardín al NNO o jardín al SSE. La casa es la misma en los dos casos y solo cambia la fachada que da a la calle.</p>
 
-  <h2>Plantas</h2>
+  <h2>Plantas amuebladas</h2>
+  <p>Todas las medidas son <b>libres, a paño interior de muro</b>: lo que de verdad queda para los muebles. Muros exteriores de 20 cm y muros interiores de 12 cm. Los muebles están dibujados a escala con medidas comerciales.</p>
   <div class="dos">
-    <div>{planta(PB, "Planta baja", portal=True)}<table>{rows_pb}<tr><td><b>Total planta baja</b></td><td><b>{m2_pb:.0f} m²</b></td></tr></table></div>
-    <div>{planta(PA, "Planta alta")}<table>{rows_pa}<tr><td><b>Total planta alta</b></td><td><b>{m2_pa:.0f} m²</b></td></tr></table></div>
+    <div>{CP.planta("PB", f"Planta baja · {m2_pb:.0f} m²")}</div>
+    <div>{CP.planta("PA", f"Planta alta · {m2_pa:.0f} m²")}</div>
   </div>
   <ul>
-    <li><b>La vida va al fondo:</b> sala, comedor y recámara principal miran al jardín, lejos de la calle y de los autos. Las recámaras 1, 2 y 3 dan al frente.</li>
-    <li><b>Una recámara en planta baja</b> con su baño, para visitas, papás o quien no quiera subir escaleras. Bajo la escalera cabe un medio baño para las visitas.</li>
-    <li><b>La planta alta vuela 3 m sobre el portal:</b> el portal queda techado sin una losa extra y da sombra a todo el cancel de la sala.</li>
-    <li><b>Ventilación cruzada:</b> todo se abre de frente a fondo. Los muros de los costados quedan casi ciegos.</li>
+    <li><b>Cada recámara tiene el mismo orden: recámara, clóset de paso y baño.</b> Para llegar al baño se pasa por el clóset: se sale de bañar y se viste ahí, y la ropa no queda a la vista de la cama. Los 3 baños de enfrente quedan uno encima del otro, con la tubería en línea.</li>
+    <li><b>La escalera sube hacia la fachada</b>, de la sala a la ventana alta del frente. Abajo, en la parte alta, queda el medio baño de visitas y, en la parte baja, una bodega. Arriba, el vacío de la escalera se ilumina con la ventana del frente.</li>
+    <li><b>Entrada de servicio:</b> de la cochera al patio de servicio, a la lavandería y a la cocina. El mandado y la ropa sucia no cruzan la sala.</li>
+    <li><b>La cocina es de dos frentes paralelos</b> con 1.70 m entre cubiertas, con el triángulo refri, parrilla y tarja a menos de 2 pasos, y se abre al comedor y a la sala.</li>
+    <li><b>La recámara principal da al jardín</b> y vuela sobre el portal. Se entra por un recibidor; de la recámara se pasa al vestidor y del vestidor al baño.</li>
+    <li><b>La estancia de arriba</b> sirve para tele o para trabajar en casa, lejos de la sala.</li>
+  </ul>
+
+  <h3>Medidas y muebles, cuarto por cuarto</h3>
+  <h4>Planta baja</h4>
+  {CP.tabla("PB")}
+  <h4>Planta alta</h4>
+  {CP.tabla("PA")}
+
+  <h2 id="guardado">Dónde se guardan las cosas</h2>
+  <p>Una casa con lugar para cada cosa se siente más grande y se mantiene ordenada sola. El Modelo Nogal tiene {len(CP.GUARDADO)} lugares para guardar, además de los gabinetes de cocina y baños:</p>
+  <ul class="guardado">{"".join(f"<li><b>{esc(a)}</b>{esc(b)}</li>" for a, b in CP.GUARDADO)}</ul>
+  <ul>
+    <li><b>Clósets:</b> 60 cm de fondo libre, doble barra (camisas arriba y abajo), una sección de barra larga para vestidos y abrigos, cajonera de 4 cajones y maletero arriba hasta el techo. Puertas corredizas o abatibles de piso a techo para que no quede polvo encima.</li>
+    <li><b>Baños:</b> regadera sin escalón, con piso a la coladera lineal y cancel fijo de cristal; nicho en el muro de la regadera; mueble de lavabo con cajones; WC lejos de la puerta; extractor y ventana alta en cada baño de enfrente.</li>
+    <li><b>Blancos:</b> entrepaños de 45 cm (una toalla doblada en 3 cabe justa) a 35 cm entre sí; el de arriba, a 2.20 m para lo que se usa poco.</li>
   </ul>
 
   <h2>Cómo se acomoda en el lote, con el sol de Torreón</h2>
