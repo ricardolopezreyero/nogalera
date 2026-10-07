@@ -59,7 +59,7 @@ def modelo(S, N, X, URB, amen, paisaje, reubica, cuota_mant):
             acum += caja                      # excedente libre: es la paga del desarrollador
         pico = max(pico, capital)
         f.update(capital=capital, excedente=acum)
-    m_recupera = next(f["mes"] for f in flujo if f["mes"] > 12 and f["capital"] == 0)
+    m_recupera = next((f["mes"] for f in flujo if f["mes"] > 12 and f["capital"] == 0), None)   # None: no recupera en el horizonte
     # operación: cuotas de mantenimiento y agua conforme se habitan las casas
     casas = 0; oper = []
     for f in flujo:

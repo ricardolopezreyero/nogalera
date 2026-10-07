@@ -116,6 +116,7 @@ table.spec td:nth-child(2), table.spec th:nth-child(2) { text-align: left; color
 table.cuartos td:nth-child(2), table.cuartos td:nth-child(3) { white-space: nowrap; }
 table.cuartos td:last-child, table.cuartos th:last-child { text-align: left; }
 table.compacta { max-width: 32rem; } table.compacta td { white-space: nowrap; }
+table.renglon td { white-space: nowrap; } table.renglon td:last-child, table.renglon th:last-child { text-align: left; }
 
 /* ---------- Dibujos (SVG) ---------- */
 .dibujo svg, figure svg { width: 100%; height: auto; display: block; color: var(--tinta); }

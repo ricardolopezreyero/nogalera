@@ -30,7 +30,7 @@ ha = lambda m2: f"{m2/1e4:,.1f} ha"
 SECCIONES = [
     ("", "Resumen", "01"), ("terreno", "El terreno", "02"), ("plan", "Plan maestro", "03"), ("calles", "Calles y direcciones", "04"),
     ("acceso", "Acceso", "05"), ("casa", "Casa Modelo Nogal", "06"), ("fachadas", "Fachadas", "07"), ("servicios", "Servicios", "08"),
-    ("iluminacion", "Iluminación", "09"), ("pista", "Pista y gimnasio", "10"), ("numeros", "Números y fideicomiso", "11"), ("etapas", "Etapas y siguientes pasos", "12"),
+    ("iluminacion", "Iluminación", "09"), ("pista", "Pista y gimnasio", "10"), ("numeros", "Números y fideicomiso", "11"), ("porque", "Por qué $522 por m²", "12"), ("etapas", "Etapas y siguientes pasos", "13"),
     None, ("nogaleras", "Nogaleras de La Laguna", "A"), ("datos", "Datos para descargar", "B"),
 ]
 def menu(actual, sub):
@@ -229,6 +229,7 @@ def resumen():
             ("iluminacion", "Iluminación", f"{f0(LZ['puntos'])} puntos de luz, cada uno en su lugar y con su clave: arbotantes, nogales iluminados, balizas y acceso."),
             ("pista", "Pista y gimnasio", "La pista de 3.3 km bajo los nogales, con estaciones y vueltas, y el gimnasio del club social."),
             ("numeros", "Números y fideicomiso", "Cómo opera el fideicomiso, qué recibe cada quien y el flujo de efectivo mes a mes."),
+            ("porque", "Por qué $522 por m²", "Siete razones con números: es el máximo que el proyecto aguanta y más de lo que el dueño obtendría por cualquier otra vía."),
             ("etapas", "Etapas y siguientes pasos", "Cuatro etapas desde el acceso, calendario y lo que hay que confirmar.")]
     cuerpo = f"""
 <p class="lede ancho" style="max-width:52rem;font-size:1.25rem;margin-top:0">{f0(N)} casas entre {f0(QUEDAN)} nogales, en {ha(GROSS)} al oriente de Torreón. Un fraccionamiento trazado sobre la huerta, con un solo modelo de casa y nueve fachadas, que riega sus propios árboles.</p>
@@ -598,6 +599,7 @@ def servicios():
 
 # ======================= ILUMINACIÓN, PISTA Y GIMNASIO, 3D (sitio_extra.py) =======================
 exec(open(os.path.join(AQUI, "sitio_extra.py"), encoding="utf-8").read())
+exec(open(os.path.join(AQUI, "sitio_porque.py"), encoding="utf-8").read())
 
 # ======================= NÚMEROS Y FIDEICOMISO =======================
 def esquema_fideicomiso(con=False):
@@ -784,7 +786,7 @@ def numeros():
 <p>El detalle partida por partida está en <a href="/servicios/#presupuesto">Servicios</a>.</p>
 
 <h2 id="porque">De dónde sale el {pct(X_DUENO)}</h2>
-<p>Es el porcentaje en el que el dueño y el proyecto ganan lo mismo frente a una venta de contado, y el máximo que el proyecto aguanta con la obra completa dejando 20 % de margen. Al dueño, esperar un año por su dinero le cuesta {pct(FID['R_DUENO'], 0)}; al proyecto, tener el dinero puesto un año le cuesta {pct(FID['R_PROY'], 0)}: por esa diferencia los dos ganan con el fideicomiso. Cada $100/m² más de precio son {pct(2*100*GROSS/(FID['VPd']+FID['VPp']), 2)} más de las ventas para el dueño, que salen del margen del proyecto.</p>
+<p>Es el porcentaje en el que el dueño y el proyecto ganan lo mismo frente a una venta de contado, y el máximo que el proyecto aguanta con la obra completa dejando 20 % de margen. Al dueño, esperar un año por su dinero le cuesta {pct(FID['R_DUENO'], 0)}; al proyecto, tener el dinero puesto un año le cuesta {pct(FID['R_PROY'], 0)}: por esa diferencia los dos ganan con el fideicomiso. Cada $100/m² más de precio son {pct(2*100*GROSS/(FID['VPd']+FID['VPp']), 2)} más de las ventas para el dueño, que salen del margen del proyecto. La argumentación completa, con el mercado, el calendario de cobro y lo que pasa si se pide más: <a href="/porque/">Por qué $522 por m²</a>.</p>
 
 <h2 id="cuota">Mantenimiento y agua: la operación</h2>
 {tabla([(e(c['concepto']), e(c['incluye']), f"${f0(c['mes'])}") for c in SV['cuota']], ["Concepto", "Qué incluye", "Al mes"], "", ("<b>Total al mes · por casa</b>", "", f"<b>${f0(SV['cuota_total'])} · ${f0(SV['cuota_casa'])}</b>"))}
@@ -843,7 +845,7 @@ def etapas():
 </ol>
 <p class="nota">El calendario es un supuesto de trabajo con el ritmo de ventas del modelo ({TE.RITMO} lotes al mes). Los plazos de trámites dependen del municipio y de los organismos.</p>
 """
-    pagina("etapas", "Etapas y siguientes pasos", "12 · Etapas y siguientes pasos", "Cuatro etapas que crecen desde el acceso, un calendario de obra y ventas, y la lista de lo que hay que confirmar para arrancar.", cuerpo,
+    pagina("etapas", "Etapas y siguientes pasos", "13 · Etapas y siguientes pasos", "Cuatro etapas que crecen desde el acceso, un calendario de obra y ventas, y la lista de lo que hay que confirmar para arrancar.", cuerpo,
            [("calendario", "Calendario"), ("siguientes", "Siguientes pasos")])
 
 # ======================= NOGALERAS (mapa de La Laguna) =======================
@@ -913,4 +915,4 @@ def datos():
     pagina("datos", "Datos para descargar", "B · Datos", "Los archivos con los que está hecho el proyecto, para abrirlos en QGIS, Excel o cualquier otro programa.", cuerpo, [("como", "Cómo se hizo")])
 
 if __name__ == "__main__":
-    for fn in (resumen, terreno, plan, calles, acceso, casa, fachadas, servicios, iluminacion, pista, numeros, etapas, nogaleras, datos): fn()
+    for fn in (resumen, terreno, plan, calles, acceso, casa, fachadas, servicios, iluminacion, pista, numeros, porque, etapas, nogaleras, datos): fn()
