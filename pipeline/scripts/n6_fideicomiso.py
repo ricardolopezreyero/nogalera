@@ -9,6 +9,18 @@ PROYECTO = 0.04
 CUOTA_AGUA = 450.0               # $/casa/mes por el agua (tarifa comparable a SIMAS para una casa de 4); la cuota de mantenimiento viene de servicios.json
 OCUPA = 12                       # meses entre la venta del lote y la casa habitada
 ETAPAS_OBRA = [(8, 15, 0.32), (14, 21, 0.24), (20, 27, 0.22), (26, 33, 0.22)]      # (mes inicio, mes fin, parte de la urbanización)
+HORIZONTE = 120                  # meses que se muestran del flujo (10 años)
+MARGEN_CUOTA, MARGEN_AGUA = 0.10, 0.50   # lo que le queda a la operación de cada peso de cuota y de agua
+# ---- construcción de las casas por nosotros (Modelo Nogal, molde y compras repetidas) ----
+M2_CASA = 243.0
+PRECIO_M2_MERCADO = 17000.0      # lo que cobra un constructor de Torreón por una casa así, llave en mano, con acabados medios-altos (2026)
+COSTO_M2_TIPICO = 14500.0        # lo que le cuesta a ese constructor (margen típico ≈ 15 %)
+COSTO_M2_NOSOTROS = 12550.0      # lo que nos cuesta con un solo modelo: moldes de aluminio, compras por volumen y cuadrillas en serie (≈ 13 % menos)
+ADOPCION = 0.70                  # parte de los compradores que construyen con nosotros (el paquete lote + casa)
+DURACION_CASA = 8                # meses de obra por casa (con molde: 6 a 8)
+ARRANQUE_CASA = 2                # meses entre la compra del lote y el arranque de la casa
+PAGO_CASA = (0.30, 0.60, 0.10)   # anticipo, estimaciones durante la obra, entrega
+PRECIO_CASA = M2_CASA * PRECIO_M2_MERCADO; COSTO_CASA = M2_CASA * COSTO_M2_NOSOTROS; MARGEN_CASA = PRECIO_CASA - COSTO_CASA
 
 def curva_ventas(n, inicio=9):
     """Lotes vendidos por mes: arranque lento, pico, valle y cierre. Suma n."""
@@ -21,7 +33,7 @@ def modelo(S, N, X, URB, amen, paisaje, reubica, cuota_mant):
     """Flujo de efectivo del fideicomiso y de la operación. Todo en pesos nominales de 2026."""
     ventas = curva_ventas(N); fin = max(ventas)
     precio = S / N
-    meses = range(0, fin + 36)
+    meses = range(0, HORIZONTE)
     flujo = []
     for m in meses:
         v = ventas.get(m, 0); ingreso = v * precio
@@ -53,5 +65,29 @@ def modelo(S, N, X, URB, amen, paisaje, reubica, cuota_mant):
     for f in flujo:
         casas += ventas.get(f["mes"] - OCUPA, 0)
         f["casas"] = casas; f["cuotas"] = casas * (cuota_mant + CUOTA_AGUA)
+        f["oper_margen"] = casas * (cuota_mant * MARGEN_CUOTA + CUOTA_AGUA * MARGEN_AGUA)
+    # nosotros, mes a mes: los lotes que nos tocan (se liquidan cuando el inversionista ya recuperó) y el margen de la operación
+    for f in flujo:
+        f["nosotros"] = f["oper_margen"] + (acum if f["mes"] == m_recupera else 0.0)
     return dict(flujo=flujo, ventas=ventas, fin_ventas=fin, precio=precio, capital_pico=pico, aportado=aportado, rend=rend_pagado,
                 m_recupera=m_recupera, desarrollador=acum, lotes_desarrollador=acum / precio, dueno_total=X * S, comis_total=COMISION * S)
+
+
+def construccion(ventas, N):
+    """Las casas que construimos nosotros: ingresos, costos y utilidad por mes, con el calendario de cada casa."""
+    casas = {m: v * ADOPCION for m, v in ventas.items()}
+    ing = [0.0] * HORIZONTE; cos = [0.0] * HORIZONTE; obra = [0.0] * HORIZONTE; ent = [0.0] * HORIZONTE
+    for m, n in casas.items():
+        a = m + ARRANQUE_CASA
+        if a < HORIZONTE: ing[a] += n * PRECIO_CASA * PAGO_CASA[0]
+        for k in range(DURACION_CASA):
+            t = a + k
+            if t < HORIZONTE: ing[t] += n * PRECIO_CASA * PAGO_CASA[1] / DURACION_CASA; cos[t] += n * COSTO_CASA / DURACION_CASA; obra[t] += n
+        t = a + DURACION_CASA
+        if t < HORIZONTE: ing[t] += n * PRECIO_CASA * PAGO_CASA[2]; ent[t] += n
+    util = [i - c for i, c in zip(ing, cos)]
+    caja, minimo, acum = 0.0, 0.0, []
+    for u in util: caja += u; minimo = min(minimo, caja); acum.append(caja)
+    total = sum(casas.values())
+    return dict(casas=total, ingresos=sum(ing), costos=sum(cos), utilidad=sum(util), ing=ing, cos=cos, util=util, obra=obra, entregas=ent, acum=acum, capital=-minimo,
+                pico_obra=max(obra), fin=max(i for i, x in enumerate(ent) if x > 0), margen_tipico=(PRECIO_M2_MERCADO - COSTO_M2_TIPICO) / PRECIO_M2_MERCADO, margen=MARGEN_CASA / PRECIO_CASA)
