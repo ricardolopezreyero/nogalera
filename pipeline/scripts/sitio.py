@@ -223,7 +223,7 @@ def resumen():
             ("plan", "Plan maestro", f"Mapa interactivo con los {f0(N)} lotes, calles, club, parques, nogales, iluminación y redes."),
             ("calles", "Calles y direcciones", "Nombres, numeración, secciones de calle y bulevar, cruces elevados."),
             ("acceso", "Acceso", "Entrada calculada para la hora pico: carriles, casetas, filas y esperas."),
-            ("casa", "Casa Modelo Nogal", "Plantas amuebladas, azotea, corte, conjunto y fachadas: todos los planos."),
+            ("casa", "Casa Modelo Nogal", "Modelo 3D a color para girar y destapar, plantas amuebladas, azotea, corte, conjunto y fachadas: todos los planos."),
             ("fachadas", "Fachadas", "Nueve fachadas distintas sobre la misma casa, y cómo se reparten en cada cuadra."),
             ("servicios", "Servicios", "Drenaje pluvial y sanitario, planta de tratamiento, agua, luz y fibra, con especificaciones y presupuesto."),
             ("agua", "Agua: pozos, red y presión", "Dónde van los dos pozos, la red con su presión en cada esquina, la planta de tratamiento y el drenaje pluvial, dibujados."),
@@ -419,7 +419,7 @@ def casa():
     <span class="sep"></span><button type="button" data-zoom="1" aria-label="Acercar">+</button><button type="button" data-zoom="-1" aria-label="Alejar">−</button>
   </div>
 </div>
-<p class="nota">Modelo generado desde las mismas plantas: muros de 20 y 12 cm, ventanas, puertas, escalera, muebles a escala, portal, cochera, patio con bodega y los nogales de los linderos.</p>
+<p class="nota">Modelo generado desde las mismas plantas: muros de 20 y 12 cm con sus colores, ventanas con marco y cristal, puertas, escalera con barandal de cristal, muebles a escala, portal amueblado, cochera, banqueta y calle, patio con bodega y los nogales de los linderos. El visor dibuja con luz de sol, sombra sobre el terreno y contornos; se ve bien también en celular.</p>
 
 <h2 id="conjunto">Planta de conjunto</h2>
 <div class="dos">
