@@ -6,7 +6,7 @@ from html import escape as e
 AQUI = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, AQUI)
 RAIZ = os.path.abspath(os.path.join(AQUI, "..", ".."))
 PUB = os.path.join(RAIZ, "public"); DAT = os.path.join(PUB, "datos")
-import n6_casa_planta as CP, n6_casa_dibujos as CD, n6_fachadas as NF, n6_acceso as AC, n6_acceso_calc as ACC, n6_terreno as TE
+import n6_casa_planta as CP, n6_casa_dibujos as CD, n6_fachadas as NF, n6_acceso as AC, n6_acceso_calc as ACC, n6_terreno as TE, n6_fideicomiso as FI
 
 FC = json.load(open(f"{DAT}/confort.geojson")); R = FC["resumen"]; GROSS = FC["bruto_m2"]
 SV = json.load(open(f"{DAT}/servicios.json")); LZ = json.load(open(f"{DAT}/luces.json"))["resumen"]
@@ -30,7 +30,7 @@ ha = lambda m2: f"{m2/1e4:,.1f} ha"
 SECCIONES = [
     ("", "Resumen", "01"), ("terreno", "El terreno", "02"), ("plan", "Plan maestro", "03"), ("calles", "Calles y direcciones", "04"),
     ("acceso", "Acceso", "05"), ("casa", "Casa Modelo Nogal", "06"), ("fachadas", "Fachadas", "07"), ("servicios", "Servicios", "08"),
-    ("iluminacion", "Iluminación", "09"), ("numeros", "Números", "10"), ("etapas", "Etapas y siguientes pasos", "11"),
+    ("iluminacion", "Iluminación", "09"), ("numeros", "Números y fideicomiso", "10"), ("etapas", "Etapas y siguientes pasos", "11"),
     None, ("nogaleras", "Nogaleras de La Laguna", "A"), ("datos", "Datos para descargar", "B"),
 ]
 def menu(actual, sub):
@@ -206,22 +206,16 @@ def precio_lote(p):
     return x * (1.08 if p["premio"] == "parque" else 1.05 if p["premio"] == "bulevar" else 1.0)
 MESES_VENTA = N / TE.RITMO
 PARQUES = [f["properties"]["nombre"] for f in FC["features"] if f["properties"]["capa"] == "parque"]
+# ---- la propuesta: $522/m² en fideicomiso = 34.3 % de cada venta ----
+X_DUENO = FID["X_viable"]; PRECIO_FID = FID["p_fid"]
+AM_SOCIAL = sum(v for k, v in AMEN.items() if "salón" in k or "gimnasio" in k or "acceso" in k); AM_DEP = R["amenidades"] - AM_SOCIAL
+MOD = FI.modelo(R["venta"], N, X_DUENO, SV["URB"], dict(social=AM_SOCIAL, deportivo=AM_DEP), PAISAJE, REUBICA, SV["cuota_casa"])
+OBRA_TOTAL = SV["URB"] + R["amenidades"] + PAISAJE + REUBICA
+DUENO_TOTAL = X_DUENO * R["venta"]
 EJEMPLO = next(p["dir"] for p in sorted(LOTES, key=lambda p: p["n"]) if p["dir"].startswith("Encino 4") and int(p["dir"].split()[1]) % 2 == 1)
 
 # ======================= RESUMEN =======================
 def resumen():
-    dec = [
-        ("Trazado sobre los nogales.", f"Las calles corren entre hileras y los linderos de los lotes caen sobre las columnas de árboles: se quedan {f0(QUEDAN)} de {f0(R['arboles'])} nogales ({pct(QUEDAN/R['arboles'],0)}). Es lo que hace distinto al fraccionamiento."),
-        ("Un solo modelo de casa, nueve fachadas.", "La misma casa de 243 m² en todos los lotes (4 recámaras, cada una con clóset y baño) y 9 fachadas repartidas para que ninguna se repita con la de al lado ni con la de enfrente."),
-        ("Un acceso calculado para la hora pico.", "2 carriles de residentes y 2 de visitas para entrar, 1 y 1 para salir; las casetas a 60 m de la calle para que la fila nunca salga a la calzada."),
-        ("Los nogales se riegan con agua del propio fraccionamiento.", f"Planta de tratamiento en la punta oriente y red morada con goteo a cada nogal. Cubre el riego de los nogales, los parques y el bulevar y sobra {SV['tratamiento']['riego_pct']-100:.0f} %."),
-        ("La lluvia se queda adentro.", "Jardines 10 cm abajo de la banqueta, camellón que es jardín de lluvia, parques con bordo, zanja bajo la pista, cajas bajo los estacionamientos y un vaso de tormentas. No se descarga a la calle de afuera."),
-        ("Drenaje por gravedad, luz y fibra subterráneas.", f"El terreno baja {SV['TERR']['desnivel']:.1f} m al oriente: todo llega a la planta sin bombeo. Sin postes: media tensión en anillo con {SV['luz']['trafos']} transformadores de pedestal."),
-        ("Direcciones de una palabra y un número.", f"Calles largas con nombre de árbol y transversales con nombre de ave: cortos, sin acentos y en orden alfabético. El número dice la cuadra: «{EJEMPLO}» está pasando la {int(EJEMPLO.split()[1])//100}.ª transversal, del lado norte (impar)."),
-        ("Lo común, y nada más.", "Club social (salón con oficinas arriba y gimnasio), club deportivo (tenis y 2 de pádel), 2 parques en las manzanas de nogales más grandes, bulevar con sendero, pista de 3.3 km y mini súper antes de las plumas."),
-        ("Presupuesto por partida y cuota calculada.", f"Urbanización de {mill(SV['URB'])} en {len(SV['partidas'])} partidas, y una cuota de ${f0(SV['cuota_casa'])} por casa al mes que se le puede prometer al comprador."),
-        ("El precio del terreno que aguanta el proyecto.", f"De contado hasta ${f0(FID['p_contado'])}/m²; en fideicomiso, {pct(FID['X_viable'])} de las ventas (≈ ${f0(FID['p_fid'])}/m²), dejando 20 % de margen."),
-    ]
     tarj = [("terreno", "El terreno", f"{ha(GROSS)} de nogalera en La Paz, al oriente de Torreón; {f0(R['arboles'])} nogales mapeados uno por uno."),
             ("plan", "Plan maestro", f"Mapa interactivo con los {f0(N)} lotes, calles, club, parques, nogales, iluminación y redes."),
             ("calles", "Calles y direcciones", "Nombres, numeración, secciones de calle y bulevar, cruces elevados."),
@@ -230,35 +224,19 @@ def resumen():
             ("fachadas", "Fachadas", "Nueve fachadas distintas sobre la misma casa, y cómo se reparten en cada cuadra."),
             ("servicios", "Servicios", "Drenaje pluvial y sanitario, planta de tratamiento, agua, luz y fibra, con especificaciones y presupuesto."),
             ("iluminacion", "Iluminación", f"{f0(LZ['puntos'])} puntos de luz: arbotantes, nogales iluminados, balizas y acceso."),
-            ("numeros", "Números", "Ventas, costos, margen, fideicomiso del terreno y cuota de mantenimiento."),
+            ("numeros", "Números y fideicomiso", "Cómo opera el fideicomiso, qué recibe cada quien y el flujo de efectivo mes a mes."),
             ("etapas", "Etapas y siguientes pasos", "Cuatro etapas desde el acceso, calendario y lo que hay que confirmar.")]
     cuerpo = f"""
 <p class="lede ancho" style="max-width:52rem;font-size:1.25rem;margin-top:0">{f0(N)} casas entre {f0(QUEDAN)} nogales, en {ha(GROSS)} al oriente de Torreón. Un fraccionamiento trazado sobre la huerta, con un solo modelo de casa y nueve fachadas, que riega sus propios árboles.</p>
 {kpis([("Terreno", ha(GROSS), f"{f0(GROSS)} m² · La Paz, Torreón"), ("Casas", f0(N), f"lote típico de {R['lote_mediana']} m²"), ("Nogales que se quedan", f"{pct(QUEDAN/R['arboles'],0)}", f"{f0(QUEDAN)} de {f0(R['arboles'])}"),
-       ("Venta", mill(R["venta"]), f"{f0(N)} lotes y {f0(R['predio_comercial_m2'])} m² de comercio"), ("Urbanización", mill(SV["URB"]), f"${f0(SV['URB']/GROSS)}/m² de terreno"),
-       ("Margen", f"{mill(R['margen'])}", f"{R['roi']:.1f} % sobre el costo, de contado a $670/m²"), ("Cuota de mantenimiento", f"${f0(SV['cuota_casa'])}", "por casa al mes"), ("Plazo de venta", f"{MESES_VENTA/12:.1f} años", f"{TE.RITMO} lotes al mes desde el mes {TE.INICIO}")])}
+       ("Venta", mill(R["venta"]), f"{f0(N)} lotes y {f0(R['predio_comercial_m2'])} m² de comercio"), ("Obra", mill(OBRA_TOTAL), "urbanización, club, parques e iluminación"),
+       ("Para el dueño del terreno", f"{pct(X_DUENO)} de cada venta", f"{mill(DUENO_TOTAL)} en {MOD['fin_ventas']/12:.1f} años"), ("Cuota de mantenimiento", f"${f0(SV['cuota_casa'])}", "por casa al mes")])}
+<p class="frase">La propuesta al dueño: <b>${f0(PRECIO_FID)} por m² en fideicomiso: te damos el {pct(X_DUENO)} de cada venta.</b> Aportas el terreno, no pones un peso más, y cobras conforme se vende: {mill(DUENO_TOTAL)} en total. Cómo opera, en <a href="/numeros/">Números y fideicomiso</a>.</p>
 <figure><div class="dibujo">{plano_svg("plan", titulo="Plano maestro")}</div><figcaption><b>Plano maestro.</b> Cada punto es un nogal en su lugar exacto; los blancos son los {f0(R['reubicar'])} que se reubican. El bulevar Nogal corre por la hilera que ya faltaba en la huerta; el club, por la otra.</figcaption></figure>
-<h2 id="decisiones">El proyecto en 10 decisiones</h2>
-<ol class="decisiones">{"".join(f"<li><b>{e(t)}</b>{e(d)}</li>" for t, d in dec)}</ol>
 <h2 id="secciones">Secciones</h2>
-<ul class="tarjetas">{"".join(f'<li><a class="tarjeta" href="/{s}/"><span class="n">{dict((x[0], x[2]) for x in SECCIONES if x)[s]}</span><b>{e(t)}</b><p>{e(d)}</p></a></li>' for s, t, d in tarj)}</ul>
-<h2 id="estado">Dónde está el proyecto</h2>
-<div class="dos">
-<div><h3>Lo que ya está</h3><ul>
-<li>Terreno identificado y medido, con los {f0(R['arboles'])} nogales mapeados (altura y posición).</li>
-<li>Plan maestro completo: lotes, calles con nombre y número, acceso, club, parques, pista y comercio.</li>
-<li>Casa modelo con plantas amuebladas y 9 fachadas; una fachada asignada a cada lote.</li>
-<li>Redes de servicios trazadas y presupuestadas partida por partida; cuota de mantenimiento.</li>
-<li>Precio del terreno y porcentaje justo en fideicomiso, calculados.</li></ul></div>
-<div><h3>Lo que sigue</h3><ul>
-<li>Confirmar el lindero y la tenencia del predio con catastro y el Registro Público; revisar el título de agua de la huerta.</li>
-<li>Acuerdo con el dueño: compra o fideicomiso (ver <a href="/numeros/#fideicomiso">Números</a>).</li>
-<li>Levantamiento topográfico, mecánica de suelos y pruebas de infiltración.</li>
-<li>Factibilidades: uso de suelo (municipio), SIMAS, CFE y Protección Civil.</li>
-<li>Proyecto ejecutivo y licencia; arranque de la etapa 1 (ver <a href="/etapas/">Etapas</a>).</li></ul></div>
-</div>
+<ul class="tarjetas">{"".join(f'<li><a class="tarjeta" href="/{s_}/"><span class="n">{dict((x[0], x[2]) for x in SECCIONES if x)[s_]}</span><b>{e(t)}</b><p>{e(d)}</p></a></li>' for s_, t, d in tarj)}</ul>
 """
-    pagina("", f"{NOMBRE}", "01 · Resumen", "", cuerpo, [("decisiones", "10 decisiones"), ("secciones", "Secciones"), ("estado", "Dónde está el proyecto")],
+    pagina("", f"{NOMBRE}", "01 · Resumen", "", cuerpo, [("secciones", "Secciones")],
            descripcion=f"{NOMBRE}: fraccionamiento de {f0(N)} casas entre nogales en el oriente de Torreón. Anteproyecto completo.")
 
 # ======================= TERRENO =======================
@@ -266,7 +244,7 @@ def terreno():
     alto = sum(1 for h in H_ARB if h >= 10)
     cuerpo = f"""
 {kpis([("Superficie", ha(GROSS), f"{f0(GROSS)} m² · {N6['largo_m']} × {N6['ancho_m']} m"), ("Nogales", f0(R['arboles']), f"{f0(alto)} de 10 m o más · hileras cada 12.6 m"), ("Cota", f"{SV['TERR']['z_media']:,.1f} m", f"baja {SV['TERR']['pend_km']:.2f} m/km al oriente"),
-       ("Precio de referencia", f"${f0(R['terreno_m2_precio'])}/m²", f"rango ${N6['precio_m2_min']}–{N6['precio_m2_max']}"), ("Valor de contado", mill(TERRENO_V), "sobre toda la superficie"), ("Ubicación", "La Paz", "oriente de Torreón, Coahuila")])}
+       ("En fideicomiso", f"${f0(PRECIO_FID)}/m²", f"{pct(X_DUENO)} de cada venta"), ("Para el dueño", mill(DUENO_TOTAL), f"en {MOD['fin_ventas']/12:.1f} años · ${f0(DUENO_TOTAL/GROSS)}/m²"), ("Ubicación", "La Paz", "oriente de Torreón, Coahuila")])}
 <div class="mapa-chico"><div id="map" role="region" aria-label="Mapa del terreno con sus nogales"></div></div>
 <p class="nota">Cada punto es un nogal detectado desde satélite (altura de árboles de Meta y WRI a 1 m). El lindero es el de la arboleda; hay que confirmarlo con catastro.</p>
 <h2 id="donde">Dónde está</h2>
@@ -283,14 +261,14 @@ def terreno():
 </div></div>
 <h2 id="arboles">Los nogales, uno por uno</h2>
 <figure><div class="dibujo">{plano_svg("arboles", titulo="Los nogales del terreno")}</div><figcaption><b>Cada círculo es un nogal, dibujado a su tamaño de copa.</b> La cuadrícula de la huerta es la que ordena todo el diseño: las calles van en los pasillos entre hileras y los lotes se cortan donde están los árboles.</figcaption></figure>
-<h2 id="precio">Cuánto vale</h2>
-<p>El mapa de <a href="/nogaleras/#n6">nogaleras de La Laguna</a> estima <b>${f0(R['terreno_m2_precio'])}/m²</b> para este predio: nogalera en producción pegada a la mancha urbana de Torreón, en un rango de ${N6['precio_m2_min']} a ${N6['precio_m2_max']}/m². Sobre las {ha(GROSS)} son <b>{mill(TERRENO_V)} de contado</b>. No es un avalúo: el agua, la tenencia y el acceso mueven el precio.</p>
-<p>Con la urbanización completa, el proyecto aguanta hasta <b>${f0(FID['p_contado'])}/m² de contado</b> o, en fideicomiso, <b>{pct(FID['X_viable'])} de las ventas</b> para el dueño (≈ ${f0(FID['p_fid'])}/m²). La cuenta completa está en <a href="/numeros/#fideicomiso">Números</a>.</p>
+<h2 id="precio">Cuánto vale y cómo se paga</h2>
+<p class="frase"><b>${f0(PRECIO_FID)} por m² en fideicomiso: te damos el {pct(X_DUENO)} de cada venta.</b></p>
+<p>El dueño aporta el terreno al fideicomiso y cobra el {pct(X_DUENO)} de cada lote conforme se vende: <b>{mill(DUENO_TOTAL)}</b> en total a lo largo de {MOD['fin_ventas']/12:.1f} años, que son ${f0(DUENO_TOTAL/GROSS)} por m². En pesos de hoy equivale a ${f0(PRECIO_FID)}/m² ({mill(PRECIO_FID*GROSS)}), dentro del rango de ${N6['precio_m2_min']} a ${N6['precio_m2_max']}/m² que el <a href="/nogaleras/#n6">mapa de nogaleras</a> estima para huertas pegadas a Torreón. Cómo opera el fideicomiso y el flujo mes a mes: <a href="/numeros/">Números y fideicomiso</a>.</p>
 <h2 id="origen">De dónde salió</h2>
 <p>Primero se mapearon <b>todas las nogaleras de la Comarca Lagunera</b> desde satélite ({f0(sum(1 for r in NOG if r['estado']=='activa'))} huertas activas, {f0(sum(float(r['area_m2']) for r in NOG if r['estado']=='activa')/1e4)} ha). De las cinco mejor situadas para urbanizar, esta (N6) es la que da el mayor retorno por m²: grande, plana, con calles por dos lados y a la orilla de la ciudad. El mapa completo está en <a href="/nogaleras/">Nogaleras de La Laguna</a>.</p>
 """
     pagina("terreno", "El terreno", "02 · El terreno", f"Una nogalera de {ha(GROSS)} en La Paz, al oriente de Torreón, con {f0(R['arboles'])} nogales mapeados uno por uno.", cuerpo,
-           [("donde", "Dónde está"), ("arboles", "Los nogales"), ("precio", "Cuánto vale"), ("origen", "De dónde salió")], mapa=False,
+           [("donde", "Dónde está"), ("arboles", "Los nogales"), ("precio", "Cuánto vale y cómo se paga"), ("origen", "De dónde salió")], mapa=False,
            head='<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">',
            script='<script>window.PLAN={datos:"/datos/",modo:"terreno",rueda:false};</script><script src="/vendor/leaflet/leaflet.js"></script><script src="/plan/plan.js"></script>')
 
@@ -584,7 +562,7 @@ def servicios():
 
 <h2 id="presupuesto">Presupuesto de urbanización</h2>
 {tabla([(e(k), f"${f0(v)}", f"{v/SV['URB']*100:.1f} %", f"${f0(v/N)}") for k, v in por.items()], ["Servicio", "Importe (MXN sin IVA)", "Parte", "Por lote"], "", ("<b>Total</b>", f"<b>${f0(SV['URB'])}</b>", "<b>100 %</b>", f"<b>${f0(SV['URB']/N)}</b>"))}
-<p>Son {mill(SV['URB'])}: ${f0(SV['URB']/GROSS)} por m² de terreno y ${f0(SV['URB']/N)} por lote, con {len(SV['partidas'])} partidas medidas sobre el plano. Lo que significa para el margen del proyecto está en <a href="/numeros/">Números</a>.</p>
+<p>Son {mill(SV['URB'])}: ${f0(SV['URB']/GROSS)} por m² de terreno y ${f0(SV['URB']/N)} por lote, con {len(SV['partidas'])} partidas medidas sobre el plano. Cómo se paga la obra está en <a href="/numeros/">Números y fideicomiso</a>.</p>
 {partidas(["Indirectos"])}
 
 <h2 id="confirmar">Por confirmar antes del proyecto ejecutivo</h2>
@@ -628,63 +606,148 @@ def iluminacion():
            head='<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">',
            script='<script>window.PLAN={datos:"/datos/",modo:"noche",rueda:false};</script><script src="/vendor/leaflet/leaflet.js"></script><script src="/plan/plan.js"></script>')
 
-# ======================= NÚMEROS =======================
+# ======================= NÚMEROS Y FIDEICOMISO =======================
+def esquema_fideicomiso():
+    """Quién aporta qué al fideicomiso y qué recibe. Cajas y flechas."""
+    W, H = 1000, 580
+    o = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Cómo opera el fideicomiso" class="esquema">',
+         '<defs><marker id="fe" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#000"/></marker></defs>']
+    def caja(x, y, w, h, titulo, lineas, negra=False):
+        o.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{"#111" if negra else "#fff"}" stroke="#000" stroke-width="1.5"/>')
+        o.append(f'<text x="{x + w/2}" y="{y + 24}" text-anchor="middle" font-size="15" font-weight="700" fill="{"#fff" if negra else "#000"}">{e(titulo)}</text>')
+        for i, l in enumerate(lineas):
+            o.append(f'<text x="{x + w/2}" y="{y + 46 + i*17}" text-anchor="middle" font-size="12" fill="{"#ddd" if negra else "#333"}">{e(l)}</text>')
+    def flecha(x1, y1, x2, y2, texto, lado="arriba", dx=0):
+        o.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="#000" stroke-width="1.6" marker-end="url(#fe)"/>')
+        mx, my = (x1 + x2) / 2 + dx, (y1 + y2) / 2 + (-8 if lado == "arriba" else 16)
+        for i, t in enumerate(texto.split("|")):
+            o.append(f'<text x="{mx}" y="{my + i*15}" text-anchor="middle" font-size="12" font-weight="{"700" if i == 0 else "400"}" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">{e(t)}</text>')
+    cx, cy, cw, ch = 350, 210, 300, 160
+    caja(cx, cy, cw, ch, f"Fideicomiso {NOMBRE}", ["Banco fiduciario", "Recibe el terreno y el dinero de la obra,", "cobra cada venta y reparte", "según el contrato, sin discreción de nadie."], negra=True)
+    caja(20, 230, 250, 120, "Dueño del terreno", [f"Aporta {ha(GROSS)} de nogalera.", "No pone un peso más.", f"Recibe {pct(X_DUENO)} de cada venta:", f"{mill(DUENO_TOTAL)} en {MOD['fin_ventas']/12:.1f} años."])
+    caja(360, 20, 280, 120, "Inversionista", [f"Respalda la obra: {mill(OBRA_TOTAL)}.", f"Llega a tener puestos {mill(MOD['capital_pico'])}", f"(mes {next(f['mes'] for f in MOD['flujo'] if f['capital'] == MOD['capital_pico'])}). Recupera todo en el mes {MOD['m_recupera']}", f"con {TASA_INV_TXT} de rendimiento: {mill(MOD['rend'])}."])
+    caja(730, 230, 250, 120, "Compradores", [f"{f0(N)} lotes urbanizados", f"y {f0(R['predio_comercial_m2'])} m² de comercio.", f"Pagan {mill(R['venta'])}", f"en {MOD['fin_ventas'] - 8} meses de ventas."])
+    caja(360, 430, 280, 120, "Nosotros · desarrollo y operación", ["Ponemos el proyecto, la gestión y las ventas.", f"Cobramos en lotes: {MOD['lotes_desarrollador']:.0f} lotes ({mill(MOD['desarrollador'])}).", "Después operamos el agua y el mantenimiento", f"de todo el fraccionamiento (cuota de ${f0(SV['cuota_casa'])})."])
+    flecha(270, 260, cx, 260, "terreno", "arriba"); flecha(cx, 320, 270, 320, f"{pct(X_DUENO)} de cada venta", "abajo")
+    flecha(470, 140, 470, cy, "dinero para la obra", "arriba", dx=-70); flecha(530, cy, 530, 140, "capital + rendimiento", "arriba", dx=72)
+    flecha(730, 260, cx + cw, 260, "pago de cada lote", "arriba"); flecha(cx + cw, 320, 730, 320, "lote escriturado", "abajo")
+    flecha(470, 430, 470, cy + ch, "proyecto, gestión y ventas", "abajo", dx=-84); flecha(530, cy + ch, 530, 430, f"{MOD['lotes_desarrollador']:.0f} lotes", "abajo", dx=52)
+    o.append(f'<text x="{W/2}" y="{H - 6}" text-anchor="middle" font-size="11.5" fill="#333">De cada venta: {pct(X_DUENO)} al dueño · {pct(FI.COMISION,0)} ventas y escrituras · el resto paga la obra y devuelve el capital</text>')
+    o.append("</svg>")
+    return "\n".join(o)
+
+def grafica_flujo():
+    """Flujo de efectivo mes a mes con los puntos de contacto."""
+    fl = MOD["flujo"]; fin = fl[-1]["mes"]; W = 1000; izq, der = 64, 24
+    X = lambda m: izq + (W - izq - der) * m / fin
+    o = [f'<svg viewBox="0 0 {W} 690" role="img" aria-label="Flujo de efectivo del fideicomiso" class="flujo">']
+    def panel(y0, h, titulo, vmax, unidad):
+        o.append(f'<text x="{izq}" y="{y0 - 8}" font-size="12" font-weight="700" fill="#000">{e(titulo)}</text>')
+        o.append(f'<line x1="{izq}" y1="{y0 + h}" x2="{W - der}" y2="{y0 + h}" stroke="#000" stroke-width="0.8"/>')
+        for k in (0.5, 1.0):
+            yy = y0 + h - h * k; o.append(f'<line x1="{izq}" y1="{yy:.1f}" x2="{W - der}" y2="{yy:.1f}" stroke="#ddd" stroke-width="0.6"/><text x="{izq - 6}" y="{yy + 4:.1f}" font-size="10" text-anchor="end" fill="#555">{unidad(vmax * k)}</text>')
+        return lambda v: y0 + h - h * v / vmax
+    # panel 1: lotes vendidos por mes
+    y1, h1 = 92, 110; vmax1 = max(f["lotes"] for f in fl) * 1.15
+    Y1 = panel(y1, h1, "Lotes vendidos por mes", vmax1, lambda v: f"{v:.0f}")
+    bw = (W - izq - der) / fin * 0.7
+    for f in fl:
+        if f["lotes"]: o.append(f'<rect x="{X(f["mes"]) - bw/2:.1f}" y="{Y1(f["lotes"]):.1f}" width="{bw:.1f}" height="{y1 + h1 - Y1(f["lotes"]):.1f}" fill="#1a1a1a"/>')
+    # panel 2: dinero acumulado
+    y2, h2 = 252, 200
+    acum_d = []; acum_v = []; td = tv = 0.0
+    for f in fl: td += f["dueno"]; tv += f["ingreso"]; acum_d.append(td); acum_v.append(tv)
+    vmax2 = max(acum_v) * 1.05
+    Y2 = panel(y2, h2, "Dinero acumulado (millones de pesos)", vmax2, lambda v: f"{v/1e6:,.0f}")
+    def linea(vals, cls, grueso=2, dash=""):
+        o.append('<polyline points="' + " ".join(f"{X(f['mes']):.1f},{Y2(v):.1f}" for f, v in zip(fl, vals)) + f'" fill="none" stroke="#000" stroke-width="{grueso}"{f" stroke-dasharray={chr(34)}{dash}{chr(34)}" if dash else ""}/>')
+    o.append('<polygon points="' + f"{X(0):.1f},{Y2(0):.1f} " + " ".join(f"{X(f['mes']):.1f},{Y2(f['capital']):.1f}" for f in fl) + f" {X(fin):.1f},{Y2(0):.1f}" + '" fill="rgba(0,0,0,0.14)"/>')
+    linea(acum_v, "", 2.2); linea(acum_d, "", 2.2, "6 4"); linea([f["excedente"] for f in fl], "", 1.6, "2 3")
+    ult = fl[-1]
+    o.append(f'<text x="{X(fin) - 4}" y="{Y2(acum_v[-1]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">ventas cobradas · {mill(acum_v[-1])}</text>')
+    o.append(f'<text x="{X(fin) - 4}" y="{Y2(acum_d[-1]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">cobrado por el dueño · {mill(acum_d[-1])} (línea punteada)</text>')
+    mp = next(f for f in fl if f["capital"] == MOD["capital_pico"])
+    o.append(f'<text x="{X(1):.1f}" y="{Y2(mp["capital"]) - 26:.1f}" font-size="11" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">capital del inversionista puesto en cada momento (sombreado) · pico {mill(mp["capital"])} en el mes {mp["mes"]}</text>')
+    o.append(f'<text x="{X(fin) - 4}" y="{Y2(ult["excedente"]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">excedente para el desarrollador, en lotes · {mill(ult["excedente"])}</text>')
+    # panel 3: cuotas
+    y3, h3 = 502, 110; vmax3 = max(f["cuotas"] for f in fl) * 1.15
+    Y3 = panel(y3, h3, "Mantenimiento y agua que cobra la operación, por mes (millones de pesos)", vmax3, lambda v: f"{v/1e6:,.1f}")
+    o.append('<polygon points="' + f"{X(0):.1f},{Y3(0):.1f} " + " ".join(f"{X(f['mes']):.1f},{Y3(f['cuotas']):.1f}" for f in fl) + f" {X(fin):.1f},{Y3(0):.1f}" + '" fill="#1a1a1a"/>')
+    o.append(f'<text x="{X(fin) - 4}" y="{Y3(ult["cuotas"]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">{f0(ult["casas"])} casas · {mill(ult["cuotas"], 2)} al mes</text>')
+    # eje de meses
+    for m in range(0, fin + 1, 6):
+        o.append(f'<line x1="{X(m):.1f}" y1="{y1}" x2="{X(m):.1f}" y2="{y3 + h3}" stroke="#eee" stroke-width="0.6"/><text x="{X(m):.1f}" y="{y3 + h3 + 16}" font-size="10" text-anchor="middle" fill="#555">{"mes " if m == 0 else ""}{m}</text>')
+    for a in range(1, fin // 12 + 1): o.append(f'<text x="{X(a*12):.1f}" y="{y3 + h3 + 30}" font-size="10.5" text-anchor="middle" fill="#000" font-weight="700">año {a}</text>')
+    # puntos de contacto
+    ventas = MOD["ventas"]; m_ini = min(ventas); pico_m = max(ventas, key=lambda m: (ventas[m], -m)); valle_m = next(m for m in sorted(ventas) if m > pico_m and ventas[m] < ventas[pico_m] * 0.6)
+    m_mant = next(f["mes"] for f in fl if f["casas"] > 0); m_sube = next(f["mes"] for f in fl if f["casas"] >= N * 0.5)
+    PUNTOS = [(0, "Se crea el fideicomiso"), (0, "Se aporta el terreno"), (8, "Se aporta para la obra"), (8, "Inicia la construcción"), (m_ini, "Inicia la venta"), (m_ini + 2, "Primeras ventas"),
+              (pico_m, "Pico de ventas"), (valle_m, "Valle de ventas"), (33, "Termina la construcción"), (m_mant, "Se empieza a cobrar mantenimiento"), (m_sube, "El mantenimiento sube"), (MOD["fin_ventas"], "Última venta")]
+    PUNTOS.sort(key=lambda t: t[0])
+    ultimo = [-99, -99, -99]
+    for i, (m, t) in enumerate(PUNTOS, 1):
+        fila = next(k for k in range(3) if X(m) - ultimo[k] >= 24); ultimo[fila] = X(m)
+        y = y1 - 30 - fila * 22
+        o.append(f'<line x1="{X(m):.1f}" y1="{y}" x2="{X(m):.1f}" y2="{y3 + h3}" stroke="#000" stroke-width="0.7" stroke-dasharray="3 3"/>')
+        o.append(f'<circle cx="{X(m):.1f}" cy="{y}" r="9" fill="#000"/><text x="{X(m):.1f}" y="{y + 4}" font-size="10.5" font-weight="700" text-anchor="middle" fill="#fff">{i}</text>')
+    o.append("</svg>")
+    lista = "".join(f"<li><b>{i}.</b> {e(t)} <span class='nota'>· mes {m}</span></li>" for i, (m, t) in enumerate(PUNTOS, 1))
+    return "\n".join(o), lista
+
+TASA_INV_TXT = f"{FI.TASA_INV*100:.0f} % anual"
+
 def numeros():
-    F = FID; A, S, P = F["A"], F["S"], F["P"]
     grupos = {"Frente a parque (+8 %)": [p for p in LOTES if p["premio"] == "parque"], "Frente al bulevar (+5 %)": [p for p in LOTES if p["premio"] == "bulevar"], "Frente a calle": [p for p in LOTES if not p["premio"]]}
     filas_v = [(k, f0(len(v)), f0(sum(p["m2"] for p in v)), f"${f0(sum(p['m2'] * precio_lote(p) for p in v) / sum(p['m2'] for p in v))}", f"${f0(sum(p['m2'] * precio_lote(p) for p in v) / len(v))}", mill(sum(p["m2"] * precio_lote(p) for p in v), 1)) for k, v in grupos.items()]
     filas_v.append(("Comercio (súper y frente a Espinoza)", f"{R['lotes_comerciales']} + 1", f0(R["predio_comercial_m2"]), "$6,000", "", mill(VENTA_COM, 1)))
-    costo_total = sum(c[1] for c in COSTOS)
-    def esc(dp, dr):
-        v = R["venta"] * (1 + dp); c = costo_total - BLANDOS + 0.12 * v; return v - c, (v - c) / c
-    filas_s = []
-    for dp in (-0.10, 0.0, 0.10):
-        m, roi = esc(dp, 0); filas_s.append((f"Lotes {'+' if dp > 0 else ''}{dp*100:.0f} % ({f'${f0(3400*(1+dp))}' }/m²)", mill(R["venta"] * (1 + dp)), mill(m), pct(roi)))
+    svg_flujo, lista_puntos = grafica_flujo()
+    reparto = [("Dueño del terreno", f"{pct(X_DUENO)} de cada venta", mill(DUENO_TOTAL, 1), pct(DUENO_TOTAL / R["venta"])),
+               ("Ventas, comisiones y escrituras", f"{pct(FI.COMISION, 0)} de cada venta", mill(MOD["comis_total"], 1), pct(MOD["comis_total"] / R["venta"])),
+               ("Proyecto ejecutivo y permisos", "al inicio", mill(FI.PROYECTO * R["venta"], 1), pct(FI.PROYECTO)),
+               ("Obra: urbanización, club, parques e iluminación", "por etapas, meses 8 a 33", mill(OBRA_TOTAL, 1), pct(OBRA_TOTAL / R["venta"])),
+               ("Rendimiento del inversionista", f"{TASA_INV_TXT} sobre lo que tiene puesto", mill(MOD["rend"], 1), pct(MOD["rend"] / R["venta"])),
+               ("Nosotros: pago en lotes", f"{MOD['lotes_desarrollador']:.0f} lotes al precio de lista", mill(MOD["desarrollador"], 1), pct(MOD["desarrollador"] / R["venta"]))]
     cuerpo = f"""
-{kpis([("Venta total", mill(R["venta"]), f"{f0(N)} lotes y {f0(R['predio_comercial_m2'])} m² de comercio"), ("Costo total", mill(R["costo"]), "con el terreno de contado a $670/m²"), ("Margen", mill(R["margen"]), f"{R['roi']:.1f} % sobre el costo"),
-       ("Terreno", mill(TERRENO_V), f"{pct(TERRENO_V/R['venta'])} de la venta"), ("Urbanización", mill(SV["URB"]), f"{pct(SV['URB']/R['venta'])} de la venta"), ("Plazo", f"{MESES_VENTA/12:.1f} años de venta", f"{TE.RITMO} lotes al mes desde el mes {TE.INICIO}"),
-       ("Cuota de mantenimiento", f"${f0(SV['cuota_casa'])}", "por casa al mes")])}
-<h2 id="ventas">Ventas</h2>
-<p>El lote se vende urbanizado, sin casa, a <b>≈ $3,400/m²</b> para 300 m² (baja $2 por cada m² de más, para que el lote grande no castigue el precio total), con 8 % más frente a parque y 5 % más frente al bulevar. El comercio se vende a $6,000/m². Son precios de 2026 comparables con lotes urbanizados de Torreón ($3,500–3,750/m²).</p>
-{tabla(filas_v, ["Lotes", "Cuántos", "m²", "Precio por m²", "Precio por lote", "Venta"], "", ("<b>Total</b>", f"<b>{f0(N)}</b>", f"<b>{f0(R['vendible_m2'] + R['predio_comercial_m2'])}</b>", "", "", f"<b>{mill(R['venta'], 1)}</b>"))}
-<h2 id="costos">Costos</h2>
-{tabla([(e(k), mill(v, 1), pct(v / costo_total), e(n)) for k, v, n in COSTOS], ["Concepto", "Importe", "Parte", "Nota"], "", ("<b>Total</b>", f"<b>{mill(costo_total, 1)}</b>", "<b>100 %</b>", ""))}
-<h3>Amenidades</h3>
-{tabla([(e(k), mill(v, 1)) for k, v in AMEN.items()], ["Amenidad", "Costo"], "compacta", ("<b>Total</b>", f"<b>{mill(R['amenidades'], 1)}</b>"))}
-<h3>Urbanización por servicio</h3>
-{tabla([(e(k), mill(v, 1), pct(v / SV['URB'])) for k, v in SV['por_servicio'].items()], ["Servicio", "Importe", "Parte"], "compacta", ("<b>Total</b>", f"<b>{mill(SV['URB'], 1)}</b>", "<b>100 %</b>"))}
-<p>El detalle partida por partida está en <a href="/servicios/#presupuesto">Servicios</a>.</p>
-<h2 id="margen">Margen y lo que aguanta el proyecto</h2>
-<p>De contado, con el terreno a ${f0(R['terreno_m2_precio'])}/m², el margen es de <b>{mill(R['margen'])} ({R['roi']:.1f} %)</b>. Es poco para un fraccionamiento: lo sano es 20 % o más sobre lo que se pone. Lo que mueve el resultado es el precio del terreno:</p>
+<p class="frase" style="font-size:1.25rem"><b>${f0(PRECIO_FID)} por m² en fideicomiso: te damos el {pct(X_DUENO)} de cada venta.</b></p>
+{kpis([("Para el dueño", f"{pct(X_DUENO)} de cada venta", f"{mill(DUENO_TOTAL)} en {MOD['fin_ventas']/12:.1f} años · ${f0(DUENO_TOTAL/GROSS)}/m²"), ("Equivale hoy a", f"${f0(PRECIO_FID)}/m²", f"{mill(PRECIO_FID*GROSS)} de contado"),
+       ("Venta total", mill(R["venta"]), f"{f0(N)} lotes y el comercio"), ("Obra", mill(OBRA_TOTAL), "la respalda el inversionista"), ("Capital puesto al mismo tiempo", mill(MOD["capital_pico"]), f"como máximo, en el mes {next(f['mes'] for f in MOD['flujo'] if f['capital'] == MOD['capital_pico'])}"),
+       ("Nosotros", f"{MOD['lotes_desarrollador']:.0f} lotes", "y la operación del agua y el mantenimiento")])}
+<p>El dueño aporta el terreno a un fideicomiso con un banco y cobra el {pct(X_DUENO)} de cada lote conforme se vende: no pone dinero, no corre con la obra y no espera al final. Cada peso que entra se reparte según el contrato: primero el dueño, luego las ventas y la obra, luego el capital del inversionista con su rendimiento, y lo que sobra es la paga del desarrollador, en lotes.</p>
+
+<h2 id="esquema">Cómo opera</h2>
+<figure><div class="dibujo">{esquema_fideicomiso()}</div><figcaption><b>Cuatro partes y un fiduciario.</b> El banco cobra cada venta y reparte sin que nadie tenga que confiar en nadie: el contrato dice a quién le toca qué.</figcaption></figure>
+
+<h2 id="reparto">Qué recibe cada quien</h2>
+{tabla([(e(a), e(b), c, d) for a, b, c, d in reparto], ["", "Cómo", "Importe", "De la venta"], "", ("<b>Venta total</b>", "", f"<b>{mill(R['venta'], 1)}</b>", "<b>100 %</b>"))}
 <ul>
-<li><b>De contado, el terreno puede costar hasta ${f0(F['p_contado'])}/m²</b> ({mill(F['p_contado'] * A)}) para que al proyecto le quede {pct(F['MARGEN_OBJ'], 0)}.</li>
-<li><b>En fideicomiso, el dueño puede llevarse hasta el {pct(F['X_viable'])} de las ventas</b>, que es el porcentaje justo para un terreno de <b>${f0(F['p_fid'])}/m²</b>.</li>
+<li><b>El dueño cobra primero y de cada venta.</b> Si el proyecto vende más caro, cobra más; si vende más despacio, cobra lo mismo pero más tarde. Nunca pone dinero.</li>
+<li><b>El inversionista respalda toda la obra ({mill(OBRA_TOTAL)})</b>, pero como las ventas la van pagando, nunca llega a tener puestos más de {mill(MOD['capital_pico'])} al mismo tiempo. Recupera todo en el mes {MOD['m_recupera']} con {TASA_INV_TXT} de rendimiento sobre lo que tenga puesto cada mes.</li>
+<li><b>Nosotros cobramos en lotes</b>, no en dinero: {MOD['lotes_desarrollador']:.0f} lotes al precio de lista, que se nos entregan al final, cuando el inversionista ya recuperó. Y nos quedamos con la operación: <b>el agua</b> (pozo, cisterna, planta de tratamiento y riego de los nogales) y <b>el mantenimiento de todo el fraccionamiento</b>, cobrando la cuota de ${f0(SV['cuota_casa'])} y el agua a ${f0(FI.CUOTA_AGUA)} por casa al mes.</li>
 </ul>
-<h3>Si los lotes se venden a otro precio</h3>
-{tabla(filas_s, ["Escenario", "Venta", "Margen", "Sobre el costo"])}
-<h2 id="fideicomiso">El terreno en fideicomiso</h2>
-<p>El dueño aporta el terreno a un fideicomiso con un banco y cobra un porcentaje de cada venta, conforme se cobra. <b>El porcentaje justo es el que deja al dueño y al proyecto con la misma ganancia, en pesos de hoy, frente a una venta de contado.</b> Al dueño, esperar un año por su dinero le cuesta {pct(F['R_DUENO'], 0)}; al proyecto, tener el dinero un año le cuesta {pct(F['R_PROY'], 0)}, porque tendría que pedir prestado o poner capital. Por esa diferencia los dos ganan con el fideicomiso.</p>
-{kpis([("A $670/m² de contado", mill(P), f"{f0(A)} m²"), ("Porcentaje justo", pct(F['X'], 2), f"≈ {mill(F['cobra'])} en {F['meses']/12:.1f} años · ${f0(F['cobra']/A)}/m²"), ("Lo que gana cada parte", mill(F['gana']), "el dueño y el proyecto, lo mismo, en pesos de hoy"), ("Margen del proyecto", pct(F['margen_fid']/F['costo_fid']), "con ese porcentaje: no conviene")])}
-<p class="frase">Para negociar: «Tu terreno vale ${f0(F['p_fid'])} por m² en fideicomiso: te damos el <b>{pct(F['X_viable'])} de cada venta</b>. Es el porcentaje en el que tú y el proyecto ganan lo mismo contra una venta de contado, y el máximo que el proyecto aguanta con las calles, los drenajes, la planta y la barda completos.»</p>
-{tabla([("Piso (lo mínimo que le conviene al dueño)", pct(F['X_piso'], 2), mill(F['X_piso']*S), mill(F['X_piso']*F['VPd']), mill(F['X_piso']*F['VPp'])),
-        ("<b>Equilibrio a $670/m²</b>", f"<b>{pct(F['X'], 2)}</b>", f"<b>{mill(F['X']*S)}</b>", f"<b>{mill(F['X']*F['VPd'])}</b>", f"<b>{mill(F['X']*F['VPp'])}</b>"),
-        ("Techo (lo máximo que le conviene al proyecto)", pct(F['X_techo'], 2), mill(F['X_techo']*S), mill(F['X_techo']*F['VPd']), mill(F['X_techo']*F['VPp']))],
-       ["", "Porcentaje de las ventas", "Cobra en total", "Vale hoy para el dueño", "Vale hoy para el proyecto"])}
-<p>Fórmula: <code>X = 2 × valor del terreno ÷ (valor de hoy de las ventas para el dueño + para el proyecto)</code>. Ventas de {mill(S)} desde el mes {F['INICIO']} a {F['RITMO']} lotes por mes.</p>
-<h3>Si se negocia otro precio por metro</h3>
-<p>Cada $100/m² son {pct(2*100*A/(F['VPd']+F['VPp']), 2)} de las ventas.</p>
-{tabla([(f"${f0(p)}/m²", mill(p*A), pct(2*p*A/(F['VPd']+F['VPp']), 2), mill(2*p*A/(F['VPd']+F['VPp'])*S), pct(F['m_fid'](p))) for p in sorted({350, 450, round(F['p_fid']), 550, F['PM2'], 750})],
-       ["Precio del metro", "Valor de contado", "Porcentaje justo", "Cobra en total", "Margen del proyecto"])}
-<h3>Si las ventas van más lentas o más rápidas</h3>
-<p>En el fideicomiso el dueño cobra cuando se vende. Si el proyecto vende más despacio, cobra lo mismo pero más tarde, y eso vale menos hoy. Con el {pct(F['X_viable'])}:</p>
-{tabla([(f"{rt} lotes al mes ({N/rt/12:.1f} años)", mill(F['X_viable']*S), mill(F['X_viable']*F['vp'](F['R_DUENO'], rt)), f"${f0(F['X_viable']*F['vp'](F['R_DUENO'], rt)/A)}/m²") for rt in (15, 20, 25, 35)], ["Ritmo de ventas", "Cobra en total", "Vale hoy (al 10 %)", "Equivale a"])}
-<p class="nota">Cuentas antes de impuestos y con precios de venta fijos (si los lotes suben de precio, el dueño gana en proporción). El fideicomiso de desarrollo lo administra un banco: el dueño aporta el terreno libre de gravámenes, el proyecto pone todo lo demás y el banco le paga al dueño su porcentaje de cada cobro.</p>
-<h2 id="cuota">Cuota de mantenimiento</h2>
+
+<h2 id="flujo">Flujo de efectivo</h2>
+<div class="scroll sec"><div class="dibujo">{svg_flujo}</div></div>
+<ol class="puntos">{lista_puntos}</ol>
+<p>Los lotes se venden conforme se urbanizan: arranque lento en la etapa 1, un pico cuando ya se ve el club y el bulevar, un valle a media obra y un cierre parejo. El modelo supone que el comprador paga el lote completo al escriturar (contado o crédito bancario); si se vende a plazos, el dueño cobra su {pct(X_DUENO)} de cada mensualidad.</p>
+
+<h2 id="ventas">De dónde salen las ventas</h2>
+<p>El lote se vende urbanizado, sin casa, a <b>≈ $3,400/m²</b> para 300 m² (baja $2 por cada m² de más), con 8 % más frente a parque y 5 % más frente al bulevar. El comercio, a $6,000/m². Son precios de 2026 comparables con lotes urbanizados de Torreón ($3,500–3,750/m²).</p>
+{tabla(filas_v, ["Lotes", "Cuántos", "m²", "Precio por m²", "Precio por lote", "Venta"], "", ("<b>Total</b>", f"<b>{f0(N)}</b>", f"<b>{f0(R['vendible_m2'] + R['predio_comercial_m2'])}</b>", "", "", f"<b>{mill(R['venta'], 1)}</b>"))}
+<h3>La obra</h3>
+{tabla([(e(k), mill(v, 1)) for k, v in SV['por_servicio'].items()] + [(e(k), mill(v, 1)) for k, v in AMEN.items()] + [("Iluminación de paisaje y acceso", mill(PAISAJE, 1)), (f"Reubicar {R['reubicar']} nogales", mill(REUBICA, 1))],
+       ["Concepto", "Importe"], "compacta", ("<b>Total de la obra</b>", f"<b>{mill(OBRA_TOTAL, 1)}</b>"))}
+<p>El detalle partida por partida está en <a href="/servicios/#presupuesto">Servicios</a>.</p>
+
+<h2 id="porque">De dónde sale el {pct(X_DUENO)}</h2>
+<p>Es el porcentaje en el que el dueño y el proyecto ganan lo mismo frente a una venta de contado, y el máximo que el proyecto aguanta con la obra completa dejando 20 % de margen. Al dueño, esperar un año por su dinero le cuesta {pct(FID['R_DUENO'], 0)}; al proyecto, tener el dinero puesto un año le cuesta {pct(FID['R_PROY'], 0)}: por esa diferencia los dos ganan con el fideicomiso. Cada $100/m² más de precio son {pct(2*100*GROSS/(FID['VPd']+FID['VPp']), 2)} más de las ventas para el dueño, que salen del margen del proyecto.</p>
+
+<h2 id="cuota">Mantenimiento y agua: la operación</h2>
 {tabla([(e(c['concepto']), e(c['incluye']), f"${f0(c['mes'])}") for c in SV['cuota']], ["Concepto", "Qué incluye", "Al mes"], "", ("<b>Total al mes · por casa</b>", "", f"<b>${f0(SV['cuota_total'])} · ${f0(SV['cuota_casa'])}</b>"))}
-<p>Es lo que se le puede prometer al comprador: seguridad 24 horas, los nogales regados y podados, la planta operando, la iluminación, el club y un fondo de reserva para pavimentos y bombas.</p>
+<p>Más el agua: ${f0(FI.CUOTA_AGUA)} por casa al mes, con el pozo, la cisterna y la planta de tratamiento operados por nosotros. Con las {f0(N)} casas habitadas, la operación cobra {mill(MOD['flujo'][-1]['cuotas'], 2)} al mes; la cuota cubre seguridad 24 horas, los nogales regados y podados, la planta, la iluminación, el club y un fondo de reserva.</p>
+<p class="nota">Cuentas en pesos de 2026, antes de impuestos. El fideicomiso de desarrollo lo administra un banco: el dueño aporta el terreno libre de gravámenes, el inversionista pone la obra, nosotros el proyecto, la gestión y las ventas, y el banco le paga a cada quien su parte de cada cobro. Todo sale de <code>pipeline/scripts/n6_fideicomiso.py</code>.</p>
 """
-    pagina("numeros", "Números", "10 · Números", "Ventas, costos, margen, el precio del terreno que aguanta el proyecto, el fideicomiso y la cuota de mantenimiento.", cuerpo,
-           [("ventas", "Ventas"), ("costos", "Costos"), ("margen", "Margen"), ("fideicomiso", "Fideicomiso"), ("cuota", "Cuota")])
+    pagina("numeros", "Números y fideicomiso", "10 · Números y fideicomiso", f"El dueño aporta el terreno y cobra el {pct(X_DUENO)} de cada venta; el inversionista pone la obra; nosotros cobramos en lotes y operamos el agua y el mantenimiento.", cuerpo,
+           [("esquema", "Cómo opera"), ("reparto", "Qué recibe cada quien"), ("flujo", "Flujo de efectivo"), ("ventas", "Ventas y obra"), ("porque", f"De dónde sale el {pct(X_DUENO)}"), ("cuota", "Mantenimiento y agua")])
 
 # ======================= ETAPAS =======================
 def etapas():
@@ -725,7 +788,7 @@ def etapas():
 <h2 id="siguientes">Siguientes pasos</h2>
 <ol>
 <li><b>Confirmar el predio:</b> lindero, superficie real, tenencia (propiedad privada o ejido) y gravámenes; título de concesión de agua del pozo y su volumen.</li>
-<li><b>Sentarse con el dueño</b> con las dos opciones calculadas: compra de contado (hasta ${f0(FID['p_contado'])}/m²) o fideicomiso ({pct(FID['X_viable'])} de las ventas). Ver <a href="/numeros/#fideicomiso">Números</a>.</li>
+<li><b>Sentarse con el dueño</b> con la propuesta: ${f0(PRECIO_FID)}/m² en fideicomiso, {pct(X_DUENO)} de cada venta. Ver <a href="/numeros/">Números y fideicomiso</a>.</li>
 <li><b>Uso de suelo:</b> consulta en Desarrollo Urbano de Torreón sobre densidad, restricciones, áreas de donación y la conexión a la Calzada José Vasconcelos.</li>
 <li><b>Estudios de campo:</b> topografía a cada 10 m, mecánica de suelos y pruebas de infiltración.</li>
 <li><b>Factibilidades</b> de SIMAS (o permiso de planta propia y reúso), CFE y Protección Civil.</li>

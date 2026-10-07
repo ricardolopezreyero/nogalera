@@ -317,3 +317,9 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
   h2 { break-after: avoid; }
   figure, table, .kpis { break-inside: avoid; }
 }
+/* fideicomiso */
+.esquema, .flujo { width: 100%; height: auto; display: block; }
+.flujo { min-width: 56rem; }
+.puntos { columns: 2; column-gap: 2rem; max-width: 52rem; padding-left: 0; list-style: none; font-size: 0.9rem; }
+.puntos li { break-inside: avoid; margin: 0.2rem 0; }
+@media (max-width: 40rem) { .puntos { columns: 1; } }

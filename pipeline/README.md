@@ -80,7 +80,7 @@ Dos partes: el pipeline pesado (necesita el venv y `data/`) escribe los datos a 
 ./venv/bin/python scripts/n6_servicios.py data ../public/datos etiquetas/n6_limite.geojson
 #   ↑ corre toda la cadena: n6_confort (diseño) → n6_direcciones (calles, direcciones, fachada por lote) → n6_luz (iluminación) → servicios
 #     escribe confort.geojson, arboles_confort.json, luces.json, servicios.geojson, servicios.json y especificaciones.csv
-python3 scripts/sitio.py                                                  # el sitio completo: una carpeta por sección en public/
+python3 scripts/sitio.py                                                  # el sitio completo (fideicomiso y flujo: n6_fideicomiso.py): una carpeta por sección en public/
 ```
 
 Módulos que usa `sitio.py`: `n6_casa_planta.py` (plantas amuebladas), `n6_casa_dibujos.py` (conjunto, corte, azotea, fachadas y cuadra), `n6_fachadas.py` (los 9 tipos y el reparto), `n6_acceso_calc.py` y `n6_acceso.py` (hora pico y plano del acceso), `n6_terreno.py` (fideicomiso). El límite de N6 está en `etiquetas/n6_limite.geojson`. Versiones anteriores del diseño (`n6_optimo.py`, `n6_final.py`) quedan como referencia.
