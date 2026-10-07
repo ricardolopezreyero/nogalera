@@ -235,7 +235,7 @@ HTML = f"""<!doctype html>
 <body>
 <main class="doc">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="casa.html" aria-current="page">Casa muestra</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html" aria-current="page">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
   <h1>Casa muestra · Modelo Nogal <span>Un solo modelo para todo el fraccionamiento. Solo cambia la fachada según hacia dónde da la calle.</span></h1>
   <dl class="datos">

@@ -9,9 +9,8 @@
 <link rel="stylesheet" href="../vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="../style.css">
 <style>
-  .nav { display: flex; border: 1px solid var(--linea); margin-bottom: 0.625rem; }
-  .nav a { flex: 1; text-align: center; padding: 0.3rem 0.2rem; text-decoration: none; font-size: 0.8125rem; border-right: 1px solid var(--linea); }
-  .nav a:last-child { border-right: 0; }
+  .nav { display: flex; flex-wrap: wrap; gap: 1px; background: var(--linea); border: 1px solid var(--linea); margin-bottom: 0.625rem; }
+  .nav a { flex: 1 0 auto; text-align: center; padding: 0.3rem 0.4rem; text-decoration: none; font-size: 0.8125rem; white-space: nowrap; background: var(--papel); }
   .nav a[aria-current="page"] { background: var(--tinta); color: var(--papel); }
   .panel { width: 23rem; }
   .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem 0.75rem; margin: 0.5rem 0; font-variant-numeric: tabular-nums; }
@@ -32,11 +31,7 @@
 
 <section class="panel" id="panel" aria-labelledby="titulo">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a>
-    <a href="./">N6 · diseño</a>
-    <a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a>
-    <a href="base.html" aria-current="page">N6 · base</a>
-    <a href="tamanos.html">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html" aria-current="page">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
   <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · diseño base alineado a los nogales (sin el programa de confort)</span></h1>
   <dl class="kpis" id="kpis"><div><dt>Cargando…</dt><dd></dd></div></dl>
@@ -50,7 +45,7 @@
     <span><b class="p" style="background:#000"></b>Nogal que se queda</span>
     <span><b class="p" style="background:#fff;border:2px solid #000"></b>Nogal a reubicar</span>
   </div>
-  <label class="chk"><input type="checkbox" id="chk-arboles" checked> Mostrar nogales (al acercar el mapa)</label>
+  <label class="chk"><input type="checkbox" id="chk-arboles" checked> Mostrar nogales</label>
   <div class="notas">
     <p><b>La idea:</b> no se le impone un trazo a la huerta; el trazo sale de la huerta. Los nogales están en cuadrícula de 12.6 × 12.7 m, así que:</p>
     <p><b>Calles</b> sobre las líneas libres entre hileras, cada 5 hileras. El arroyo de 7 m pasa entre troncos y los nogales quedan en la banqueta: calles arboladas desde el día uno.</p>
@@ -94,8 +89,12 @@
   var capaArboles = L.layerGroup();
   var rotulos = L.layerGroup();
   var verArboles = true;
+  // Cada nogal en su lugar exacto, a cualquier zoom: de lejos es un punto; de cerca, el tamaño de su copa (según su altura).
+  var MPP = 156543.03 * Math.cos(25.56 * Math.PI / 180);
+  function radioArbol(h) { var m = MPP / Math.pow(2, map.getZoom()); return Math.max(1.4, Math.min(0.32 * h + 1.2, 6) / m); }
+  function tamanoArboles() { capaArboles.eachLayer(function (c) { var r = radioArbol(c.options.h); c.setRadius(r); c.setStyle({ weight: c.options.mover ? (r > 3 ? 1.5 : 0.8) : 0 }); }); }
   function verRotulos() { if (map.getZoom() >= 17) rotulos.addTo(map); else map.removeLayer(rotulos);
-    if (verArboles && map.getZoom() >= 16) capaArboles.addTo(map); else map.removeLayer(capaArboles); }
+    if (verArboles) { tamanoArboles(); capaArboles.addTo(map); } else map.removeLayer(capaArboles); }
   map.on("zoomend", verRotulos);
   Promise.all([fetch("final.geojson").then(function (r) { return r.json(); }), fetch("arboles.json").then(function (r) { return r.json(); })]).then(function (res) {
     var fc = res[0], arb = res[1], s = fc.resumen, todo;
@@ -116,7 +115,7 @@
       L.marker(L.geoJSON(f).getBounds().getCenter(), { icon: L.divIcon({ className: "estrella", html: n, iconSize: null }), interactive: false }).addTo(rotulos);
     });
     arb.forEach(function (a) {
-      L.circleMarker([a[1], a[0]], { renderer: lienzo, radius: a[2] ? 3 : 2.2, weight: a[2] ? 1.5 : 0, color: "#000", fillColor: a[2] ? "#fff" : "#000", fillOpacity: 1, interactive: false }).addTo(capaArboles);
+      L.circleMarker([a[1], a[0]], { renderer: lienzo, radius: 2, h: a[3], mover: !!a[2], weight: 0, color: "#000", fillColor: a[2] ? "#fff" : "#000", fillOpacity: 1, interactive: false }).addTo(capaArboles);
     });
     verRotulos();
     document.getElementById("chk-arboles").addEventListener("change", function (e) { verArboles = e.target.checked; verRotulos(); });

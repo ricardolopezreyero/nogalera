@@ -94,7 +94,7 @@ HTML = f"""<!doctype html>
 </style></head>
 <body><main class="doc">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html" aria-current="page">Acceso</a><a href="casa.html">Casa muestra</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html" aria-current="page">Acceso</a><a href="casa.html">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
   <h1>Acceso <span>Entran 2 carriles de residentes y 2 de visitas. Salen 1 de residentes y 1 de visitas.</span></h1>
   <dl class="datos">

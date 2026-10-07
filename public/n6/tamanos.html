@@ -14,8 +14,8 @@
   .tabs a, .tabs button { flex: 1 0 16%; text-align: center; border: 0; border-right: 1px solid var(--linea); padding: 0.375rem 0.25rem; font-size: 0.8125rem; text-decoration: none; min-height: 2rem; }
   .tabs > :last-child { border-right: 0; }
   .tabs [aria-pressed="true"], .tabs [aria-current="page"] { background: var(--tinta); color: var(--papel); }
-  .nav { display: flex; border: 1px solid var(--linea); margin-bottom: 0.625rem; }
-  .nav a { flex: 1; text-align: center; padding: 0.3rem; text-decoration: none; font-size: 0.8125rem; }
+  .nav { display: flex; flex-wrap: wrap; gap: 1px; background: var(--linea); border: 1px solid var(--linea); margin-bottom: 0.625rem; }
+  .nav a { flex: 1 0 auto; text-align: center; padding: 0.3rem 0.4rem; text-decoration: none; font-size: 0.8125rem; white-space: nowrap; background: var(--papel); }
   .nav a[aria-current="page"] { background: var(--tinta); color: var(--papel); }
   .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem 0.75rem; margin: 0.5rem 0; font-variant-numeric: tabular-nums; }
   .kpis dt { color: var(--gris); font-size: 0.75rem; }
@@ -39,11 +39,7 @@
 
 <section class="panel" id="panel" aria-labelledby="titulo">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a>
-    <a href="./">N6 · diseño</a>
-    <a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a>
-    <a href="base.html">N6 · base</a>
-    <a href="tamanos.html" aria-current="page">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html" aria-current="page">N6 · tamaños</a>
   </nav>
   <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · borradores de lotificación</span></h1>
   <p class="stats" id="bruto">Cargando…</p>

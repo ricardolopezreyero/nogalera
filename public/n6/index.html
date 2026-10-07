@@ -9,9 +9,8 @@
 <link rel="stylesheet" href="../vendor/leaflet/leaflet.css">
 <link rel="stylesheet" href="../style.css">
 <style>
-  .nav { display: flex; border: 1px solid var(--linea); margin-bottom: 0.625rem; }
-  .nav a { flex: 1; text-align: center; padding: 0.3rem 0.2rem; text-decoration: none; font-size: 0.8125rem; border-right: 1px solid var(--linea); }
-  .nav a:last-child { border-right: 0; }
+  .nav { display: flex; flex-wrap: wrap; gap: 1px; background: var(--linea); border: 1px solid var(--linea); margin-bottom: 0.625rem; }
+  .nav a { flex: 1 0 auto; text-align: center; padding: 0.3rem 0.4rem; text-decoration: none; font-size: 0.8125rem; white-space: nowrap; background: var(--papel); }
   .nav a[aria-current="page"] { background: var(--tinta); color: var(--papel); }
   .panel { width: 23rem; }
   .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem 0.75rem; margin: 0.5rem 0; font-variant-numeric: tabular-nums; }
@@ -31,6 +30,14 @@
   .calle { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #000; white-space: nowrap; text-shadow: 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #fff; transform: translate(-50%, -50%); width: auto !important; height: auto !important; pointer-events: none; }
   .calle.cruce { font-weight: 400; }
   .chk { font-size: 0.8125rem; display: flex; gap: 0.5rem; align-items: center; margin: 0.25rem 0; }
+  .luz { border-top: 1px solid var(--linea); margin-top: 0.5rem; padding-top: 0.375rem; font-size: 0.75rem; }
+  .luz[hidden] { display: none; }
+  .luz p { margin: 0.3rem 0; } .luz ul { list-style: none; margin: 0.3rem 0; padding: 0; display: grid; grid-template-columns: 1fr auto; gap: 0.1rem 0.75rem; font-variant-numeric: tabular-nums; }
+  .luz li { display: contents; } .luz li span:last-child { text-align: right; font-weight: 700; }
+  /* Vista de noche: el plano se invierte y solo brilla la luz (cálida, 2700–3000 K) */
+  #map.noche { background: #000; }
+  #map.noche .leaflet-tile-pane { filter: grayscale(1) invert(1) brightness(0.35); }
+  #map.noche .leaflet-overlay-pane, #map.noche .leaflet-marker-pane { filter: invert(1) brightness(0.55); }
   @media (max-width: 40rem) { .panel { max-height: 50vh; } .notas { display: none; } }
 </style>
 </head>
@@ -39,11 +46,7 @@
 
 <section class="panel" id="panel" aria-labelledby="titulo">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a>
-    <a href="./" aria-current="page">N6 · diseño</a>
-    <a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a>
-    <a href="base.html">N6 · base</a>
-    <a href="tamanos.html">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./" aria-current="page">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
   <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · diseño alineado a los nogales</span></h1>
   <dl class="kpis" id="kpis"><div><dt>Cargando…</dt><dd></dd></div></dl>
@@ -64,7 +67,9 @@
     <datalist id="dirs"></datalist>
     <p id="q-msg" class="q-msg" role="status"></p>
   </form>
-  <label class="chk"><input type="checkbox" id="chk-arboles" checked> Mostrar nogales (al acercar el mapa)</label>
+  <label class="chk"><input type="checkbox" id="chk-arboles" checked> Mostrar nogales</label>
+  <label class="chk"><input type="checkbox" id="chk-luz"> Iluminación (vista de noche)</label>
+  <div class="luz" id="luz" hidden aria-live="polite"></div>
   <div class="notas">
     <p><b>Lo que tiene, y nada más:</b></p>
     <p><b>Lotes de 12.7 × 25.9 m (328 m²)</b> trazados sobre la cuadrícula de nogales: los árboles quedan en los linderos y la casa va entre ellos. Calles entre hileras, con los nogales en la banqueta. Se quedan 85 % de los árboles.</p>
@@ -73,7 +78,8 @@
     <p><b>Bulevar central</b> con sendero, <b>2 parques</b> en las manzanas de nogales más grandes y <b>pista para correr</b> de 3.3 km por el perímetro.</p>
     <p><b>Frente comercial</b>: los lotes pegados a la Calle Juan Agustín de Espinoza se venden como comercio hacia afuera; nadie vive junto a la avenida.</p>
     <p><b>Direcciones:</b> una palabra y un número, como «Encino 65, Fracc. La Nogalera». Las calles largas llevan nombre de árbol y las que cruzan, de ave, las dos en orden alfabético: de sur a norte <b>Álamo, Cedro, Ébano, Encino, Nogal</b> (el bulevar), <b>Olmo, Roble, Sabino</b>; de poniente a oriente <b>Alondra, Calandria, Cenzontle, Colibrí, Garza, Gorrión, Jilguero, Paloma, Tórtola</b>. Impares al norte y pares al sur.</p>
-    <p>Supuestos: terreno $670/m²; calles $1,400/m²; redes $250/m² bruto; amenidades $46 millones; reubicar cada nogal $12,000; ventas y permisos 12 %; lote a ≈ $3,340/m² (+8 % frente a parque, +5 % frente al bulevar); comercio a $6,000/m². Lindero por confirmar con catastro.</p>
+    <p><b>Iluminación</b> (casilla de arriba): arbotantes entre los nogales, el bulevar con arbotante doble y sus nogales iluminados desde el piso, igual que los de los parques, el club y la plaza de acceso; balizas en la pista y el acceso bien iluminado. Luz cálida y baja.</p>
+    <p>Supuestos: terreno $670/m² (<a href="terreno.html">cuánto le toca al dueño en fideicomiso</a>); calles $1,400/m²; redes $250/m² bruto; amenidades $46 millones; iluminación de paisaje y acceso $7.7 millones; reubicar cada nogal $12,000; ventas y permisos 12 %; lote a ≈ $3,340/m² (+8 % frente a parque, +5 % frente al bulevar); comercio a $6,000/m². Lindero por confirmar con catastro.</p>
   </div>
 </section>
 
@@ -119,8 +125,12 @@
   var capaArboles = L.layerGroup();
   var rotulos = L.layerGroup();
   var verArboles = true;
+  // Cada nogal en su lugar exacto, a cualquier zoom: de lejos es un punto; de cerca, el tamaño de su copa (según su altura).
+  var MPP = 156543.03 * Math.cos(25.56 * Math.PI / 180);
+  function radioArbol(h) { var m = MPP / Math.pow(2, map.getZoom()); return Math.max(1.4, Math.min(0.32 * h + 1.2, 6) / m); }
+  function tamanoArboles() { capaArboles.eachLayer(function (c) { var r = radioArbol(c.options.h); c.setRadius(r); c.setStyle({ weight: c.options.mover ? (r > 3 ? 1.5 : 0.8) : 0 }); }); }
   function verRotulos() { if (map.getZoom() >= 17) rotulos.addTo(map); else map.removeLayer(rotulos);
-    if (verArboles && map.getZoom() >= 16) capaArboles.addTo(map); else map.removeLayer(capaArboles); }
+    if (verArboles) { tamanoArboles(); capaArboles.addTo(map); } else map.removeLayer(capaArboles); }
   map.on("zoomend", verRotulos);
   Promise.all([fetch("confort.geojson").then(function (r) { return r.json(); }), fetch("arboles_confort.json").then(function (r) { return r.json(); })]).then(function (res) {
     var fc = res[0], arb = res[1], s = fc.resumen, todo, porDir = {};
@@ -149,7 +159,7 @@
       L.marker(L.geoJSON(f).getBounds().getCenter(), { icon: L.divIcon({ className: "estrella", html: n, iconSize: null }), interactive: false }).addTo(rotulos);
     });
     arb.forEach(function (a) {
-      L.circleMarker([a[1], a[0]], { renderer: lienzo, radius: a[2] ? 3 : 2.2, weight: a[2] ? 1.5 : 0, color: "#000", fillColor: a[2] ? "#fff" : "#000", fillOpacity: 1, interactive: false }).addTo(capaArboles);
+      L.circleMarker([a[1], a[0]], { renderer: lienzo, radius: 2, h: a[3], mover: !!a[2], weight: 0, color: "#000", fillColor: a[2] ? "#fff" : "#000", fillOpacity: 1, interactive: false }).addTo(capaArboles);
     });
     verRotulos();
     var lista = Object.keys(porDir).map(function (k) { return porDir[k].feature.properties.dir; });
@@ -167,6 +177,36 @@
       l.openPopup();
     });
     document.getElementById("chk-arboles").addEventListener("change", function (e) { verArboles = e.target.checked; verRotulos(); });
+    // Iluminación: lo que paga y mantiene el fraccionamiento
+    map.createPane("luces"); map.getPane("luces").style.zIndex = 450;
+    var lienzoLuz = L.canvas({ pane: "luces", padding: 0.5 }), capaLuz = L.layerGroup(), luzLista = false, focos = [];
+    var HALO = { calle: [11, 0.2], bulevar: [14, 0.24], acceso: [13, 0.26], peatonal: [5, 0.3], baliza: [2.2, 0.45], nogal: [5.5, 0.42], estac: [9, 0.2], cancha: [10, 0.22], caseta: [6, 0.5], letrero: [4, 0.6] };
+    function cargarLuz() {
+      if (luzLista) return Promise.resolve();
+      return fetch("luces.json").then(function (r) { return r.json(); }).then(function (d) {
+        var r = d.resumen, t = r.tipos;
+        d.p.forEach(function (q) {
+          var k = d.tipos[q[2]], h = HALO[k];
+          L.circle([q[1], q[0]], { renderer: lienzoLuz, radius: h[0], stroke: false, fillColor: "#ffc766", fillOpacity: h[1], interactive: false }).addTo(capaLuz);
+          focos.push(L.circleMarker([q[1], q[0]], { renderer: lienzoLuz, radius: 1, chico: k === "nogal" || k === "baliza", stroke: false, fillColor: "#fff3d6", fillOpacity: 1 }).bindPopup(t[k].nombre).addTo(capaLuz));
+        });
+        document.getElementById("luz").innerHTML =
+          "<p><b>" + nf0.format(r.puntos) + " puntos de luz</b> que paga y mantiene el fraccionamiento. Luz cálida y baja; los focos de los nogales se apagan a medianoche.</p><ul>" +
+          ["calle", "bulevar", "nogal", "baliza", "peatonal", "acceso", "caseta", "letrero", "estac", "cancha"].map(function (k) { return "<li><span>" + t[k].nombre + "</span><span>" + nf0.format(t[k].n) + "</span></li>"; }).join("") +
+          "</ul><p>Inversión ≈ <b>$" + nf1.format(r.inversion / 1e6) + " millones</b> ($" + nf1.format(r.inversion_calles / 1e6) + " de arbotantes de calle, ya incluidos en redes, y $" + nf1.format(r.inversion_paisaje / 1e6) + " de paisaje y acceso, que se suman al costo). Luz y mantenimiento ≈ <b>$" + nf0.format(r.cuota_casa_mes) + " por casa al mes</b>.</p>";
+        luzLista = true;
+      });
+    }
+    function tamanoFocos() { var z = map.getZoom(); focos.forEach(function (f) { f.setRadius(z >= 18 ? (f.options.chico ? 1.8 : 2.6) : z >= 16 ? (f.options.chico ? 1.2 : 1.8) : 0.8); }); }
+    map.on("zoomend", tamanoFocos);
+    function verLuz(on) {
+      document.getElementById("map").classList.toggle("noche", on);
+      document.getElementById("luz").hidden = !on;
+      if (on) cargarLuz().then(function () { tamanoFocos(); capaLuz.addTo(map); }); else map.removeLayer(capaLuz);
+    }
+    var chkLuz = document.getElementById("chk-luz");
+    chkLuz.addEventListener("change", function (e) { verLuz(e.target.checked); });
+    if (location.hash === "#noche") { chkLuz.checked = true; verLuz(true); }
     var quedan = s.arboles - s.reubicar;
     document.getElementById("kpis").innerHTML =
       "<div><dt>Lotes (casas)</dt><dd>" + nf0.format(s.lotes) + "</dd></div>" +
