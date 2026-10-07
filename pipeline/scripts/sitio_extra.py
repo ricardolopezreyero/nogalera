@@ -85,7 +85,7 @@ def detalle_luz(u0, v0, u1, v1, titulo, S=4.0, notas=()):
 
 def iluminacion():
     t = LZ["tipos"]; orden = ["calle", "bulevar", "nogal", "baliza", "peatonal", "acceso", "caseta", "letrero", "estac", "cancha"]
-    v_enc = _v_de_calle("Encino"); u_g, u_gr = _u_de_cruce("Garza"), _u_de_cruce("Grulla"); v_bul = _v_de_calle("Nogal")
+    v_enc = _v_de_calle("Encino"); u_g, u_gr = _u_de_cruce("Garza"), _u_de_cruce("Gaviota"); v_bul = _v_de_calle("Nogal")
     ua, va = uv(*_acc_lonlat)
     parque = next(f for f in FC["features"] if f["properties"]["capa"] == "parque")
     pcs = [uv(*c) for c in parque["geometry"]["coordinates"][0]]; pu0, pu1, pv0, pv1 = min(c[0] for c in pcs), max(c[0] for c in pcs), min(c[1] for c in pcs), max(c[1] for c in pcs)
@@ -109,7 +109,7 @@ def iluminacion():
 <figure><div class="dibujo">{plano_luces_svg()}</div><figcaption><b>Plano de alumbrado: las {f0(LZ['puntos'])} luminarias en su lugar.</b> Cada una tiene una clave (C-001, B-012, N-204…) con sus coordenadas en el <a href="/datos/luminarias.csv">inventario</a>; en el <a href="/plan/#noche">mapa</a>, al tocar un punto, sale su clave y dónde está.</figcaption></figure>
 <h2 id="detalles">Detalles por zona</h2>
 <div class="dos">
-<figure><div class="dibujo">{detalle_luz(u_g - 12, v_enc - 24, u_gr + 12, v_enc + 24, "Una cuadra de Encino, entre Garza y Grulla", 4.2, ("arbotantes a tresbolillo cada 25.4 m", "esquinas noroeste y sureste en cada cruce", "ninguno a menos de 2.5 m de un tronco"))}</div><figcaption><b>Calle tipo.</b> Los arbotantes van en la banqueta, alternando acera, y se corren para no quedar junto a un nogal. En cada cruce, dos esquinas opuestas.</figcaption></figure>
+<figure><div class="dibujo">{detalle_luz(u_g - 12, v_enc - 24, u_gr + 12, v_enc + 24, "Una cuadra de Encino, entre Garza y Gaviota", 4.2, ("arbotantes a tresbolillo cada 25.4 m", "esquinas noroeste y sureste en cada cruce", "ninguno a menos de 2.5 m de un tronco"))}</div><figcaption><b>Calle tipo.</b> Los arbotantes van en la banqueta, alternando acera, y se corren para no quedar junto a un nogal. En cada cruce, dos esquinas opuestas.</figcaption></figure>
 <figure><div class="dibujo">{detalle_luz(u_g - 10, v_bul - 26, u_g + 150, v_bul + 26, "Bulevar Nogal, un tramo de 160 m", 4.2, ("arbotante doble cada 30 m en el camellón", "poste peatonal entre cada dos, en el sendero", "foco de piso a cada nogal de las banquetas"))}</div><figcaption><b>Bulevar.</b> Tres capas de luz: la alta de los arbotantes dobles, la baja del sendero y los nogales iluminados desde el piso.</figcaption></figure>
 <figure><div class="dibujo">{detalle_luz(ua - 70, va - 6, ua + 70, va + 100, "El acceso", 4.2, ("postes de 9 m en las orillas cada 14 m y en las islas", "casetas, plumas y letrero iluminados", "nogales de la plaza con foco de piso"))}</div><figcaption><b>Acceso.</b> De la calzada a las plumas, 20 a 30 lux: se ven las placas, las caras y el letrero desde lejos.</figcaption></figure>
 <figure><div class="dibujo">{detalle_luz(pu0 - 15, pv0 - 15, pu1 + 15, pv1 + 15, parque["properties"]["nombre"], 4.2, ("foco de piso a cada nogal", "postes peatonales de 3.5 m cada 30 m en la orilla", "sin postes altos adentro"))}</div><figcaption><b>Parque.</b> La luz sale de los árboles; en la orilla, postes bajos cada 30 m para los andadores.</figcaption></figure>

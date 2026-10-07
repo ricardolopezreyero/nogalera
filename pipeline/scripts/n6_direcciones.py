@@ -7,9 +7,9 @@ from n6_fachadas import fachada_de
 FRACC = "La Nogalera"                       # nombre del fraccionamiento (provisional)
 # Calles: las que corren a lo largo (paralelas al bulevar) son árboles; las que cruzan, aves. Las dos en orden alfabético:
 # de sur a norte y de poniente a oriente. Si sabes una letra, sabes dónde está la calle.
-# Nombres cortos, sin acentos y fáciles de decir y de escribir.
+# Nombres cortos, sin acentos y fáciles de decir y de escribir (aves muy conocidas: nada de alondras, mirlos ni zorzales).
 LARGAS = ["Cedro", "Encino", "Fresno", "Laurel", "Nogal", "Olmo", "Pino", "Roble"]
-CRUCES = ["Alondra", "Canario", "Garza", "Grulla", "Mirlo", "Paloma", "Perico", "Tordo", "Zorzal"]
+CRUCES = ["Canario", "Cardenal", "Garza", "Gaviota", "Loro", "Paloma", "Perico", "Quetzal", "Zanate"]
 ejes = sorted([(c, "calle") for c in calles_v] + [(vb, "bulevar")])
 assert len(ejes) == len(LARGAS) and len(cruces) == len(CRUCES), (len(ejes), len(cruces))
 nombre_v = {round(c, 2): (LARGAS[i], t) for i, (c, t) in enumerate(ejes)}

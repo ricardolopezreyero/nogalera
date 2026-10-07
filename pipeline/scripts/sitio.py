@@ -352,7 +352,7 @@ def calles():
 <div class="dos">
 <div>
 <ul>
-<li><b>La centena es la cuadra:</b> cuántas transversales quedan al poniente de la casa. «{EJEMPLO}» está en Encino, pasando la {int(EJEMPLO.split()[1])//100}.ª transversal ({R['calles_cruce'][int(EJEMPLO.split()[1])//100 - 1]}). La primera cuadra, antes de Alondra, va del 1 al 99.</li>
+<li><b>La centena es la cuadra:</b> cuántas transversales quedan al poniente de la casa. «{EJEMPLO}» está en Encino, pasando la {int(EJEMPLO.split()[1])//100}.ª transversal ({R['calles_cruce'][int(EJEMPLO.split()[1])//100 - 1]}). La primera cuadra, antes de {R['calles_cruce'][0]}, va del 1 al 99.</li>
 <li><b>Impares al norte, pares al sur,</b> y el número va por posición en la cuadra (uno cada 12.7 m): la casa de enfrente del 405 es el 404 o el 406, siempre.</li>
 <li><b>Los números crecen de poniente a oriente</b> en todas las calles. El más alto es el {R['num_max']}.</li>
 <li><b>En la esquina, la placa dice las dos calles y el rango:</b> «Encino 401–423». Con el número sabes la cuadra; con la letra, la calle.</li>
