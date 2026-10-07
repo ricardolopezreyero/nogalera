@@ -166,6 +166,28 @@ def plano_svg(modo="plan", ancho_px=1400, titulo=""):
     o.append("</svg>")
     return "\n".join(o)
 
+def esquema_numeros(calle, q, S=3.2):
+    """Una cuadra de una calle con sus números, en planta, desde el plano."""
+    idx = R["calles_largas"].index(calle); v = _v_de_calle(calle)
+    xs = [_u_de_cruce(n) for n in R["calles_cruce"]]; ua, ub = xs[q - 1], xs[q]
+    fs = [f for f in _lotes_f if f["properties"]["dir"].startswith(calle + " ") and f["properties"]["dir"].split()[1].rjust(3, "0")[0] == str(q) and len(f["properties"]["dir"].split()[1]) == 3]
+    pad = 14; W = (ub - ua + 30) * S + 2 * pad; H = 70 * S + 2 * pad
+    X = lambda u: pad + (u - ua + 15) * S; Y = lambda vv: pad + (v + 35 - vv) * S
+    o = [f'<svg viewBox="0 0 {W:.0f} {H:.0f}" role="img" aria-label="Números de una cuadra de {e(calle)}">']
+    o.append(f'<rect x="{X(ua-15):.1f}" y="{Y(v+5.5):.1f}" width="{(ub-ua+30)*S:.1f}" height="{11*S:.1f}" class="pm-vial"/>')
+    for x in (ua, ub): o.append(f'<rect x="{X(x-5.5):.1f}" y="{Y(v+35):.1f}" width="{11*S:.1f}" height="{70*S:.1f}" class="pm-vial"/>')
+    for f in fs:
+        pts = " ".join(f"{X(u):.1f},{Y(vv):.1f}" for u, vv in (uv(*c) for c in f["geometry"]["coordinates"][0]))
+        o.append(f'<polygon points="{pts}" class="pm-lote" style="stroke:#000;stroke-width:0.8"/>')
+        cu, cv = uv(*centro(f)); n = f["properties"]["dir"].split()[1]
+        o.append(f'<text x="{X(cu):.1f}" y="{Y(cv)+4:.1f}" font-size="11" text-anchor="middle" fill="#000">{n}</text>')
+    o.append(f'<text x="{X((ua+ub)/2):.1f}" y="{Y(v)+4:.1f}" class="pm-rotulo" text-anchor="middle">{e(calle)}</text>')
+    for x, n in ((ua, R["calles_cruce"][q - 1]), (ub, R["calles_cruce"][q])):
+        o.append(f'<text x="{X(x):.1f}" y="{Y(v+35)-4:.1f}" class="pm-rotulo cruce" text-anchor="middle">{e(n)}</text>')
+    o.append(f'<text x="{X(ua-13):.1f}" y="{Y(v+25):.1f}" class="a">norte: impares</text><text x="{X(ua-13):.1f}" y="{Y(v-25):.1f}" class="a">sur: pares</text>')
+    o.append("</svg>")
+    return "\n".join(o)
+
 # ======================= cifras comunes =======================
 QUEDAN = R["arboles"] - R["reubicar"]
 H_ARB = [a[3] for a in ARB]
@@ -183,6 +205,8 @@ def precio_lote(p):
     x = 3400 - 2 * (p["m2"] - 300)
     return x * (1.08 if p["premio"] == "parque" else 1.05 if p["premio"] == "bulevar" else 1.0)
 MESES_VENTA = N / TE.RITMO
+PARQUES = [f["properties"]["nombre"] for f in FC["features"] if f["properties"]["capa"] == "parque"]
+EJEMPLO = next(p["dir"] for p in sorted(LOTES, key=lambda p: p["n"]) if p["dir"].startswith("Encino 4") and int(p["dir"].split()[1]) % 2 == 1)
 
 # ======================= RESUMEN =======================
 def resumen():
@@ -193,7 +217,7 @@ def resumen():
         ("Los nogales se riegan con agua del propio fraccionamiento.", f"Planta de tratamiento en la punta oriente y red morada con goteo a cada nogal. Cubre el riego de los nogales, los parques y el bulevar y sobra {SV['tratamiento']['riego_pct']-100:.0f} %."),
         ("La lluvia se queda adentro.", "Jardines 10 cm abajo de la banqueta, camellón que es jardín de lluvia, parques con bordo, zanja bajo la pista, cajas bajo los estacionamientos y un vaso de tormentas. No se descarga a la calle de afuera."),
         ("Drenaje por gravedad, luz y fibra subterráneas.", f"El terreno baja {SV['TERR']['desnivel']:.1f} m al oriente: todo llega a la planta sin bombeo. Sin postes: media tensión en anillo con {SV['luz']['trafos']} transformadores de pedestal."),
-        ("Direcciones de una palabra y un número.", f"Calles largas con nombre de árbol y transversales con nombre de ave, las dos en orden alfabético: «Encino 65, Fracc. {NOMBRE}». Impares al norte, pares al sur."),
+        ("Direcciones de una palabra y un número.", f"Calles largas con nombre de árbol y transversales con nombre de ave: cortos, sin acentos y en orden alfabético. El número dice la cuadra: «{EJEMPLO}» está pasando la {int(EJEMPLO.split()[1])//100}.ª transversal, del lado norte (impar)."),
         ("Lo común, y nada más.", "Club social (salón con oficinas arriba y gimnasio), club deportivo (tenis y 2 de pádel), 2 parques en las manzanas de nogales más grandes, bulevar con sendero, pista de 3.3 km y mini súper antes de las plumas."),
         ("Presupuesto por partida y cuota calculada.", f"Urbanización de {mill(SV['URB'])} en {len(SV['partidas'])} partidas, y una cuota de ${f0(SV['cuota_casa'])} por casa al mes que se le puede prometer al comprador."),
         ("El precio del terreno que aguanta el proyecto.", f"De contado hasta ${f0(FID['p_contado'])}/m²; en fideicomiso, {pct(FID['X_viable'])} de las ventas (≈ ${f0(FID['p_fid'])}/m²), dejando 20 % de margen."),
@@ -279,7 +303,7 @@ def plan():
   <dl class="kpis" id="kpis"><div><dt>Cargando…</dt><dd></dd></div></dl>
   <form class="buscar" id="buscar" role="search">
     <label for="q">Busca una dirección</label>
-    <div><input id="q" list="dirs" placeholder="Ej. Encino 65" autocomplete="off"><button type="submit">Ir</button></div>
+    <div><input id="q" list="dirs" placeholder="Ej. {EJEMPLO}" autocomplete="off"><button type="submit">Ir</button></div>
     <datalist id="dirs"></datalist>
     <p id="q-msg" class="q-msg" role="status"></p>
   </form>
@@ -309,7 +333,7 @@ def plan():
 </section>
 """
     pagina("plan", "Plan maestro", "03 · Plan maestro", "", cuerpo, mapa=True, descripcion=f"Plano maestro interactivo de {NOMBRE}: lotes con dirección y fachada, calles, club, parques, nogales, iluminación y redes.",
-           script='<script>window.PLAN={datos:"/datos/",modo:"plan",etapas:' + json.dumps(ETAPA, separators=(",", ":")) + '};</script><script src="/vendor/leaflet/leaflet.js"></script><script src="/plan/plan.js"></script>')
+           script='<script>window.PLAN={datos:"/datos/",modo:"plan",ejemplo:"' + EJEMPLO + '",etapas:' + json.dumps(ETAPA, separators=(",", ":")) + '};</script><script src="/vendor/leaflet/leaflet.js"></script><script src="/plan/plan.js"></script>')
 
 # ======================= CALLES =======================
 def calles():
@@ -324,13 +348,20 @@ def calles():
 <div class="dos">
 <div><h3>De sur a norte</h3>{tabla([(("<b>Bulevar " if n == "Nogal" else "") + e(n) + ("</b>" if n == "Nogal" else ""), f0(por_calle.get(n, 0))) for n in R['calles_largas']], ["Calle larga", "Casas"], "compacta")}</div>
 <div><h3>De poniente a oriente</h3>{tabla([(e(n), "transversal") for n in R['calles_cruce']], ["Calle transversal", ""], "compacta")}
-<p>Las transversales no tienen casas con frente a ellas: solo cruzan. Los parques toman el nombre de su transversal (Parque Cenzontle, Parque Garza).</p></div>
+<p>Las transversales no tienen casas con frente a ellas: solo cruzan. Los parques toman el nombre de su transversal ({", ".join(PARQUES)}).</p></div>
 </div>
+<h2 id="numeros">Cómo van los números</h2>
+<div class="dos">
+<div>
 <ul>
-<li><b>La dirección es una palabra y un número:</b> «Encino 65, Fracc. {NOMBRE}». Impares del lado norte de la calle, pares del lado sur; los números crecen de poniente a oriente. El número más alto es el {R['num_max']}.</li>
-<li><b>Placas en cada esquina</b> con el nombre de las dos calles y el rango de números de esa cuadra. {C['cruces_n']} cruces señalizados.</li>
-<li>En el <a href="/plan/">plan maestro</a> se puede buscar cualquier dirección.</li>
+<li><b>La centena es la cuadra:</b> cuántas transversales quedan al poniente de la casa. «{EJEMPLO}» está en Encino, pasando la {int(EJEMPLO.split()[1])//100}.ª transversal ({R['calles_cruce'][int(EJEMPLO.split()[1])//100 - 1]}). La primera cuadra, antes de Alondra, va del 1 al 99.</li>
+<li><b>Impares al norte, pares al sur,</b> y el número va por posición en la cuadra (uno cada 12.7 m): la casa de enfrente del 405 es el 404 o el 406, siempre.</li>
+<li><b>Los números crecen de poniente a oriente</b> en todas las calles. El más alto es el {R['num_max']}.</li>
+<li><b>En la esquina, la placa dice las dos calles y el rango:</b> «Encino 401–423». Con el número sabes la cuadra; con la letra, la calle.</li>
 </ul>
+</div>
+<figure>{esquema_numeros("Encino", 4)}<figcaption><b>Una cuadra de Encino,</b> entre {R['calles_cruce'][2]} y {R['calles_cruce'][3]}: los números tal como quedan en el plano.</figcaption></figure>
+</div>
 <h2 id="secciones">Secciones de calle</h2>
 <div class="scroll sec">{C['SEC_CALLE']}</div>
 <div class="scroll sec">{C['SEC_BUL']}</div>
@@ -346,7 +377,7 @@ def calles():
 <p class="nota">Precios de 2026 sin IVA, de referencia. El detalle de todas las redes está en <a href="/servicios/">Servicios</a>.</p>
 """
     pagina("calles", "Calles y direcciones", "04 · Calles y direcciones", "Ocho calles largas con nombre de árbol, nueve transversales con nombre de ave y una dirección de una palabra y un número.", cuerpo,
-           [("nombres", "Nombres y direcciones"), ("secciones", "Secciones de calle"), ("presupuesto", "Lo que cuestan")])
+           [("nombres", "Nombres y direcciones"), ("numeros", "Cómo van los números"), ("secciones", "Secciones de calle"), ("presupuesto", "Lo que cuestan")])
 
 # ======================= ACCESO =======================
 def acceso():

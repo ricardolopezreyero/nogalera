@@ -97,7 +97,7 @@
       $("buscar").addEventListener("submit", function (e) {
         e.preventDefault();
         var q = sinAcentos($("q").value), l = indice[q], msg = $("q-msg");
-        if (!l) { msg.textContent = "No existe esa dirección. Escribe calle y número, por ejemplo: Encino 65."; return; }
+        if (!l) { msg.textContent = "No existe esa dirección. Escribe calle y número, por ejemplo: " + (O.ejemplo || "Encino 305") + "."; return; }
         msg.textContent = "";
         var m = margen(); m.maxZoom = 19;
         map.fitBounds(l.getBounds(), m); l.openPopup();

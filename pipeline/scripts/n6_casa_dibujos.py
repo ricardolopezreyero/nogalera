@@ -264,14 +264,14 @@ def fachada(nombre):
     w, h = (9 + 0.9 + 2.2) * S, 7.85 * S
     return f'<svg viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="Fachada {nombre}">' + "".join(d.o) + "</svg>"
 
-def cuadra(n=6, calle_i=0, lado_norte=True, calle="Álamo"):
+def cuadra(n=6, calle_i=1, lado_norte=True, calle="Encino", cuadra_num=3):
     """Elevación de una acera: n lotes seguidos, con los nogales en los linderos."""
     zt, mx = 11.8, 0.6
     tipos = [fachada_de(k, lado_norte, calle_i) for k in range(n)]
     o = []
     for k, t in enumerate(tipos):
         d = Dib(mx + k * LOTE_W + (LOTE_W - CASA_W) / 2, zt); patio(d); DIBUJO[t](d); o += d.o
-        num = 2 * k + (1 if lado_norte else 2)
+        num = 100 * cuadra_num + 2 * k + (1 if lado_norte else 2)
         o.append(f'<text x="{(mx + k * LOTE_W + LOTE_W / 2) * S:.0f}" y="{(zt + 0.75) * S:.0f}" font-size="26" font-weight="700" fill="#000" text-anchor="middle">{calle} {num} · {t}</text>')
     d = Dib(mx, zt)
     for k in range(n + 1):                                   # nogales en los linderos, delante de las casas

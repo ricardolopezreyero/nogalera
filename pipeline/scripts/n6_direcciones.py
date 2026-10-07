@@ -7,8 +7,9 @@ from n6_fachadas import fachada_de
 FRACC = "La Nogalera"                       # nombre del fraccionamiento (provisional)
 # Calles: las que corren a lo largo (paralelas al bulevar) son árboles; las que cruzan, aves. Las dos en orden alfabético:
 # de sur a norte y de poniente a oriente. Si sabes una letra, sabes dónde está la calle.
-LARGAS = ["Álamo", "Cedro", "Ébano", "Encino", "Nogal", "Olmo", "Roble", "Sabino"]
-CRUCES = ["Alondra", "Calandria", "Cenzontle", "Colibrí", "Garza", "Gorrión", "Jilguero", "Paloma", "Tórtola"]
+# Nombres cortos, sin acentos y fáciles de decir y de escribir.
+LARGAS = ["Cedro", "Encino", "Fresno", "Laurel", "Nogal", "Olmo", "Pino", "Roble"]
+CRUCES = ["Alondra", "Canario", "Garza", "Grulla", "Mirlo", "Paloma", "Perico", "Tordo", "Zorzal"]
 ejes = sorted([(c, "calle") for c in calles_v] + [(vb, "bulevar")])
 assert len(ejes) == len(LARGAS) and len(cruces) == len(CRUCES), (len(ejes), len(cruces))
 nombre_v = {round(c, 2): (LARGAS[i], t) for i, (c, t) in enumerate(ejes)}
@@ -22,10 +23,20 @@ for L in lotes:
     c = min(centros, key=lambda x: abs(abs(borde - x) - (BUL if abs(x - vb) < 1 else ROW_CALLE / 2)))
     lado_n = L["lado"] == "abajo"            # el lote queda al norte de su calle
     por_calle.setdefault((round(c, 2), lado_n), []).append(L)
+# Numeración por cuadra: la centena es cuántas transversales quedan al poniente del lote (Encino 305 = pasando la 3.ª transversal),
+# y dentro de la cuadra el número va por posición (cada 12.7 m), así que las casas de enfrente tienen números seguidos.
+PASO_NUM = 12.7
+def cuadra_de(u): return sum(1 for x in cruces if x < u)
+def inicio_cuadra(q): return cruces[q - 1] + ROW_CALLE / 2 if q > 0 else u0
 for (c, lado_n), Ls in por_calle.items():
     Ls.sort(key=lambda L: L["g"].centroid.x)
+    previo = -1
     for k, L in enumerate(Ls):
-        L["calle"] = nombre_v[c][0]; L["num"] = 2 * k + (1 if lado_n else 2)
+        L["calle"] = nombre_v[c][0]
+        q = cuadra_de(L["g"].centroid.x); pos = int((L["g"].bounds[0] - inicio_cuadra(q)) / PASO_NUM + 0.5)
+        num = 100 * q + 2 * pos + (1 if lado_n else 2)
+        if num <= previo: num = previo + 2                       # dos lotes angostos en la misma posición: el segundo toma el siguiente número
+        L["num"] = num; previo = num
         L["fachada"] = fachada_de(k, lado_n, LARGAS.index(L["calle"]))
 dirs = [f'{L["calle"]} {L["num"]}' for L in lotes]
 assert len(set(dirs)) == len(dirs), "direcciones repetidas"
