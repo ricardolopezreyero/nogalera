@@ -119,6 +119,14 @@ function texturas() {
     x.restore();
   }
   TEX.hoja = new THREE.CanvasTexture(c); TEX.hoja.colorSpace = THREE.SRGBColorSpace; TEX.hoja.anisotropy = 8;
+  // brizna: un manojo de hojas de pasto (alfa)
+  n = 256; [c, x] = lienzo(n); x.clearRect(0, 0, n, n);
+  for (let k = 0; k < 26; k++) {
+    const x0 = n * (0.3 + rnd() * 0.4), h = n * (0.45 + rnd() * 0.5), dx = (rnd() - 0.5) * n * 0.5, wdt = 2 + rnd() * 3;
+    x.strokeStyle = `hsl(${85 + rnd() * 30},${40 + rnd() * 25}%,${22 + rnd() * 22}%)`; x.lineWidth = wdt; x.lineCap = "round";
+    x.beginPath(); x.moveTo(x0, n); x.quadraticCurveTo(x0 + dx * 0.3, n - h * 0.6, x0 + dx, n - h); x.stroke();
+  }
+  TEX.brizna = new THREE.CanvasTexture(c); TEX.brizna.colorSpace = THREE.SRGBColorSpace;
 }
 
 /* ---------- geometría: prismas → caras con UV planar ---------- */
@@ -188,7 +196,7 @@ export class Foto3D {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping; this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     if (!Object.keys(TEX).length) texturas();
     this.pmrem = new THREE.PMREMGenerator(this.renderer);
-    this.opciones = { gente: false, autos: false, ao: true, sombras: 4096 };
+    this.opciones = { gente: true, autos: true, ao: true, sombras: 4096, nueces: true, pasto: true };
   }
   /* materiales */
   material(k, hex, a) {
@@ -213,7 +221,7 @@ export class Foto3D {
       case "metal": m = std({ roughness: 0.45, metalness: 0.6 }); break;
       case "acero": m = std({ roughness: 0.35, metalness: 0.8 }); break;
       case "auto": m = new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.25, metalness: 0.5, clearcoat: 1, clearcoatRoughness: 0.08 }); break;
-      case "vidrio": m = new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.04, metalness: 0.1, transparent: true, opacity: Math.min(0.85, 0.35 + a * 0.4), envMapIntensity: 1.6, side: THREE.DoubleSide, depthWrite: false }); break;
+      case "vidrio": m = new THREE.MeshPhysicalMaterial({ color: c.clone().multiplyScalar(0.75), roughness: 0.03, metalness: 0.35, transparent: true, opacity: Math.min(0.9, 0.45 + a * 0.35), envMapIntensity: 2.4, side: THREE.DoubleSide, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.02 }); break;
       case "luz": m = new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 1.4, roughness: 0.6 }); m.userData.luz = true; break;
       case "arbusto": m = std({ color: c, roughness: 1 }); break;
       default: m = std({});
@@ -222,13 +230,15 @@ export class Foto3D {
   }
   /* carga la escena: geometría por material, follaje instanciado, luces */
   async cargar(esc) {
-    this.esc = esc; this.luces = esc.luces || []; this.lamparas = [];
+    this.esc = esc; this.luces = esc.luces || []; this.lamparas = []; this.pastos = [];
     const scene = this.scene = new THREE.Scene();
-    const grupos = {}; const copas = []; const arbustos = [];
+    const grupos = {}; const copas = []; const arbustos = []; const hayCopas = (esc.copas || []).length > 0;
     for (const p of esc.prismas) {
       if (p[4] === "gente" && !this.opciones.gente) continue;
       if (p[4] === "autos" && !this.opciones.autos) continue;
+      if (p[4] === "arboles_lod") { if (hayCopas) continue; else p[4] = "arboles"; }
       const k = clase(p);
+      if (k === "pasto") this.pastos.push([p[0], p[1] + p[2]]);
       if (k === "copa" || k === "arbusto") { copas.push(p); continue; }
       if (p[4] === "luz" && (p[3] === "#e6e6e6" || p[3] === "#eaeaea") && p[0].length === 4) { const [cx, cy] = centroRadio(p[0]); this.lamparas.push([cx, cy, p[1] - 0.15]); }
       const uvEsc = 1; const g = prismaGeo(p[0], p[1], p[2], uvEsc);
@@ -242,35 +252,82 @@ export class Foto3D {
       mesh.receiveShadow = true; if (G.k === "vidrio") mesh.renderOrder = 10;
       scene.add(mesh);
     }
-    this.follaje(copas); this.suelo(); return this;
+    // clusters de follaje: elipsoides [cx, cy, cz, rx, ry, rz, color, nogal]; de las copas del generador y de los prismas de copa (arbustos, nogales simples)
+    this.clusters = (esc.copas || []).map(c => [c[0], c[1], c[2], c[3], c[4], c[5], c[6].slice(0, 7), true]);
+    for (const p of copas) { const [cx, cy, r] = centroRadio(p[0]); this.clusters.push([cx, cy, p[1] + p[2] / 2, r, r, p[2] / 2, p[3].slice(0, 7), r >= 0.9]); }
+    this.ramas(esc.ramas || []); this.suelo(); return this;
   }
-  follaje(copas) {
-    if (!copas.length) return;
-    // tarjetas de hojas: dos planos cruzados, instanciados dentro de cada lóbulo de copa
+  ramas(lista) {
+    // ramas inclinadas del generador de nogales: cilindros orientados, agrupados por color (corteza / encalado)
+    if (!lista.length) return;
+    const por = {}; const up = new THREE.Vector3(0, 1, 0), dir = new THREE.Vector3(), q = new THREE.Quaternion(), mid = new THREE.Vector3();
+    for (const [x0, y0, z0, x1, y1, z1, r0, r1, col] of lista) {
+      dir.set(x1 - x0, y1 - y0, z1 - z0); const L = dir.length(); if (L < 0.01) continue; dir.divideScalar(L);
+      const seg = r0 > 0.12 ? 8 : (r0 > 0.06 ? 6 : 4);
+      const g = new THREE.CylinderGeometry(r1, r0, L, seg, 1, true); q.setFromUnitVectors(up, dir); g.applyQuaternion(q); mid.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2); g.translate(mid.x, mid.y, mid.z);
+      const uv = g.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * Math.max(0.3, r0 * 6), uv.getY(i) * L);
+      (por[col] = por[col] || []).push(g);
+    }
+    for (const col in por) {
+      const geo = BGU.mergeGeometries(por[col], false); por[col].forEach(g => g.dispose());
+      const esCal = col === "#e9e7e0"; const m = esCal ? new THREE.MeshStandardMaterial({ color: 0xf2f0ea, roughness: 0.95, map: TEX.aplanado[0] }) : this.material("corteza", col, 1);
+      const mesh = new THREE.Mesh(geo, m); mesh.castShadow = true; mesh.receiveShadow = true; this.scene.add(mesh);
+    }
+    this.nRamas = lista.length;
+  }
+  follaje(cam) {
+    // tarjetas de hojas instanciadas dentro de cada cluster; la densidad depende de la distancia al ojo (se rehace en cada render)
+    if (this.hojasMesh) { this.scene.remove(this.hojasMesh); this.hojasMesh.geometry.dispose(); this.hojasMesh = null; }
+    if (this.nuecesMesh) { this.scene.remove(this.nuecesMesh); this.nuecesMesh.geometry.dispose(); this.nuecesMesh = null; }
+    const cl = this.clusters || []; if (!cl.length) return;
+    const sa = Math.sin(cam.az), ca = Math.cos(cam.az), ce = Math.cos(cam.el), se = Math.sin(cam.el);
+    const ex = cam.cx - sa * ce * cam.dist, ey = cam.cy - ca * ce * cam.dist, ez = cam.cz + se * cam.dist;
+    const dens = d => d < 50 ? 1 : d < 120 ? 0.6 : d < 300 ? 0.3 : d < 800 ? 0.12 : 0.05;
     const plano = new THREE.PlaneGeometry(1, 1), p2 = plano.clone().rotateY(Math.PI / 2), geo = BGU.mergeGeometries([plano, p2], false);
-    let total = 0; const info = [];
-    for (const p of copas) { const [cx, cy, r] = centroRadio(p[0]); const vol = Math.PI * r * r * p[2]; const n = Math.max(10, Math.round(vol * (r < 0.9 ? 18 : 6.5))); info.push([cx, cy, r, p[1], p[2], n, p[3].slice(0, 7)]); total += n; }
-    const tope = 650000, f = total > tope ? tope / total : 1;
-    const cuenta = info.reduce((s, i) => s + Math.max(4, Math.round(i[5] * f)), 0);
+    const info = []; let total = 0;
+    for (const c of cl) {
+      const d = Math.hypot(c[0] - ex, c[1] - ey, c[2] - ez); const vol = 4.19 * c[3] * c[4] * c[5];
+      const n = Math.max(3, Math.round(vol * (c[7] ? 30 : 60) * dens(d))); info.push([c, n, d]); total += n;
+    }
+    const tope = 1100000, f = total > tope ? tope / total : 1;
+    const cuenta = info.reduce((s_, i) => s_ + Math.max(3, Math.round(i[1] * f)), 0);
     const mat = new THREE.MeshStandardMaterial({ map: TEX.hoja, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.8, metalness: 0, color: 0xffffff, emissive: 0x2a4a14, emissiveIntensity: 0.18 });
     const im = new THREE.InstancedMesh(geo, mat, cuenta); im.castShadow = true; im.receiveShadow = true;
     im.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: TEX.hoja, alphaTest: 0.5, side: THREE.DoubleSide });
-    const M = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), s = new THREE.Vector3(), pos = new THREE.Vector3(), c = new THREE.Color();
-    let i = 0;
-    for (const [cx, cy, r, z0, h, n0, hex] of info) {
-      const n = Math.max(4, Math.round(n0 * f)), base = new THREE.Color(hex), tam = (r < 0.9 ? Math.max(0.4, r * 0.9) : Math.min(1.5, Math.max(0.7, r * 0.42))) * Math.min(3, 1 / Math.sqrt(f));   // con menos tarjetas por copa (escenas grandes), tarjetas más grandes
+    const M = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), sv = new THREE.Vector3(), pos = new THREE.Vector3(), col = new THREE.Color();
+    let i = 0; const nuez = [];
+    for (const [c, n0, d] of info) {
+      const n = Math.max(3, Math.round(n0 * f)), base = new THREE.Color(c[6]); const rm = (c[3] + c[4] + c[5]) / 3;
+      const tam = (c[7] ? Math.min(1.0, Math.max(0.45, rm * 0.55)) : Math.max(0.3, rm * 0.8)) * Math.min(2.5, 1 / Math.sqrt(Math.max(0.05, f * dens(d))));
       for (let k = 0; k < n; k++) {
-        // posición uniforme en el elipsoide del lóbulo, un poco más densa hacia afuera (las hojas están en la periferia)
-        const u = rnd(), v = rnd(), w = Math.cbrt(rnd()) * 0.9 + 0.1, th = u * Math.PI * 2, ph = Math.acos(2 * v - 1);
-        pos.set(cx + r * w * Math.sin(ph) * Math.cos(th), cy + r * w * Math.sin(ph) * Math.sin(th), z0 + h / 2 + h / 2 * w * Math.cos(ph));
+        const u = rnd(), v = rnd(), w = Math.cbrt(rnd()) * 0.92 + 0.08, th = u * Math.PI * 2, ph = Math.acos(2 * v - 1);
+        pos.set(c[0] + c[3] * w * Math.sin(ph) * Math.cos(th), c[1] + c[4] * w * Math.sin(ph) * Math.sin(th), c[2] + c[5] * w * Math.cos(ph));
         e.set(rnd() * 0.8 - 0.4 + (rnd() < 0.5 ? 0 : Math.PI / 2), rnd() * 0.6 - 0.3, rnd() * Math.PI * 2); q.setFromEuler(e);
-        const t = tam * (0.75 + rnd() * 0.5); s.set(t, t, t);
-        M.compose(pos, q, s); im.setMatrixAt(i, M);
-        c.copy(base).multiplyScalar(1.25).offsetHSL((rnd() - 0.5) * 0.03, (rnd() - 0.5) * 0.1, (rnd() - 0.5) * 0.12); im.setColorAt(i, c); i++;
+        const t = tam * (0.75 + rnd() * 0.5); sv.set(t, t, t); M.compose(pos, q, sv); im.setMatrixAt(i, M);
+        col.copy(base).multiplyScalar(1.2).offsetHSL((rnd() - 0.5) * 0.03, (rnd() - 0.5) * 0.1, (rnd() - 0.5) * 0.14); im.setColorAt(i, col); i++;
+        if (c[7] && this.opciones.nueces && d < 90 && k % 4 === 0 && w > 0.75) nuez.push(pos.x, pos.y, pos.z);
       }
     }
-    im.count = i; im.instanceMatrix.needsUpdate = true; if (im.instanceColor) im.instanceColor.needsUpdate = true;
-    this.scene.add(im); this.nHojas = i;
+    im.count = i; im.instanceMatrix.needsUpdate = true; if (im.instanceColor) im.instanceColor.needsUpdate = true; this.scene.add(im); this.hojasMesh = im; this.nHojas = i;
+    // copas lejanas (más de 250 m): además de las pocas tarjetas, un volumen opaco de copa para que desde el aire se lea la masa verde
+    if (this.lejosMesh) { this.scene.remove(this.lejosMesh); this.lejosMesh = null; }
+    const lejos = info.filter(k => k[2] > 250 && k[0][7]);
+    if (lejos.length) {
+      const gL = new THREE.IcosahedronGeometry(1, 1), mL = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, flatShading: true });
+      const lm = new THREE.InstancedMesh(gL, mL, lejos.length); lm.castShadow = true; lm.receiveShadow = true;
+      lejos.forEach(([c], idx) => { pos.set(c[0], c[1], c[2]); e.set(rnd() * 3, rnd() * 3, rnd() * 3); q.setFromEuler(e); sv.set(c[3] * 0.9, c[4] * 0.9, c[5] * 0.9); M.compose(pos, q, sv); lm.setMatrixAt(idx, M); col.set(c[6]).multiplyScalar(0.85).offsetHSL((rnd() - 0.5) * 0.03, 0, (rnd() - 0.5) * 0.1); lm.setColorAt(idx, col); });
+      lm.instanceMatrix.needsUpdate = true; if (lm.instanceColor) lm.instanceColor.needsUpdate = true; this.scene.add(lm); this.lejosMesh = lm;
+    }
+    if (nuez.length) {
+      // nueces: racimos de 2 o 3 frutos (3.5 cm, cáscara verde) cerca de la cámara
+      const geoN = new THREE.SphereGeometry(0.018, 6, 5); geoN.scale(1, 1, 1.5); const matN = new THREE.MeshStandardMaterial({ color: 0x7a8a3a, roughness: 0.8 });
+      const cnt = Math.min(260000, nuez.length), nz = new THREE.InstancedMesh(geoN, matN, cnt); let j = 0;
+      for (let k = 0; k < cnt / 3 && j < cnt; k++) {
+        const nr = 2 + (rnd() < 0.5 ? 1 : 0);
+        for (let qn = 0; qn < nr && j < cnt; qn++) { pos.set(nuez[k * 3] + (rnd() - 0.5) * 0.06, nuez[k * 3 + 1] + (rnd() - 0.5) * 0.06, nuez[k * 3 + 2] - qn * 0.03); e.set(rnd() * 0.5, rnd() * 0.5, rnd() * 6.28); q.setFromEuler(e); const t = 0.9 + rnd() * 0.4; sv.set(t, t, t); M.compose(pos, q, sv); nz.setMatrixAt(j, M); col.setHSL(0.2 + rnd() * 0.05, 0.35 + rnd() * 0.2, 0.3 + rnd() * 0.15); nz.setColorAt(j, col); j++; }
+      }
+      nz.count = j; nz.instanceMatrix.needsUpdate = true; if (nz.instanceColor) nz.instanceColor.needsUpdate = true; this.scene.add(nz); this.nuecesMesh = nz; this.nNueces = j;
+    }
   }
   suelo() {
     // el terreno hasta el horizonte, por debajo del suelo de la escena
@@ -320,9 +377,44 @@ export class Foto3D {
     const F = Math.min(w, h) / 32 * Math.pow(1.15, c.zoom) * c.dist, fov = 2 * Math.atan(h / (2 * F)) * 180 / Math.PI;
     const cam = new THREE.PerspectiveCamera(fov, w / h, Math.max(0.2, c.dist / 400), 30000); cam.up.set(0, 0, 1); cam.position.copy(ojo); cam.lookAt(centro); cam.updateMatrixWorld(); return cam;
   }
+  briznas(cam) {
+    // manojos de pasto instanciados en un radio alrededor del ojo, sólo sobre superficies de pasto (más densos cerca)
+    if (this.pastoMesh) { this.scene.remove(this.pastoMesh); this.pastoMesh.geometry.dispose(); this.pastoMesh = null; }
+    if (!this.opciones.pasto || !this.pastos.length) return;
+    const sa = Math.sin(cam.az), ca = Math.cos(cam.az), ce = Math.cos(cam.el), se = Math.sin(cam.el);
+    const ex = cam.cx - sa * ce * cam.dist, ey = cam.cy - ca * ce * cam.dist, ez = cam.cz + se * cam.dist;
+    const R = Math.min(90, Math.max(25, cam.dist * 1.2)); if (ez > 60) return;
+    const plano = new THREE.PlaneGeometry(1, 1), p2 = plano.clone().rotateY(Math.PI / 2), p3 = plano.clone().rotateY(-Math.PI / 4), geo = BGU.mergeGeometries([plano, p2, p3], false); geo.translate(0, 0, 0.5);
+    const mat = new THREE.MeshStandardMaterial({ map: TEX.brizna, alphaTest: 0.45, side: THREE.DoubleSide, roughness: 0.9, color: 0xffffff });
+    const tope = 320000, pts = [];
+    for (const [poly, z] of this.pastos) {
+      let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; for (const q of poly) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); }
+      if (x1 < ex - R || x0 > ex + R || y1 < ey - R || y0 > ey + R) continue;
+      const area = (x1 - x0) * (y1 - y0); const n = Math.min(60000, Math.round(area * 1.6));
+      const tri = THREE.ShapeUtils.triangulateShape(poly.map(q => new THREE.Vector2(q[0], q[1])), []);
+      const areas = tri.map(t => { const a = poly[t[0]], b = poly[t[1]], c = poly[t[2]]; return Math.abs((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1])) / 2; }); const tot = areas.reduce((a, b) => a + b, 0) || 1;
+      for (let k = 0; k < n; k++) {
+        let u = rnd() * tot, ti = 0; while (ti < areas.length - 1 && u > areas[ti]) { u -= areas[ti]; ti++; }
+        const a = poly[tri[ti][0]], b = poly[tri[ti][1]], c = poly[tri[ti][2]]; let r1 = rnd(), r2 = rnd(); if (r1 + r2 > 1) { r1 = 1 - r1; r2 = 1 - r2; }
+        const px = a[0] + (b[0] - a[0]) * r1 + (c[0] - a[0]) * r2, py = a[1] + (b[1] - a[1]) * r1 + (c[1] - a[1]) * r2, d = Math.hypot(px - ex, py - ey);
+        if (d > R || rnd() > Math.max(0.15, 1 - d / R)) continue;
+        pts.push(px, py, z);
+      }
+      if (pts.length / 3 > tope) break;
+    }
+    const cnt = Math.min(tope, pts.length / 3); if (!cnt) return;
+    const im = new THREE.InstancedMesh(geo, mat, cnt); im.castShadow = false; im.receiveShadow = true;
+    const M = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), sc = new THREE.Vector3(), pos = new THREE.Vector3(), col = new THREE.Color();
+    for (let i = 0; i < cnt; i++) {
+      pos.set(pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2] - 0.02); e.set(Math.PI / 2 + (rnd() - 0.5) * 0.3, 0, rnd() * 6.28); q.setFromEuler(e);
+      const t = 0.22 + rnd() * 0.18; sc.set(t * 1.3, t, t * 1.3); M.compose(pos, q, sc); im.setMatrixAt(i, M); col.setHSL(0.24 + rnd() * 0.04, 0.45 + rnd() * 0.2, 0.3 + rnd() * 0.15); im.setColorAt(i, col);
+    }
+    im.instanceMatrix.needsUpdate = true; if (im.instanceColor) im.instanceColor.needsUpdate = true; this.scene.add(im); this.pastoMesh = im; this.nBriznas = cnt;
+  }
   /* render a un tamaño dado; devuelve el canvas listo */
   render(o) {
     const w = o.w || 1920, h = o.h || 1080, cam = Object.assign({}, this.esc.cam, o.cam || {}), hora = o.hora || this.esc.hora || "dia";
+    this.briznas(cam); this.follaje(cam);
     this.iluminar(hora, cam); const camera = this.camara(cam, w, h);
     this.renderer.setPixelRatio(1); this.renderer.setSize(w, h, false);
     const comp = new EffectComposer(this.renderer); comp.setSize(w, h);
@@ -344,6 +436,7 @@ export class Foto3D {
   /* mapas de control para ControlNet: "depth" (cerca = blanco), "normal" (espacio de cámara) y "lineart" (bordes por profundidad y normales, negro sobre blanco) */
   pase(o, tipo) {
     const w = o.w || 1920, h = o.h || 1080, cam = Object.assign({}, this.esc.cam, o.cam || {}), camera = this.camara(cam, w, h), scene = this.scene;
+    if (!this.hojasMesh) this.follaje(cam);
     const r = this.renderer; r.setPixelRatio(1); r.setSize(w, h, false);
     const guardar = []; scene.traverse(m => { if (m.isMesh) guardar.push([m, m.material, m.visible]); });
     const fondo = scene.background, niebla = scene.fog, env = scene.environment; scene.fog = null; scene.environment = null;

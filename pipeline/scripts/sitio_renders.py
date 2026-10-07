@@ -1,5 +1,6 @@
 # ======================= RENDERS (se ejecuta dentro de sitio.py) =======================
-import n6_escenas as ESC                                   # genera public/datos/escenas/*.json al importarse
+import n6_completo                                         # genera public/datos/escenas/*.json (todas las escenas y el modelo completo) al importarse
+import n6_escenas as ESC
 import renders_ia as RIA
 json.dump(RIA.PROMPTS, open(f"{DAT}/escenas/prompts_ia.json", "w"), ensure_ascii=False, indent=1)
 RENDERS_10 = ["calle", "casa", "aerea", "acceso", "bulevar", "parque", "pista", "interior", "portal", "noche"]
@@ -7,7 +8,7 @@ IDX = {e["id"]: e for e in ESC.INDICE}
 HORAS_TXT = dict(dia="mediodía", tarde="tarde", atardecer="atardecer", noche="noche")
 
 FOTOS_LISTA = json.load(open(os.path.join(AQUI, "fotos_lista.json"), encoding="utf-8"))
-FOTOS_TXT = {"fachada-horizonte": "Fachada Horizonte: las dos losas que vuelan y la franja de ventanas.", "fachada-cantera": "Fachada Cantera.", "fachada-ladrillo": "Fachada Ladrillo.", "fachada-lamas": "Fachada Lamas.", "fachada-marco": "Fachada Marco.",
+FOTOS_TXT = {"completo-entrada": "La entrada: pórtico, casetas, reja y los nogales iluminados, al atardecer (modelo completo).", "completo-casa": "La casa Modelo Nogal en su cuadra real, con sus vecinas (modelo completo).", "completo-parque": "Parque Garza: nogales, pérgola, juegos y gente (modelo completo).", "completo-aereo": "El fraccionamiento completo desde el aire: cada casa, cada nogal, cada luminaria.", "completo-sur": "El fraccionamiento desde el sur, con la calzada y las huertas vecinas.", "completo-club": "El club: salón con oficinas, gimnasio, canchas y plaza.", "completo-bulevar": "Bulevar Nogal con su camellón y sendero.", "completo-entrada-alta": "El acceso desde el aire.", "completo-parque-alto": "Parque Garza desde el aire.", "completo-casa-frente": "La casa de frente.", "fachada-horizonte": "Fachada Horizonte: las dos losas que vuelan y la franja de ventanas.", "fachada-cantera": "Fachada Cantera.", "fachada-ladrillo": "Fachada Ladrillo.", "fachada-lamas": "Fachada Lamas.", "fachada-marco": "Fachada Marco.",
              "fachada-hacienda": "Fachada Hacienda.", "fachada-concreto": "Fachada Concreto.", "fachada-celosia": "Fachada Celosía.", "fachada-duela": "Fachada Duela.", "fachada-frente": "Horizonte de frente, desde la banqueta de enfrente.",
              "fachada-atardecer": "Horizonte al atardecer.", "fachada-noche": "Horizonte de noche, con el portal y las ventanas encendidas.", "cuadra-lejos": "La cuadra de lejos, con lente larga: las nueve fachadas seguidas bajo los nogales.",
              "cuadra": "La cuadra en escorzo.", "cuadra-alta": "La cuadra desde arriba.", "calle-dia": "La calle bajo los nogales a mediodía.", "calle-noche": "La calle de noche.", "acceso-atardecer": "El acceso al atardecer.",

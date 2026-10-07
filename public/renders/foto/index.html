@@ -37,7 +37,7 @@ async function cargarEscena(id) {
   const d = await (await fetch("/datos/escenas/" + escena.id + ".json")).json(); d.id = escena.id;
   F = new Foto3D(cv); F.opciones.autos = $("f-autos").checked; F.opciones.gente = $("f-gente").checked; await F.cargar(d);
   $("f-vista").innerHTML = '<option value="">(principal)</option>' + Object.keys(d.vistas || {}).map(k => `<option value="${k}">${k}</option>`).join("");
-  $("f-hora").value = d.hora || "dia"; estado.textContent = escena.titulo + " · " + d.prismas.length.toLocaleString("es-MX") + " piezas · " + (F.nHojas || 0).toLocaleString("es-MX") + " hojas. Listo para renderizar.";
+  $("f-hora").value = d.hora || "dia"; estado.textContent = escena.titulo + " · " + d.prismas.length.toLocaleString("es-MX") + " piezas · " + (F.nRamas || 0).toLocaleString("es-MX") + " ramas · " + (F.clusters || []).length.toLocaleString("es-MX") + " racimos de hojas. Listo para renderizar.";
   return d;
 }
 API.render = async function (o) {

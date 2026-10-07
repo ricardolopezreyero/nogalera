@@ -25,7 +25,7 @@
     fetch("/datos/escenas/" + esc.id + ".json").then(function (x) { return x.json(); }).then(function (d) {
       d.id = esc.id; d.contornos = d.contornos === undefined ? 0.6 : d.contornos;
       if (hora) d.hora = hora;
-      r = new Render3D(cv, d, { escalaRapida: d.prismas.length > 4000 ? 0.5 : 1 });
+      r = new Render3D(cv, d, { escalaRapida: d.prismas.length > 50000 ? 0.25 : d.prismas.length > 4000 ? 0.5 : 1 });
       var cam = (vista && d.vistas && d.vistas[vista]) || d.cam; Object.assign(r.cam, cam);
       r.onCam = escribir; r.orbita();
       vistas.innerHTML = "";
