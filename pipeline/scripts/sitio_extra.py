@@ -122,7 +122,7 @@ def iluminacion():
 <div class="mapa-chico"><div id="map" role="region" aria-label="Vista de noche del plan maestro"></div></div>
 <p class="nota">Vista de noche: toca una luminaria para ver su clave y dónde está. Costos de 2026 con su parte de cable y ducto; el proyecto ejecutivo de alumbrado (cálculo fotométrico por calle) se hace sobre este inventario.</p>
 """
-    pagina("iluminacion", "Iluminación", "10 · Iluminación", f"{f0(LZ['puntos'])} puntos de luz cálida, cada uno en su lugar y con su clave: arbotantes entre los nogales, nogales iluminados desde el piso, balizas en la pista y el acceso bien iluminado.", cuerpo,
+    pagina("iluminacion", "Iluminación", "11 · Iluminación", f"{f0(LZ['puntos'])} puntos de luz cálida, cada uno en su lugar y con su clave: arbotantes entre los nogales, nogales iluminados desde el piso, balizas en la pista y el acceso bien iluminado.", cuerpo,
            [("plano", "Dónde va cada luz"), ("detalles", "Detalles por zona"), ("reglas", "Reglas"), ("cuenta", "Cuántas y cuánta luz")],
            head='<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">',
            script='<script>window.PLAN={datos:"/datos/",modo:"noche",rueda:false};</script><script src="/vendor/leaflet/leaflet.js"></script><script src="/plan/plan.js"></script>')
@@ -289,5 +289,5 @@ def pista():
 </div>
 <p class="nota">La pista y el gimnasio están en el presupuesto: la pista en «Drenaje pluvial · zanja de infiltración» y «Barda» (la franja de 5 m), y el gimnasio en las amenidades ($14 millones, 2 niveles). Las estaciones de ejercicio, fuentes y placas son una partida chica (≈ $1.2 millones) que se suma al club.</p>
 """
-    pagina("pista", "Pista y gimnasio", "11 · Pista y gimnasio", f"Una pista de {PISTA_L/1000:.2f} km por el perímetro, plana y bajo los nogales, con estaciones cada kilómetro, y un gimnasio de 1,024 m² en el club social, en el km 0.", cuerpo,
+    pagina("pista", "Pista y gimnasio", "12 · Pista y gimnasio", f"Una pista de {PISTA_L/1000:.2f} km por el perímetro, plana y bajo los nogales, con estaciones cada kilómetro, y un gimnasio de 1,024 m² en el club social, en el km 0.", cuerpo,
            [("pista", "La pista"), ("gimnasio", "El gimnasio")])

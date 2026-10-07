@@ -3,6 +3,7 @@ Solo python3: lee public/datos/*.json (los escribe el pipeline pesado) y los mó
     python3 scripts/sitio.py            # desde pipeline/"""
 import csv, json, math, os, statistics, sys
 from html import escape as e
+e_ = e
 AQUI = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, AQUI)
 RAIZ = os.path.abspath(os.path.join(AQUI, "..", ".."))
 PUB = os.path.join(RAIZ, "public"); DAT = os.path.join(PUB, "datos")
@@ -29,8 +30,8 @@ ha = lambda m2: f"{m2/1e4:,.1f} ha"
 # ======================= estructura =======================
 SECCIONES = [
     ("", "Resumen", "01"), ("terreno", "El terreno", "02"), ("plan", "Plan maestro", "03"), ("calles", "Calles y direcciones", "04"),
-    ("acceso", "Acceso y barda", "05"), ("casa", "Casa Modelo Nogal", "06"), ("fachadas", "Fachadas", "07"), ("servicios", "Servicios", "08"), ("agua", "Agua: pozos, red y presión", "09"),
-    ("iluminacion", "Iluminación", "10"), ("pista", "Pista y gimnasio", "11"), ("numeros", "Números y fideicomiso", "12"), ("porque", "Por qué $522 por m²", "13"), ("etapas", "Etapas y siguientes pasos", "14"),
+    ("acceso", "Acceso y barda", "05"), ("casa", "Casa Modelo Nogal", "06"), ("fachadas", "Fachadas", "07"), ("renders", "Renders", "08"), ("servicios", "Servicios", "09"), ("agua", "Agua: pozos, red y presión", "10"),
+    ("iluminacion", "Iluminación", "11"), ("pista", "Pista y gimnasio", "12"), ("numeros", "Números y fideicomiso", "13"), ("porque", "Por qué $522 por m²", "14"), ("etapas", "Etapas y siguientes pasos", "15"),
     None, ("nogaleras", "Nogaleras de La Laguna", "A"), ("datos", "Datos para descargar", "B"),
 ]
 def menu(actual, sub):
@@ -225,6 +226,7 @@ def resumen():
             ("acceso", "Acceso y barda", "La entrada en seis zonas con plano y alzado, calculada para la hora pico, y la barda por tramos con su estructura, cerca y cámaras."),
             ("casa", "Casa Modelo Nogal", "Modelo 3D a color para girar y destapar, plantas amuebladas, azotea, corte, conjunto y fachadas: todos los planos."),
             ("fachadas", "Fachadas", "Nueve fachadas distintas sobre la misma casa, y cómo se reparten en cada cuadra."),
+            ("renders", "Renders", "Los diez renders que más venden el proyecto y el creador para hacer todos los demás, con la geometría real."),
             ("servicios", "Servicios", "Drenaje pluvial y sanitario, planta de tratamiento, agua, luz y fibra, con especificaciones y presupuesto."),
             ("agua", "Agua: pozos, red y presión", "Dónde van los dos pozos, la red con su presión en cada esquina, la planta de tratamiento y el drenaje pluvial, dibujados."),
             ("iluminacion", "Iluminación", f"{f0(LZ['puntos'])} puntos de luz, cada uno en su lugar y con su clave: arbotantes, nogales iluminados, balizas y acceso."),
@@ -443,7 +445,7 @@ def casa():
 """
     pagina("casa", "Casa Modelo Nogal", "06 · Casa Modelo Nogal", "Una sola casa de 243 m² para todo el fraccionamiento: 4 recámaras, cada una con clóset de paso y baño, y lugar para guardar todo. Todos los planos.", cuerpo,
            [("3d", "La casa en 3D"), ("conjunto", "Planta de conjunto"), ("plantas", "Planta baja y alta"), ("azotea", "Azotea y corte"), ("alzados", "Alzados"), ("guardado", "Dónde se guarda"), ("torreon", "Para Torreón")],
-           head=CD.DEFS, script='<script>window.CASA3D=' + json.dumps(C3D.MODELO, separators=(",", ":")) + '</script><script src="/casa/modelo3d.js"></script>')
+           head=CD.DEFS, script='<script>window.CASA3D=' + json.dumps(C3D.MODELO, separators=(",", ":")) + '</script><script src="/render/render3d.js"></script><script src="/casa/modelo3d.js"></script>')
 
 # ======================= FACHADAS =======================
 def fachadas():
@@ -556,7 +558,7 @@ def servicios():
 </ul>
 <p class="nota">Precios de 2026 en pesos, sin IVA, como referencia para decidir; no son una cotización. Las cantidades las mide <code>pipeline/scripts/n6_servicios.py</code> sobre el plano.</p>
 """
-    pagina("servicios", "Servicios", "08 · Servicios", "Calles, drenaje pluvial y sanitario, planta de tratamiento, agua potable, luz y fibra: especificaciones, cantidades y presupuesto, medidos sobre el plano.", cuerpo,
+    pagina("servicios", "Servicios", "09 · Servicios", "Calles, drenaje pluvial y sanitario, planta de tratamiento, agua potable, luz y fibra: especificaciones, cantidades y presupuesto, medidos sobre el plano.", cuerpo,
            [("niveles", "Terreno y niveles"), ("pluvial", "Drenaje pluvial"), ("sanitario", "Drenaje sanitario"), ("tratamiento", "Planta y red morada"), ("agua", "Agua potable"), ("luz", "Luz y fibra"), ("barda", "Barda y accesos"), ("presupuesto", "Presupuesto"), ("confirmar", "Por confirmar")],
            head='<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">',
            script='<script>window.PLAN={datos:"/datos/",modo:"servicio",servicio:"pluvial",rueda:false};</script><script src="/vendor/leaflet/leaflet.js"></script><script src="/plan/plan.js"></script>')
@@ -566,6 +568,7 @@ exec(open(os.path.join(AQUI, "sitio_extra.py"), encoding="utf-8").read())
 exec(open(os.path.join(AQUI, "sitio_porque.py"), encoding="utf-8").read())
 exec(open(os.path.join(AQUI, "sitio_agua.py"), encoding="utf-8").read())
 exec(open(os.path.join(AQUI, "sitio_acceso.py"), encoding="utf-8").read())
+exec(open(os.path.join(AQUI, "sitio_renders.py"), encoding="utf-8").read())
 
 # ======================= NÚMEROS Y FIDEICOMISO =======================
 def esquema_fideicomiso(con=False):
@@ -759,7 +762,7 @@ def numeros():
 <p>Más el agua: ${f0(FI.CUOTA_AGUA)} por casa al mes, con el pozo, la cisterna y la planta de tratamiento operados por nosotros. Con las {f0(N)} casas habitadas, la operación cobra {mill(MOD['flujo'][-1]['cuotas'], 2)} al mes; la cuota cubre seguridad 24 horas, los nogales regados y podados, la planta, la iluminación, el club y un fondo de reserva.</p>
 <p class="nota">Cuentas en pesos de 2026, antes de impuestos. El fideicomiso de desarrollo lo administra un banco: el dueño aporta el terreno libre de gravámenes, el inversionista pone la obra, nosotros el proyecto, la gestión y las ventas, y el banco le paga a cada quien su parte de cada cobro. Todo sale de <code>pipeline/scripts/n6_fideicomiso.py</code>.</p>
 """
-    pagina("numeros", "Números y fideicomiso", "12 · Números y fideicomiso", f"El dueño aporta el terreno y cobra el {pct(X_DUENO)} de cada venta; el inversionista pone la obra; nosotros cobramos en lotes y operamos el agua y el mantenimiento.", cuerpo,
+    pagina("numeros", "Números y fideicomiso", "13 · Números y fideicomiso", f"El dueño aporta el terreno y cobra el {pct(X_DUENO)} de cada venta; el inversionista pone la obra; nosotros cobramos en lotes y operamos el agua y el mantenimiento.", cuerpo,
            [("esquema", "Cómo opera"), ("reparto", "Qué recibe cada quien"), ("flujo", "Flujo a 10 años"), ("casas", "Construir las casas"), ("ventas", "Ventas y obra"), ("porque", f"De dónde sale el {pct(X_DUENO)}"), ("cuota", "Mantenimiento y agua")],
            script='<script>(function(){var s=document.getElementById("sw-casas"),d=document.querySelector(".doc");function f(){d.classList.toggle("con",s.checked);d.classList.toggle("sin",!s.checked);}s.addEventListener("change",f);if(location.hash==="#sin")s.checked=false;f();})();</script>')
 
@@ -811,7 +814,7 @@ def etapas():
 </ol>
 <p class="nota">El calendario es un supuesto de trabajo con el ritmo de ventas del modelo ({TE.RITMO} lotes al mes). Los plazos de trámites dependen del municipio y de los organismos.</p>
 """
-    pagina("etapas", "Etapas y siguientes pasos", "14 · Etapas y siguientes pasos", "Cuatro etapas que crecen desde el acceso, un calendario de obra y ventas, y la lista de lo que hay que confirmar para arrancar.", cuerpo,
+    pagina("etapas", "Etapas y siguientes pasos", "15 · Etapas y siguientes pasos", "Cuatro etapas que crecen desde el acceso, un calendario de obra y ventas, y la lista de lo que hay que confirmar para arrancar.", cuerpo,
            [("calendario", "Calendario"), ("siguientes", "Siguientes pasos")])
 
 # ======================= NOGALERAS (mapa de La Laguna) =======================
@@ -881,4 +884,4 @@ def datos():
     pagina("datos", "Datos para descargar", "B · Datos", "Los archivos con los que está hecho el proyecto, para abrirlos en QGIS, Excel o cualquier otro programa.", cuerpo, [("como", "Cómo se hizo")])
 
 if __name__ == "__main__":
-    for fn in (resumen, terreno, plan, calles, acceso, casa, fachadas, servicios, agua, iluminacion, pista, numeros, porque, etapas, nogaleras, datos): fn()
+    for fn in (resumen, terreno, plan, calles, acceso, casa, fachadas, renders, servicios, agua, iluminacion, pista, numeros, porque, etapas, nogaleras, datos): fn()

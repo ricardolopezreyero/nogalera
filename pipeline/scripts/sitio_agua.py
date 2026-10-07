@@ -252,6 +252,6 @@ def agua():
 {partidas(["Tratamiento"])}
 <p class="nota">Cálculo hidráulico en <code>pipeline/scripts/n6_servicios.py</code> (método nodal con Hazen-Williams, demanda por lote asignada al nodo más cercano, hora pico {f1(A['Qmh'])} l/s, incendio = gasto máximo diario + 15 l/s). Por confirmar antes del proyecto ejecutivo: estudio geohidrológico y aforo de los pozos, título de concesión de la huerta (REPDA), prueba de infiltración para los pozos de absorción, y topografía a cada 10 m. Presiones en kg/cm² (1 kg/cm² = 10 m de columna de agua).</p>
 """
-    pagina("agua", "Agua: pozos, red y presión", "09 · Agua", f"Dos pozos, cisterna, bombeo a presión constante y una red en malla donde ninguna esquina baja de {RED['p_min']:.1f} kg/cm²; la planta riega los nogales y la lluvia se infiltra en el propio terreno.", cuerpo,
+    pagina("agua", "Agua: pozos, red y presión", "10 · Agua", f"Dos pozos, cisterna, bombeo a presión constante y una red en malla donde ninguna esquina baja de {RED['p_min']:.1f} kg/cm²; la planta riega los nogales y la lluvia se infiltra en el propio terreno.", cuerpo,
            [("pozo", "Dónde van los pozos"), ("red", "Diámetros y presión"), ("casa", "Del pozo a la regadera"), ("calle", "Debajo de la calle"), ("planta", "¿Planta o no?"), ("pluvial", "Drenaje pluvial"), ("presupuesto", "Lo que cuesta")],
            descripcion="Agua de La Nogalera: dónde van los pozos, la red con su presión en cada esquina, la planta de tratamiento y el drenaje pluvial.")
