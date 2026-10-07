@@ -34,6 +34,8 @@
   .luz[hidden] { display: none; }
   .luz p { margin: 0.3rem 0; } .luz ul { list-style: none; margin: 0.3rem 0; padding: 0; display: grid; grid-template-columns: 1fr auto; gap: 0.1rem 0.75rem; font-variant-numeric: tabular-nums; }
   .luz li { display: contents; } .luz li span:last-child { text-align: right; font-weight: 700; }
+  .sel { width: 100%; border: 1px solid var(--linea); border-radius: 0; background: var(--papel); padding: 0.3rem 0.4rem; font-size: 0.8125rem; margin-bottom: 0.25rem; }
+  #map.serv .leaflet-overlay-pane { opacity: 0.3; }
   /* Vista de noche: el plano se invierte y solo brilla la luz (cálida, 2700–3000 K) */
   #map.noche { background: #000; }
   #map.noche .leaflet-tile-pane { filter: grayscale(1) invert(1) brightness(0.35); }
@@ -46,7 +48,7 @@
 
 <section class="panel" id="panel" aria-labelledby="titulo">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a><a href="./" aria-current="page">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./" aria-current="page">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a><a href="servicios.html">Servicios</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
   <h1 id="titulo">N6 <span>La Paz, oriente de Torreón · diseño alineado a los nogales</span></h1>
   <dl class="kpis" id="kpis"><div><dt>Cargando…</dt><dd></dd></div></dl>
@@ -69,6 +71,15 @@
   </form>
   <label class="chk"><input type="checkbox" id="chk-arboles" checked> Mostrar nogales</label>
   <label class="chk"><input type="checkbox" id="chk-luz"> Iluminación (vista de noche)</label>
+  <label class="chk" for="sel-serv">Servicios en el mapa</label>
+  <select id="sel-serv" class="sel">
+    <option value="">Ninguno</option>
+    <option value="pluvial">Drenaje pluvial</option>
+    <option value="sanitario">Drenaje sanitario y planta</option>
+    <option value="agua">Agua potable y agua tratada</option>
+    <option value="luz">Luz, calles y accesos</option>
+  </select>
+  <div class="luz" id="serv-nota" hidden aria-live="polite"></div>
   <div class="luz" id="luz" hidden aria-live="polite"></div>
   <div class="notas">
     <p><b>Lo que tiene, y nada más:</b></p>
@@ -79,7 +90,8 @@
     <p><b>Frente comercial</b>: los lotes pegados a la Calle Juan Agustín de Espinoza se venden como comercio hacia afuera; nadie vive junto a la avenida.</p>
     <p><b>Direcciones:</b> una palabra y un número, como «Encino 65, Fracc. La Nogalera». Las calles largas llevan nombre de árbol y las que cruzan, de ave, las dos en orden alfabético: de sur a norte <b>Álamo, Cedro, Ébano, Encino, Nogal</b> (el bulevar), <b>Olmo, Roble, Sabino</b>; de poniente a oriente <b>Alondra, Calandria, Cenzontle, Colibrí, Garza, Gorrión, Jilguero, Paloma, Tórtola</b>. Impares al norte y pares al sur.</p>
     <p><b>Iluminación</b> (casilla de arriba): arbotantes entre los nogales, el bulevar con arbotante doble y sus nogales iluminados desde el piso, igual que los de los parques, el club y la plaza de acceso; balizas en la pista y el acceso bien iluminado. Luz cálida y baja.</p>
-    <p>Supuestos: terreno $670/m² (<a href="terreno.html">cuánto le toca al dueño en fideicomiso</a>); calles $1,400/m²; redes $250/m² bruto; amenidades $46 millones; iluminación de paisaje y acceso $7.7 millones; reubicar cada nogal $12,000; ventas y permisos 12 %; lote a ≈ $3,340/m² (+8 % frente a parque, +5 % frente al bulevar); comercio a $6,000/m². Lindero por confirmar con catastro.</p>
+    <p><b>Servicios</b> (menú de arriba y <a href="servicios.html">hoja de especificaciones</a>): drenaje pluvial que no tira agua afuera, drenaje sanitario por gravedad a una planta de tratamiento en la punta oriente, agua tratada para regar los nogales, agua potable en circuitos con hidrantes, y luz y fibra subterráneas.</p>
+    <p>Supuestos: terreno $670/m² (<a href="terreno.html">cuánto le toca al dueño en fideicomiso</a>); urbanización medida partida por partida (<a href="servicios.html#presupuesto">presupuesto</a>); amenidades $46 millones; iluminación de paisaje y acceso $7.7 millones; reubicar cada nogal $12,000; ventas y permisos 12 %; lote a ≈ $3,340/m² (+8 % frente a parque, +5 % frente al bulevar); comercio a $6,000/m². Lindero por confirmar con catastro.</p>
   </div>
 </section>
 
@@ -111,6 +123,7 @@
     lote: { color: "#000", weight: 0.6, fillColor: "#fafafa", fillOpacity: 1 },
     plaza: { color: "#000", weight: 1, fillColor: "#b9b9b9", fillOpacity: 1 },
     plaza_acceso: { color: "#000", weight: 1, fillColor: "#e9e9e9", fillOpacity: 1 },
+    ptar: { color: "#000", weight: 1, fillColor: "#6a6a6a", fillOpacity: 1 },
     alberca: { color: "#000", weight: 1, fillColor: "#fff", fillOpacity: 1, dashArray: "2 2" },
     juegos: { color: "#000", weight: 1, fillColor: "#9a9a9a", fillOpacity: 1 },
     bahia: { color: "#000", weight: 1, fillColor: "#8a8a8a", fillOpacity: 1 },
@@ -121,7 +134,7 @@
     comercio: { color: "#000", weight: 2.5, fillColor: "#fff", fillOpacity: 1 },
     rentable: { color: "#000", weight: 2.5, dashArray: "6 3", fillColor: "#fff", fillOpacity: 0.85 }
   };
-  var orden = ["pista", "vial", "bulevar", "arroyo", "sendero", "comunal", "plaza_acceso", "parque", "plaza", "servicio", "lote", "comercio", "estacionamiento", "salon", "alberca", "tenis", "padel", "juegos", "bahia", "rentable", "isla", "carril", "pluma", "caseta", "limite"];
+  var orden = ["pista", "vial", "bulevar", "arroyo", "sendero", "comunal", "plaza_acceso", "ptar", "parque", "plaza", "servicio", "lote", "comercio", "estacionamiento", "salon", "alberca", "tenis", "padel", "juegos", "bahia", "rentable", "isla", "carril", "pluma", "caseta", "limite"];
   var capaArboles = L.layerGroup();
   var rotulos = L.layerGroup();
   var verArboles = true;
@@ -204,6 +217,73 @@
       document.getElementById("luz").hidden = !on;
       if (on) cargarLuz().then(function () { tamanoFocos(); capaLuz.addTo(map); }); else map.removeLayer(capaLuz);
     }
+    // Servicios: una red a la vez sobre el plano atenuado
+    map.createPane("servicios"); map.getPane("servicios").style.zIndex = 440;
+    var lienzoServ = L.canvas({ pane: "servicios", padding: 0.5 }), capaServ = null, servDatos = null;
+    var GRUPO = {
+      pluvial: ["plu_parque", "plu_jardin", "plu_cajas", "vaso", "plu_zanja", "plu_flujo", "plu_flujo_punta", "plu_pozo"],
+      sanitario: ["ptar_planta", "san_atarjea", "san_colector", "san_pozo", "san_llegada"],
+      agua: ["ptar_planta", "agua_tanque", "morada", "agua_linea", "hidrante"],
+      luz: ["acopio", "mesa", "emergencia", "trafo", "trafo_esp", "emergencia_p"]
+    };
+    var NOTA = {
+      pluvial: "Las calles bajan a los cruces (bocas de tormenta y pozos de absorción) y de ahí al bulevar. El camellón es un jardín de lluvia; los parques tienen un bordo de 30 cm; hay zanja bajo la pista, cajas bajo los estacionamientos y un vaso en la punta oriente. El agua de N6 se queda en N6.",
+      sanitario: "Todo por gravedad hacia la punta oriente, el punto más bajo: atarjeas de 20 cm en cada calle, colector bajo la pista y la calle Tórtola, pozos de visita en cada cruce y a no más de 100 m, y planta de tratamiento.",
+      agua: "Agua potable en circuitos: 8\" desde la cisterna y por el bulevar, 6\" en las transversales, 4\" en las calles; hidrantes a tresbolillo. Punteado: agua tratada de la planta, que riega los nogales.",
+      luz: "Transformadores de pedestal (uno cada ≈ 16 casas) y trifásicos para club, acceso y planta; cruces elevados; salida de emergencia al norte y acopio de basura antes de las plumas."
+    };
+    function estiloServ(f) {
+      var c = f.properties.capa, d = f.properties.d || 0;
+      switch (c) {
+        case "plu_parque": return { color: "#000", weight: 2.5, dashArray: "6 4", fill: false };
+        case "plu_jardin": return { stroke: false, fillColor: "#000", fillOpacity: 0.45 };
+        case "plu_cajas": return { color: "#000", weight: 1, fillColor: "#000", fillOpacity: 0.3 };
+        case "vaso": return { color: "#000", weight: 1.5, fillColor: "#000", fillOpacity: 0.6 };
+        case "plu_zanja": return { color: "#000", weight: 2, dashArray: "2 4" };
+        case "plu_flujo": case "plu_flujo_punta": return { color: "#000", weight: 1.6 };
+        case "ptar_planta": case "agua_tanque": case "acopio": return { color: "#000", weight: 1, fillColor: "#000", fillOpacity: 1 };
+        case "san_atarjea": return { color: "#000", weight: 2 };
+        case "san_colector": return { color: "#000", weight: 5 };
+        case "agua_linea": return { color: "#000", weight: d >= 200 ? 4.5 : d >= 150 ? 2.6 : 1.4 };
+        case "morada": return { color: "#000", weight: d >= 100 ? 3 : 2, dashArray: "6 4" };
+        case "mesa": return { color: "#000", weight: 1, fillColor: "#000", fillOpacity: 1 };
+        case "emergencia": return { color: "#000", weight: 6 };
+      }
+      return { color: "#000", weight: 1 };
+    }
+    function puntoServ(f, ll) {
+      var c = f.properties.capa;
+      if (c === "emergencia_p") return L.marker(ll, { icon: L.divIcon({ className: "estrella", html: "Salida de emergencia", iconSize: null }), interactive: false });
+      var o = { renderer: lienzoServ, color: "#000", weight: 1.5, fillOpacity: 1 };
+      if (c === "plu_pozo" || c === "san_pozo") { o.radius = 2.6; o.fillColor = "#fff"; }
+      else if (c === "hidrante") { o.radius = 3.6; o.fillColor = "#000"; }
+      else if (c === "trafo") { o.radius = 3; o.fillColor = "#000"; o.weight = 0; }
+      else { o.radius = 6; o.fillColor = "#000"; o.color = "#fff"; o.weight = 2; }
+      return L.circleMarker(ll, o);
+    }
+    var NOMBRES = { plu_pozo: "Boca de tormenta y pozo de absorción", san_pozo: "Pozo de visita", hidrante: "Hidrante", trafo: "Transformador pedestal 75 kVA", mesa: "Cruce elevado" };
+    function verServ(g) {
+      if (capaServ) { map.removeLayer(capaServ); capaServ = null; }
+      document.getElementById("map").classList.toggle("serv", !!g);
+      var nota = document.getElementById("serv-nota"); nota.hidden = !g;
+      if (!g) return;
+      nota.innerHTML = "<p>" + NOTA[g] + "</p><p><a href='servicios.html'>Hoja de especificaciones completa</a></p>";
+      (servDatos ? Promise.resolve(servDatos) : fetch("servicios.geojson").then(function (r) { return r.json(); })).then(function (d) {
+        servDatos = d; capaServ = L.layerGroup();
+        GRUPO[g].forEach(function (c) {
+          L.geoJSON({ type: "FeatureCollection", features: d.features.filter(function (f) { return f.properties.capa === c; }) }, {
+            renderer: lienzoServ, style: estiloServ, pointToLayer: puntoServ,
+            interactive: !/_punta$|plu_flujo/.test(c),
+            onEachFeature: function (f, l) { var p = f.properties, t = p.nombre || NOMBRES[p.capa]; if (t && l.bindPopup) l.bindPopup(t + (p.d ? " · Ø " + (p.capa === "san_atarjea" || p.capa === "san_colector" ? p.d + " cm" : p.d + " mm") : "")); }
+          }).addTo(capaServ);
+        });
+        capaServ.addTo(map);
+      });
+    }
+    var selServ = document.getElementById("sel-serv");
+    selServ.addEventListener("change", function (e) { verServ(e.target.value); });
+    function servDesdeHash() { var h = location.hash.replace("#", ""); if (GRUPO[h] || h === "servicios") { selServ.value = GRUPO[h] ? h : "sanitario"; verServ(selServ.value); } }
+    window.addEventListener("hashchange", servDesdeHash); servDesdeHash();
     var chkLuz = document.getElementById("chk-luz");
     chkLuz.addEventListener("change", function (e) { verLuz(e.target.checked); });
     if (location.hash === "#noche") { chkLuz.checked = true; verLuz(true); }
@@ -216,7 +296,8 @@
       "<div><dt>Nogales que se quedan</dt><dd>" + nf0.format(quedan) + " de " + nf0.format(s.arboles) + " (" + nf0.format(100 * quedan / s.arboles) + " %)</dd></div>" +
       "<div><dt>Comercio</dt><dd>" + nf0.format(s.predio_comercial_m2) + " m²</dd></div>" +
       "<div><dt>Venta total</dt><dd>$" + nf0.format(s.venta / 1e6) + " millones</dd></div>" +
-      "<div><dt>Margen</dt><dd>$" + nf0.format(s.margen / 1e6) + " millones (" + nf1.format(s.roi) + " %)</dd></div>";
+      "<div><dt>Margen</dt><dd>$" + nf0.format(s.margen / 1e6) + " millones (" + nf1.format(s.roi) + " %)</dd></div>" +
+      (s.urbanizacion ? "<div><dt>Urbanización</dt><dd>$" + nf0.format(s.urbanizacion / 1e6) + " millones</dd></div><div><dt>Cuota de mantenimiento</dt><dd>$" + nf0.format(s.cuota_casa_mes) + " al mes</dd></div>" : "");
     var p = document.getElementById("panel").getBoundingClientRect();
     map.fitBounds(todo.getBounds(), window.matchMedia("(max-width: 40rem)").matches ? { paddingTopLeft: [12, p.bottom + 12], paddingBottomRight: [12, 12] } : { paddingTopLeft: [p.right + 12, 12], paddingBottomRight: [60, 12] });
   });

@@ -1,0 +1,43 @@
+﻿Servicio,Elemento,Especificación,Cantidad,Unidad,Precio unitario (MXN),Importe (MXN)
+Terracerías,"Despalme, nivelación y rasantes","Despalme 20 cm, cortes y rellenos compactados al 95 % Proctor para dar 0.3 % mínimo a las calles",596538.8,m²,55,32809634
+Calles,Pavimento de calles,"Concreto hidráulico MR 42 kg/cm², 15 cm, losas de 3.5 × 3.5 m con juntas aserradas y selladas; base hidráulica 20 cm y subbase 20 cm al 95 %",78188.1,m²,1250,97735116
+Calles,Pavimento de bulevar y acceso,"Concreto hidráulico MR 45 kg/cm², 18 cm, con pasajuntas; base 20 cm y subbase 25 cm",20558.8,m²,1420,29193539
+Calles,Guarniciones,"Concreto f'c 200 kg/cm², sección 15 × 20 × 40 cm; rebajadas en cocheras y esquinas (rampas)",27241.3,m,480,13075801
+Calles,Banquetas,"Concreto f'c 150 kg/cm², 10 cm, escobillado, con malla 6-6/10-10; pendiente 2 % hacia la calle",56055.9,m²,520,29149092
+Calles,Cruces elevados,"Mesa de concreto de 3.5 m, rampas 1:10, pintura blanca; en el bulevar y frente al club",17,pza,95000,1615000
+Calles,Señalamiento y nomenclatura,"Placa de calle en cada esquina (nombre y números), alto, 30 km/h, pintura de pasos peatonales",58,cruce,18000,1044000
+Drenaje pluvial,Bocas de tormenta,"Rejilla de piso de fierro fundido 90 × 60 cm, en los puntos bajos junto a la guarnición",112,pza,28000,3136000
+Drenaje pluvial,Pozos de absorción,"Ø 1.2 m, 10 m de profundidad, ademe de tabique junteado a hueso, grava de 1–2"" y filtro de arena; uno por cada 2 bocas",56.0,pza,65000,3640000
+Drenaje pluvial,Jardines de lluvia del camellón,"2 franjas de 1.6 m, 40 cm abajo del sendero: grava, suelo filtrante y plantas del desierto; cortes en guarnición cada 10 m",4176.0,m²,750,3131971
+Drenaje pluvial,Bordos de los parques,Bordo de tierra compactada de 30 cm con vertedor de piedra hacia la calle,814.5,m,900,733068
+Drenaje pluvial,Zanja de infiltración de la pista,"Zanja de 0.8 × 1.0 m con grava y geotextil, bajo la pista",3273.7,m,650,2127911
+Drenaje pluvial,Cajas de infiltración,"Módulos plásticos de 90 cm bajo los 3 estacionamientos, con geotextil y registro de limpieza",2120.0,m²,2600,5512000
+Drenaje pluvial,Vaso de tormentas,"Vaso de 1.5 m con taludes 3:1, fondo de grava; rebosa a la calle norte solo en tormentas de más de 50 años",779.6,m³,380,296252
+Drenaje sanitario,Atarjeas,"PVC sanitario serie 20 (NMX-E-215) Ø 20 cm, pendiente 2.5 al millar, cama de arena 10 cm y relleno compactado",10470,m,2400,25128000
+Drenaje sanitario,Colector,"PVC/PEAD Ø 38 cm, pendiente 2 al millar, bajo la pista y la calle Tórtola",546.1,m,4800,2621044
+Drenaje sanitario,Pozos de visita,Concreto prefabricado Ø 1.2 m con brocal y tapa de fierro fundido; en cada cruce y a no más de 100 m,149,pza,32000,4768000
+Drenaje sanitario,Descargas domiciliarias,"PVC Ø 15 cm al 1 %, con registro de 40 × 60 cm dentro del lote",1125,pza,7800,8775000
+Tratamiento,Planta de tratamiento,"Lodos activados (SBR) de 13 l/s, compacta y cerrada, con desinfección UV; cumple NOM-003-SEMARNAT para riego",13,l/s,2100000,27300000
+Tratamiento,Tanque de agua tratada,"Concreto, enterrado, con bombeo a presión constante para la red morada",900,m³,5200,4680000
+Tratamiento,Red morada principal,"PEAD morado Ø 4"" por el camellón",1418.3,m,650,921867
+Tratamiento,Red morada transversal,"PEAD morado Ø 3"" por las transversales",3719.1,m,480,1785185
+Tratamiento,Goteo a los nogales,"PEAD morado Ø 2"" en las dos banquetas con 2 goteros autocompensados de 8 l/h por nogal y válvulas por sector",15601.8,m,260,4056459
+Agua potable,Pozo y derechos,"Rehabilitación del pozo de la huerta, equipo sumergible, macromedidor y cambio de uso de los derechos (agrícola a público urbano) ante Conagua",1,lote,6000000,6000000
+Agua potable,Cisterna y bombeo,"Cisterna de concreto 800 m³ y equipo de presión constante (3 + 1 bombas con variador), cloración",1,lote,10800000,10800000
+Agua potable,"Línea de 8""",PEAD RD 17 / PVC hidráulico C-10 Ø 200 mm,2869.7,m,1700,4878571
+Agua potable,"Línea de 6""",PVC hidráulico C-10 Ø 150 mm,3719.1,m,1250,4648918
+Agua potable,"Línea de 4""","PVC hidráulico C-10 Ø 100 mm, bajo la banqueta norte de cada calle",7800.9,m,900,7020795
+Agua potable,Cajas de válvulas,Válvulas de seccionamiento en cada cruce: se puede cortar una cuadra sin dejar sin agua al resto,58,pza,35000,2030000
+Agua potable,Hidrantes,"Hidrante de columna 6"" con 2 salidas de 2.5"" y una de 4.5"", a tresbolillo en los cruces (ninguna casa a más de 150 m)",29,pza,48000,1392000
+Agua potable,Tomas domiciliarias,"PEAD Ø 1/2"" con abrazadera, llave de banqueta y medidor en nicho",1125,pza,6800,7650000
+Electricidad,Red subterránea por lote,"Media tensión 13.2 kV en anillo, transformadores pedestal monofásicos de 75 kVA (uno cada ≈ 16 casas), baja tensión 240/120 V, ductos y registros, según norma CFE de distribución subterránea",1105,lote,46000,50830000
+Electricidad,Transformadores trifásicos,"Pedestal trifásico para club, acceso y súper, y planta con bombeo",4,pza,420000,1680000
+Electricidad,Aportación y obras de conexión CFE,Por confirmar con la factibilidad de CFE,1,lote,6000000,6000000
+Alumbrado,Arbotantes de calle,Ya contados en la capa de iluminación (los de paisaje y acceso se suman aparte),441,pza,26000,11466000
+Telecomunicaciones,Ductería,"3 ductos PAD Ø 2"" (2 para operadores y 1 de reserva) bajo la banqueta norte, registro cada 50 m; red abierta a cualquier operador de fibra",12825.0,m,210,2693251
+Barda y accesos,Barda perimetral,"Block de concreto 15 cm, 2.8 m de alto, castillos cada 3 m, aplanado y pintura; cimentación corrida",3261.7,m,4800,15656045
+Barda y accesos,Salida de emergencia,"Portón de 6 m con cerradura de bomberos, a la calle del norte",1,pza,180000,180000
+Barda y accesos,Acopio de basura y reciclaje,"Cuarto ventilado con 6 contenedores y lavado, junto a la salida y antes de las plumas: el camión no entra",1,pza,650000,650000
+Indirectos,Proyecto ejecutivo y estudios,"Topografía, mecánica de suelos, prueba de infiltración, proyecto ejecutivo de todas las redes y trámites",1,global,10920263,10920263
+Indirectos,Supervisión y laboratorio,"Control de calidad de concretos, compactaciones y pruebas de hermeticidad y presión",1,global,8736210,8736210
+Indirectos,Imprevistos,5 % sobre la obra,1,global,21840526,21840526

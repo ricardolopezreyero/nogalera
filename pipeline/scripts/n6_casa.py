@@ -2,9 +2,13 @@
 Un solo modelo de casa para los lotes de 12.0 × 24.0 m o más; cambia solo la fachada (9 tipos, ver n6_fachadas.py)."""
 import math, sys
 OUT = sys.argv[1] if len(sys.argv) > 1 else "../public/n6/casa.html"
+import json, os
+_fc = json.load(open(os.path.join(os.path.dirname(os.path.abspath(OUT)), "confort.geojson")))
+_lt = [f["properties"] for f in _fc["features"] if f["properties"]["capa"] == "lote"]
+N_LOTES = len(_lt); N_CABE = sum(1 for p in _lt if p["ancho"] >= 12.0 and p["fondo"] >= 24.0); M2_MEDIO = sum(p["m2"] for p in _lt) / N_LOTES
 
 # ---------- datos ----------
-LOTE_W, LOTE_D = 12.7, 25.8          # lote muestra (promedio de los 1,109 lotes: 329 m²)
+LOTE_W, LOTE_D = 12.7, 25.8          # lote muestra (cerca del promedio de los lotes)
 CASA_W = 9.0                         # deja 1.85 m libres a cada lado (1.5 m en lotes de 12.0 m)
 FRENTE = 5.5                         # cochera para 2 autos
 PB_D, PA_D = 11.0, 14.0              # planta baja cerrada y planta alta (vuela 3 m sobre el portal)
@@ -393,7 +397,7 @@ HTML = f"""<!doctype html>
 {DEFS}
 <main class="doc">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html" aria-current="page">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html" aria-current="page">Casa muestra</a><a href="servicios.html">Servicios</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
   <h1>Casa muestra · Modelo Nogal <span>Un solo modelo para todo el fraccionamiento, con 9 fachadas distintas.</span></h1>
   <dl class="datos">
@@ -404,11 +408,11 @@ HTML = f"""<!doctype html>
     <div><dt>Jardín (sin casa ni cochera)</dt><dd>≈ {jardin:.0f} m²</dd></div>
     <div><dt>Lote muestra</dt><dd>12.7 × 25.8 m · 328 m²</dd></div>
     <div><dt>Cochera</dt><dd>2 autos</dd></div>
-    <div><dt>Lotes donde cabe</dt><dd>1,060 de 1,109 (96 %)</dd></div>
+    <div><dt>Lotes donde cabe</dt><dd>{N_CABE:,} de {N_LOTES:,} ({100*N_CABE/N_LOTES:.0f} %)</dd></div>
   </dl>
 
   <h2>Por qué un solo modelo</h2>
-  <p>Todos los lotes miden casi lo mismo: el promedio es de 329 m², y 1,060 lotes miden al menos 12.0 × 24.0 m. La casa mide 9 m de ancho y deja 1.5 m o más libres a cada lado, así que entra igual en todos. Un solo juego de planos, de moldes y de compras: se construye más rápido y más barato. Los 49 lotes que no la aceptan son remates angostos en las esquinas; conviene unirlos con el lote vecino o venderlos como lote sin casa.</p>
+  <p>Todos los lotes miden casi lo mismo: el promedio es de {M2_MEDIO:.0f} m², y {N_CABE:,} lotes miden al menos 12.0 × 24.0 m. La casa mide 9 m de ancho y deja 1.5 m o más libres a cada lado, así que entra igual en todos. Un solo juego de planos, de moldes y de compras: se construye más rápido y más barato. Los {N_LOTES - N_CABE} lotes que no la aceptan son remates angostos en las esquinas; conviene unirlos con el lote vecino o venderlos como lote sin casa.</p>
   <p>Las calles corren al ENE–OSO (rumbo 59°), así que los lotes solo pueden mirar de dos maneras: jardín al NNO o jardín al SSE. La casa es la misma en los dos casos y solo cambia la fachada que da a la calle.</p>
 
   <h2>Plantas</h2>

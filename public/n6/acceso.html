@@ -32,13 +32,13 @@
 </style></head>
 <body><main class="doc">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html" aria-current="page">Acceso</a><a href="casa.html">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html" aria-current="page">Acceso</a><a href="casa.html">Casa muestra</a><a href="servicios.html">Servicios</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
   <h1>Acceso <span>Entran 2 carriles de residentes y 2 de visitas. Salen 1 de residentes y 1 de visitas.</span></h1>
   <dl class="datos">
-    <div><dt>Casas</dt><dd>1,109</dd></div>
-    <div><dt>Hora pico de la tarde</dt><dd>822 autos entran</dd></div>
-    <div><dt>Hora pico de la mañana</dt><dd>832 autos salen</dd></div>
+    <div><dt>Casas</dt><dd>1,105</dd></div>
+    <div><dt>Hora pico de la tarde</dt><dd>819 autos entran</dd></div>
+    <div><dt>Hora pico de la mañana</dt><dd>829 autos salen</dd></div>
     <div><dt>Espera del residente</dt><dd>≈ 8 s al entrar</dd></div>
     <div><dt>Casetas</dt><dd>a 60 m de la calle</dd></div>
     <div><dt>Ancho del acceso</dt><dd>29 m</dd></div>
@@ -117,21 +117,21 @@
   <h2>Cálculo de hora pico</h2>
   <p>Viajes por casa en la hora pico: 0.85 en la mañana (75 % salen) y 1.0 en la tarde (63 % entran). Son tasas de tráfico residencial de casas solas, ajustadas un poco hacia arriba por la ida a la escuela. Se usa el cuarto de hora más cargado (factor 0.85). Visitas, servicios y apps: 15 % de lo que entra y 8 % de lo que sale. Las cuentas son por carril, con un modelo de colas conservador.</p>
   <table>
-    <tr><th>Tarde · entrada (822 autos/h)</th><th>Ocupación</th><th>Espera media</th><th>Fila (95 %)</th></tr>
-    <tr><td>Residentes, 1 carril (699/h)</td><td>116 %</td><td colspan=2><b>se satura</b>: la fila no deja de crecer</td></tr>
+    <tr><th>Tarde · entrada (819 autos/h)</th><th>Ocupación</th><th>Espera media</th><th>Fila (95 %)</th></tr>
+    <tr><td>Residentes, 1 carril (696/h)</td><td>116 %</td><td colspan=2><b>se satura</b>: la fila no deja de crecer</td></tr>
     <tr><td>Residentes, <b>2 carriles</b></td><td>58 %</td><td>8 s</td><td>5 autos · 32 m</td></tr>
-    <tr><td>Visitas, 1 carril (123/h)</td><td>137 %</td><td colspan=2><b>se satura</b>: la fila no deja de crecer</td></tr>
-    <tr><td>Visitas, <b>2 carriles</b></td><td>68 %</td><td>87 s</td><td>7 autos · 46 m</td></tr>
+    <tr><td>Visitas, 1 carril (123/h)</td><td>136 %</td><td colspan=2><b>se satura</b>: la fila no deja de crecer</td></tr>
+    <tr><td>Visitas, <b>2 carriles</b></td><td>68 %</td><td>86 s</td><td>7 autos · 46 m</td></tr>
   </table>
   <table>
-    <tr><th>Mañana · salida (832 autos/h)</th><th>Ocupación</th><th>Espera media</th><th>Fila (95 %)</th></tr>
-    <tr><td>Residentes, 1 carril con pluma (765/h)</td><td>85 %</td><td>23 s</td><td>18 autos · 117 m</td></tr>
-    <tr><td>Residentes, 1 carril, <b>pluma arriba en hora pico</b></td><td>55 %</td><td>3 s</td><td>4 autos · 26 m</td></tr>
-    <tr><td>Visitas, 1 carril (67/h)</td><td>18 %</td><td>2 s</td><td>1 autos · 6 m</td></tr>
+    <tr><th>Mañana · salida (829 autos/h)</th><th>Ocupación</th><th>Espera media</th><th>Fila (95 %)</th></tr>
+    <tr><td>Residentes, 1 carril con pluma (762/h)</td><td>85 %</td><td>22 s</td><td>18 autos · 117 m</td></tr>
+    <tr><td>Residentes, 1 carril, <b>pluma arriba en hora pico</b></td><td>54 %</td><td>3 s</td><td>4 autos · 26 m</td></tr>
+    <tr><td>Visitas, 1 carril (66/h)</td><td>18 %</td><td>2 s</td><td>1 autos · 6 m</td></tr>
   </table>
   <p>Capacidad por carril: residentes con tag, 600 autos/h (6 s por auto); visitas con registro en caseta, 90/h (40 s), o 240/h si el visitante trae un QR de la app del fraccionamiento (15 s); salida con pluma, 900/h; salida con la pluma arriba, 1400/h. Cada auto ocupa 6.5 m de fila.</p>
   <ul>
-    <li><b>Un solo carril de residentes no alcanza:</b> en la tarde llegan 699 autos/h a un carril que da para 600, y la fila nunca se vacía. Con 2 carriles se espera unos segundos.</li>
+    <li><b>Un solo carril de residentes no alcanza:</b> en la tarde llegan 696 autos/h a un carril que da para 600, y la fila nunca se vacía. Con 2 carriles se espera unos segundos.</li>
     <li><b>Visitas: 2 carriles.</b> Uno solo se satura en la tarde si cada registro tarda 40 s. Si se usa QR (el residente registra a su visita desde el celular), con un carril bastaría: el segundo puede quedar para paquetería y apps.</li>
     <li><b>La salida de la mañana es el punto fino:</b> con pluma, la fila llega a 117 m dentro del fraccionamiento. Con la pluma arriba en hora pico baja a 26 m.</li>
   </ul>

@@ -27,14 +27,20 @@ cobra = X * S
 meses = LOTES / RITMO
 margen_fid = S * (1 - X) - (C - P)
 costo_fid = C - P
+MARGEN_OBJ = 0.20                     # margen mínimo sano para el proyecto, sobre lo que pone
+p_contado = (S / (1 + MARGEN_OBJ) - costo_fid) / A               # precio de contado que deja ese margen
+X_viable = 1 - (1 + MARGEN_OBJ) * costo_fid / S                  # porcentaje de las ventas que deja ese margen
+p_fid = X_viable * (VPd + VPp) / (2 * A)                          # precio cuyo porcentaje justo es X_viable
+m_fid = lambda p: (S * (1 - 2 * p * A / (VPd + VPp)) - costo_fid) / costo_fid
+print(f"contado máx {p_contado:,.0f}/m²; fideicomiso viable {X_viable:.4f} ↔ {p_fid:,.0f}/m²")
 print(f"P={P:,.0f} VPd={VPd:,.0f} VPp={VPp:,.0f} piso={X_piso:.4f} eq={X:.4f} techo={X_techo:.4f} cobra={cobra:,.0f} ({cobra/A:,.0f}/m²) gana={gana:,.0f} margen={margen_fid:,.0f}")
 
 fmt = lambda x: f"{x:,.0f}"
 mill = lambda x: f"${x/1e6:,.1f} millones"
 pct = lambda x, d=1: f"{100*x:.{d}f} %"
 filas_precio = "".join(
-    f"<tr{' class=\"eq\"' if p == PM2 else ''}><td>${fmt(p)}/m²</td><td>{mill(p*A)}</td><td>{pct(2*p*A/(VPd+VPp), 2)}</td><td>{mill(2*p*A/(VPd+VPp)*S)}</td></tr>"
-    for p in (450, 550, PM2, 750, 850))
+    f"<tr{' class=\"eq\"' if p == PM2 else ''}><td>${fmt(p)}/m²</td><td>{mill(p*A)}</td><td>{pct(2*p*A/(VPd+VPp), 2)}</td><td>{mill(2*p*A/(VPd+VPp)*S)}</td><td>{pct(m_fid(p))}</td></tr>"
+    for p in sorted({350, 450, round(p_fid), 550, PM2, 750}))
 def fila_ritmo(rt):
     v = vp(R_DUENO, rt); hoy = X * v
     return f"<tr{' class=\"eq\"' if rt == RITMO else ''}><td>{rt} lotes al mes ({LOTES/rt/12:.1f} años)</td><td>{mill(X*S)}</td><td>{mill(hoy)}</td><td>${fmt(hoy/A)}/m²</td></tr>"
@@ -69,7 +75,7 @@ HTML = f"""<!doctype html>
 </style></head>
 <body><main class="doc">
   <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a><a href="terreno.html" aria-current="page">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
+    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html">Casa muestra</a><a href="servicios.html">Servicios</a><a href="terreno.html" aria-current="page">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
   <h1>Terreno <span>Cuánto vale y cuánto le toca al dueño si lo aporta en fideicomiso</span></h1>
   <dl class="datos">
@@ -78,6 +84,7 @@ HTML = f"""<!doctype html>
     <div><dt>Lo que gana cada parte contra el contado</dt><dd>{mill(gana)}<small>el dueño y el proyecto, lo mismo, en pesos de hoy</small></dd></div>
   </dl>
   <p class="frase">«Tu terreno vale {mill(P).replace(' millones', ' millones de pesos')} de contado (${fmt(PM2)} por m²). Si lo aportas al fideicomiso, te damos el <b>{pct(X, 2)} de cada venta</b>. Es el punto exacto en el que tú y el proyecto ganan lo mismo contra una venta de contado: {mill(gana)} cada uno, en pesos de hoy.»</p>
+  <p><b>Ojo:</b> ya con la urbanización completa (calles, drenajes, planta de tratamiento, barda), a ${fmt(PM2)}/m² al proyecto le quedaría solo {pct(margen_fid/costo_fid)} en fideicomiso. El precio que sí aguanta está abajo, en <a href="#aguanta">Lo que aguanta el proyecto</a>.</p>
 
   <h2>De dónde sale</h2>
   <ul>
@@ -97,10 +104,18 @@ HTML = f"""<!doctype html>
   <p>Ojo: el porcentaje sale alto porque, de contado, el terreno ya es {pct(P/S)} de las ventas; en fraccionamientos lo común es que ande entre 15 y 25 %. Si se baja el precio del metro, baja en proporción (tabla de abajo).</p>
   <p>Con el {pct(X, 2)}, al proyecto le quedan {mill(S*(1-X))} de las ventas para pagar {mill(costo_fid)} de urbanización, amenidades, iluminación, permisos y ventas: margen de {mill(margen_fid)} ({pct(margen_fid/costo_fid)} sobre lo que pone), sin tener que pagar el terreno por adelantado.</p>
 
+  <h2 id="aguanta">Lo que aguanta el proyecto</h2>
+  <p>Con la urbanización medida partida por partida (<a href="servicios.html#presupuesto">Servicios</a>), el proyecto cuesta {mill(costo_fid)} sin el terreno. Para que le quede un margen sano de {pct(MARGEN_OBJ, 0)} sobre lo que pone:</p>
+  <ul>
+    <li><b>De contado, el terreno puede costar hasta ${fmt(p_contado)}/m²</b> ({mill(p_contado*A)}). A ${fmt(PM2)}/m² el margen de contado queda en {pct((S - C)/C)}.</li>
+    <li><b>En fideicomiso, el dueño puede llevarse hasta el {pct(X_viable, 1)} de las ventas.</b> Ese es el porcentaje justo para un terreno de <b>${fmt(p_fid)}/m²</b>. Con el {pct(X, 2)} que sale a ${fmt(PM2)}/m², al proyecto le queda {pct(margen_fid/costo_fid)}.</li>
+  </ul>
+  <p class="frase">Para negociar: «Tu terreno vale ${fmt(p_fid)} por m² en fideicomiso: te damos el {pct(X_viable, 1)} de cada venta. Es el porcentaje en el que tú y el proyecto ganan lo mismo contra una venta de contado, y el máximo que el proyecto aguanta con las calles, drenajes, planta y barda completos.»</p>
+
   <h2>Si se negocia otro precio por metro</h2>
   <p>El porcentaje justo sube parejo con el precio: cada $100/m² son {pct(2*100*A/(VPd+VPp), 2)} de las ventas.</p>
   <div class="scroll"><table>
-    <tr><th>Precio del metro</th><th>Valor de contado</th><th>Porcentaje justo</th><th>Cobra en total</th></tr>
+    <tr><th>Precio del metro</th><th>Valor de contado</th><th>Porcentaje justo</th><th>Cobra en total</th><th>Margen del proyecto</th></tr>
     {filas_precio}
   </table></div>
 

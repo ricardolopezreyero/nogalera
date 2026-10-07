@@ -110,6 +110,11 @@ arroyos_bul = unary_union([box(u0 - 5, vb - 9.8, u1 + 5, vb - 2.8), box(u0 - 5, 
 sendero_bul = box(u0 - 5, vb - 2.8, u1 + 5, vb + 2.8).intersection(inner)
 segs = [u0 - 5] + [x for c in cruces for x in (c - ROW_CALLE / 2, c + ROW_CALLE / 2)] + [u1 + 5]
 segs = list(zip(segs[0::2], segs[1::2]))                     # tramos entre transversales
+# planta de tratamiento y vaso de tormentas en la punta oriente, el punto más bajo del terreno (el terreno baja ≈ 1 m/km al oriente):
+# sin lotes, y la calle de enfrente termina en la última transversal
+c_ptar = min(c for c in calles_v if c > vb)
+ptar = box(cruces[-1] + ROW_CALLE / 2, c_ptar + ROW_CALLE / 2, u1 + 10, v1 + 10).intersection(inner)
+vial = vial.difference(ptar); pavimento = pavimento.difference(ptar)
 
 # manzanas (para parques y comunal): tramo × bloque entre calles
 bloques = []
@@ -196,7 +201,7 @@ gcB = va + 1.5 * SV if abs(va + 1.5 * SV - (cB["lo"] + cB["hi"]) / 2) < abs(va -
 el["estacionamiento2"] = box(cB["sa"] + 6, gcB - 5, cB["sa"] + 60, gcB + 5)
 for k in list(el):
     if not cA["g"].union(cB["g"]).buffer(0.5).contains(el[k]): print("aviso: no cabe", k)
-amen = unary_union([cA["g"], cB["g"], plaza_acc] + [p["g"] for p in parques])
+amen = unary_union([cA["g"], cB["g"], plaza_acc, ptar] + [p["g"] for p in parques])
 libre = inner.difference(vial).difference(bulevar).difference(amen).difference(unary_union(acc_calles))
 libre_p = prepared.prep(libre.buffer(0.05))
 
@@ -274,7 +279,7 @@ AMEN = {"salón con oficinas arriba (1,440 m²)": 21.6e6, "gimnasio (2 niveles, 
         "2 parques": 5e6, "acceso con caseta": 2e6}
 TERRENO, URB_CALLE, URB_BASE, BLANDOS, REUBICA = 670.0, 1400.0, 250.0, 0.12, 12000.0
 costo = TERRENO * gross + URB_CALLE * vial_m2 + URB_BASE * gross + BLANDOS * venta + sum(AMEN.values()) + REUBICA * len(reubicar)
-verde_m2 = R.area - areas.sum() - vial_m2 - predio_super - com_m2
+verde_m2 = R.area - areas.sum() - vial_m2 - predio_super - com_m2 - ptar.area
 res = dict(lotes=len(lotes), vendible_m2=round(areas.sum()), pct_vendible=round(100 * areas.sum() / R.area, 1),
            lote_mediana=round(float(np.median(areas))), lotes_premio_parque=sum(1 for L in lotes if L["premio"] == "parque"),
            lotes_bulevar=sum(1 for L in lotes if L["premio"] == "bulevar"), vial_pct=round(100 * vial_m2 / R.area, 1), verde_pct=round(100 * verde_m2 / R.area, 1),
@@ -305,6 +310,7 @@ add("limite", R); add("pista", pista); add("vial", unary_union([vial] + acc_call
 add("arroyo", arroyos_bul); add("sendero", sendero_bul)
 add("comunal", cA["g"], nombre="Club social"); add("comunal", cB["g"], nombre="Club deportivo")
 add("plaza_acceso", plaza_acc)
+add("ptar", ptar, nombre="Planta de tratamiento")
 NOM = {"salon": "Salón (PB) · oficinas (PA)", "gimnasio": "Gimnasio", "alberca": "Alberca", "estacionamiento": "Estacionamiento", "estacionamiento2": "Estacionamiento",
        "tenis": "Tenis", "padel1": "Pádel", "padel2": "Pádel", "multicancha": "Multicancha", "juegos": "Juegos"}
 CAPA = {"salon": "salon", "gimnasio": "salon", "alberca": "alberca", "estacionamiento": "estacionamiento", "estacionamiento2": "estacionamiento",

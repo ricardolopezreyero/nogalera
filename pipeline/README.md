@@ -85,3 +85,5 @@ python3 scripts/n6_casa.py                                          # casa muest
 python3 scripts/n6_acceso.py                                        # entrada: plano y cálculo de hora pico → public/n6/acceso.html (el trazo vive en n6_acceso_calc.py)
 ./venv/bin/python scripts/n6_luz.py data ../public/n6               # iluminación (arbotantes, focos a los nogales, balizas, acceso) → public/n6/luces.json; suma su costo al proyecto
 python3 scripts/n6_terreno.py ../public/n6                          # precio del terreno y porcentaje justo en fideicomiso → public/n6/terreno.html
+./venv/bin/python scripts/n6_servicios.py data ../public/n6         # calles, drenajes, planta, agua, luz y fibra: capas del mapa (servicios.geojson), hoja (servicios.html), especificaciones.csv y presupuesto por partida. Corre después de todo lo anterior (llama a n6_luz.py)
+python3 scripts/n6_terreno.py ../public/n6 && python3 scripts/n6_acceso.py && python3 scripts/n6_casa.py   # vuelve a generar las páginas que usan el número de lotes y los costos
