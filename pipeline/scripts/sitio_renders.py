@@ -23,6 +23,57 @@ def concurso_html():
 <figcaption><b>{e_(FOTOS_TXT.get(n, n))}</b> <span class="hora">{HORAS_TXT[hora]}</span><p class="nota"><a href="/renders/foto/?escena={esc_}&amp;vista={vista}&amp;hora={hora}">Abrir en el render fotorrealista</a>{" · mapas de control: " + ctl if ctl else ""}</p></figcaption></figure>''')
     return f'<div class="renders">{"".join(figs)}</div>' if figs else "<p class=nota>Todavía no se han generado (node pipeline/scripts/fotos.js --control).</p>"
 
+# ---------- historial de renders: cada subida al repositorio que cambió public/renders/foto/img es un lote ----------
+HIST_DIR = os.path.join(PUB, "renders", "foto", "historial")
+MESES_H = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+def _git(*args):
+    import subprocess
+    return subprocess.run(["git", *args], cwd=os.path.dirname(PUB), capture_output=True, text=True).stdout
+def lotes_git():
+    """Lotes anteriores, del más nuevo al más viejo: [{id, fecha, fecha_txt, titulo, archivos:[nombre…]}]. El lote más reciente
+    del repositorio se omite cuando la carpeta img/ no tiene cambios sin subir (entonces ese lote es el que va hasta arriba)."""
+    from datetime import datetime
+    try:
+        from zoneinfo import ZoneInfo; tz = ZoneInfo("America/Monterrey")
+    except Exception: tz = None
+    rel = "public/renders/foto/img"; lotes = []
+    for linea in _git("log", "--format=%h|%cI|%s", "--", rel).splitlines():
+        h, iso, asunto = linea.split("|", 2)
+        archivos = [os.path.basename(a)[:-4] for a in _git("show", "--name-only", "--diff-filter=AM", "--format=", h, "--", rel).split() if a.endswith(".jpg") and not os.path.basename(a).startswith("p-")]
+        if not archivos: continue
+        f = datetime.fromisoformat(iso); f = f.astimezone(tz) if tz else f
+        lotes.append({"id": f.strftime("%Y%m%d-%H%M") + "-" + h, "hash": h, "fecha": f.isoformat(), "fecha_txt": f"{f.day} de {MESES_H[f.month - 1]} de {f.year}, {f:%H:%M}", "titulo": asunto.split(":")[0][:110], "archivos": archivos})
+    if lotes and not _git("status", "--porcelain", "--", rel).strip(): lotes = lotes[1:]
+    return lotes
+def extraer_lotes(lotes):
+    """Saca de git las imágenes de cada lote a historial/<lote>/ y hace miniaturas; escribe historial/index.json para la galería."""
+    from PIL import Image
+    import subprocess
+    salida = []
+    for l in lotes:
+        d = os.path.join(HIST_DIR, l["id"]); os.makedirs(os.path.join(d, "mini"), exist_ok=True); arch = []
+        for n in l["archivos"]:
+            dest = os.path.join(d, n + ".jpg"); mini = os.path.join(d, "mini", n + ".jpg")
+            if not os.path.exists(dest):
+                with open(dest, "wb") as fh: subprocess.run(["git", "show", f'{l["hash"]}:public/renders/foto/img/{n}.jpg'], cwd=os.path.dirname(PUB), stdout=fh)
+            if not os.path.exists(mini):
+                im = Image.open(dest).convert("RGB"); im.thumbnail((720, 720)); im.save(mini, quality=82, optimize=True)
+            w, h = Image.open(mini).size
+            arch.append({"n": n, "src": f"/renders/foto/historial/{l['id']}/{n}.jpg", "mini": f"/renders/foto/historial/{l['id']}/mini/{n}.jpg", "w": w, "h": h, "t": FOTOS_TXT.get(n, n)})
+        salida.append({**l, "archivos": arch})
+    os.makedirs(HIST_DIR, exist_ok=True)
+    json.dump(salida, open(os.path.join(HIST_DIR, "index.json"), "w", encoding="utf-8"), ensure_ascii=False)
+    return salida
+def historial_html():
+    lotes = extraer_lotes(lotes_git())
+    if not lotes: return "<p class=nota>Todavía no hay lotes anteriores.</p>"
+    partes = []
+    for l in lotes:
+        figs = "".join(f'<figure class="render mini"><a href="{a["src"]}" target="_blank" rel="noopener"><img src="{a["mini"]}" alt="{e_(a["t"])}" loading="lazy" width="{a["w"]}" height="{a["h"]}"></a><figcaption>{e_(a["t"])}</figcaption></figure>' for a in l["archivos"])
+        cuantos = f'{len(l["archivos"])} render' + ("" if len(l["archivos"]) == 1 else "s")
+        partes.append(f'<details class="lote"><summary><b>{e_(l["fecha_txt"])}</b> · {cuantos} <span class="nota">· {e_(l["titulo"])}</span> · <a href="/renders/concurso/?lote={l["id"]}">galería</a></summary>\n<div class="renders minis">{figs}</div></details>')
+    return "\n".join(partes)
+
 def renders():
     figs = []
     for i, k in enumerate(RENDERS_10):
@@ -33,10 +84,14 @@ def renders():
     cuerpo = f"""
 <p class="frase" style="font-size:1.1rem"><b>🎬 Creador de renders fotorrealistas:</b> <a class="boton" href="/renders/foto/?escena=completo">abrir el creador</a> <span class="nota">cielo, nubes y sol de Torreón calculados por hora y fecha (amanecer, mediodía, atardecer, crepúsculo y noche con las luces encendidas), bruma, exposición, cámara con órbita, capas, calidad hasta 4K y mapas para IA. Arrastra para girar; la imagen se afina sola al soltar.</span></p>
 <p class="frase" style="font-size:1.1rem"><b>🚶 Camina dentro del modelo 3D.</b> <a class="boton" href="/renders/foto/?escena=completo&amp;caminar=1">Caminar por el fraccionamiento completo</a> <a class="boton" href="/renders/foto/?escena=fachadas&amp;caminar=1">Caminar por la cuadra de las nueve fachadas</a> <a class="boton" href="/renders/foto/?escena=parque&amp;caminar=1">Caminar por el parque</a><br><span class="nota">Flechas para avanzar y girar, ratón o dedo para mirar, altura de la vista a pie, a 2 m, desde un balcón o a 10 m, y «Foto de aquí» para guardar el encuadre. El modelo completo pesa 47 MB: en computadora va bien; en celular usa la cuadra o el parque.</span></p>
-<h2 id="concurso">Renders de concurso: la fachada y el fraccionamiento de lejos</h2>
+<h2 id="concurso">Últimos renders</h2>
+<p class="nota">Siempre aparecen aquí los más recientes; todos los anteriores quedan abajo, en el <a href="#historial">historial</a>.</p>
 <p>Hechos con el motor fotorrealista (WebGL: materiales físicos, follaje de hojas, cielo con sol, sombras y oclusión ambiental) a 2560 × 1440. Cada uno trae sus mapas de profundidad, normales y líneas para llevarlo a fotografía con FLUX + ControlNet en una máquina con GPU (<code>pipeline/comfy/README.md</code>), o con gpt-image-2 desde el Worker (<code>renders_worker.py</code>).</p>
 <p><a class="boton" href="/renders/concurso/">Ver la galería a pantalla completa</a> <span class="nota">clic a la derecha para avanzar, a la izquierda para regresar, F para pantalla completa.</span></p>
 {concurso_html()}
+<h2 id="historial">Historial de renders</h2>
+<p>Cada vez que se sube un lote nuevo, el anterior baja aquí con su fecha. Nada se pierde: cada lote conserva sus imágenes en tamaño completo y su propia galería.</p>
+{historial_html()}
 <h3>Lo que hay en el modelo completo</h3>
 <p class="nota">Cada lote: casa con su fachada, cochera con pérgola, andador, jardín con pasto, flores, arbustos recortados, agaves o grava, seto, árbol joven con tutor, balizas de jardín, llave de manguera, macetas junto a la puerta, tapete, interfón, medidor de luz, buzón y número, tambo de basura, bardas y rejas; patio con mesa y sillas, asador, sombrilla, columpio o trampolín, alberca en algunos, perro; azotea con tinaco, equipos de aire, calentador solar, paneles solares, antena y domo; canalón y bajadas de agua. Calles: arroyo con raya central amarilla y flechas, guarniciones, banquetas, rampas en las esquinas, pasos peatonales, señales de alto, velocidad y nomenclatura, bolardos, botes de basura, registros, bocas de tormenta, alcorques en los nogales de banqueta, pedestales de fibra, transformadores, hidrantes, cámaras de la barda, arbotantes y balizas reales, autos, bicicletas, gente caminando y perros. Parques: bordo, senderos, pérgola, bancas, botes, bebedero, ciclopuerto, aparatos de ejercicio, estación de la pista, fuente, kiosco, mesas de picnic, área de perros cercada, cancha de básquet con tableros, porterías, gradas, juegos de colores (columpios, torre con resbaladilla, trepador, sube y baja, casita), jardineras de flores, árboles jóvenes, arbustos, farolas y pájaros. Club: salón con oficinas, gimnasio, alberca con camastros, sombrillas y palmeras, fuente, canchas de tenis y pádel con malla sombra, gradas, plaza con pérgolas, bancas y macetones, estacionamientos con pluma y bolardos. Acceso: pórtico con letrero y cámaras, casetas, plumas, reja, muro de identidad, astas con banderas, jardineras con flores, bancas de espera, cajones de visitas, mini súper, señales, calzada con carriles. Servicios: planta de tratamiento, vaso de tormentas, pozos, cisterna, acopio. Y los 1,943 nogales en su sitio, cada uno distinto, con nueces.</p>
 <h2 id="diez">Los diez renders de maqueta</h2>
@@ -84,5 +139,5 @@ def renders():
 <p class="nota">Las escenas están en <code>public/datos/escenas/</code> y las arma <code>pipeline/scripts/n6_escenas.py</code> (casas con sus nueve fachadas, calles, nogales, autos y gente). Para agregar una escena nueva se escribe ahí, con las mismas piezas. Los diez renders de arriba se generan con <code>pipeline/scripts/renders.js</code>.</p>
 """
     pagina("renders", "Renders", "08 · Renders", "Los diez renders que más venden La Nogalera, hechos con la geometría real del proyecto, y el creador para hacer todos los demás.", cuerpo,
-           [("concurso", "Renders de concurso"), ("diez", "Los diez de maqueta"), ("crear", "Creador rápido (maqueta)"), ("foto", "Creador fotorrealista"), ("ia", "Render con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
+           [("concurso", "Últimos renders"), ("historial", "Historial"), ("diez", "Los diez de maqueta"), ("crear", "Creador rápido (maqueta)"), ("foto", "Creador fotorrealista"), ("ia", "Render con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
            descripcion="Renders de La Nogalera: la calle bajo los nogales, la casa, el acceso, el bulevar, el parque, la pista, el interior y el jardín; y el creador de renders.")

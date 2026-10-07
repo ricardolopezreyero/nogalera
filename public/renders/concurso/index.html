@@ -22,5 +22,7 @@ document.addEventListener("keydown",function(e){ if(e.key==="ArrowRight"||e.key=
 function full(){ if(document.fullscreenElement)document.exitFullscreen(); else document.documentElement.requestFullscreen(); }
 document.getElementById("full").addEventListener("click",function(e){ e.preventDefault(); full(); });
 var t0=null; img.addEventListener("touchstart",function(e){ t0=e.touches[0].clientX; }); img.addEventListener("touchend",function(e){ var dx=e.changedTouches[0].clientX-t0; if(Math.abs(dx)>40) ir(dx<0?i+1:i-1); });
-ir((parseInt(location.hash.slice(1))||1)-1);
+var lote=new URLSearchParams(location.search).get("lote");
+if(lote){ fetch("/renders/foto/historial/index.json").then(function(r){return r.json();}).then(function(J){ var l=null; for(var k=0;k<J.length;k++) if(J[k].id===lote) l=J[k]; if(l){ L=l.archivos.map(function(a){return {src:a.src,t:a.t};}); document.querySelector("#cab span").textContent="La Nogalera · renders del "+l.fecha_txt; } ir((parseInt(location.hash.slice(1))||1)-1); }); }
+else ir((parseInt(location.hash.slice(1))||1)-1);
 </script></body></html>
