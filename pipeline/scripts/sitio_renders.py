@@ -6,6 +6,22 @@ RENDERS_10 = ["calle", "casa", "aerea", "acceso", "bulevar", "parque", "pista", 
 IDX = {e["id"]: e for e in ESC.INDICE}
 HORAS_TXT = dict(dia="mediodía", tarde="tarde", atardecer="atardecer", noche="noche")
 
+FOTOS_LISTA = json.load(open(os.path.join(AQUI, "fotos_lista.json"), encoding="utf-8"))
+FOTOS_TXT = {"fachada-horizonte": "Fachada Horizonte: las dos losas que vuelan y la franja de ventanas.", "fachada-cantera": "Fachada Cantera.", "fachada-ladrillo": "Fachada Ladrillo.", "fachada-lamas": "Fachada Lamas.", "fachada-marco": "Fachada Marco.",
+             "fachada-hacienda": "Fachada Hacienda.", "fachada-concreto": "Fachada Concreto.", "fachada-celosia": "Fachada Celosía.", "fachada-duela": "Fachada Duela.", "fachada-frente": "Horizonte de frente, desde la banqueta de enfrente.",
+             "fachada-atardecer": "Horizonte al atardecer.", "fachada-noche": "Horizonte de noche, con el portal y las ventanas encendidas.", "cuadra-lejos": "La cuadra de lejos, con lente larga: las nueve fachadas seguidas bajo los nogales.",
+             "cuadra": "La cuadra en escorzo.", "cuadra-alta": "La cuadra desde arriba.", "calle-dia": "La calle bajo los nogales a mediodía.", "calle-noche": "La calle de noche.", "acceso-atardecer": "El acceso al atardecer.",
+             "portal-atardecer": "El portal y el jardín al atardecer.", "parque-dia": "Parque Garza.", "aerea-tarde": "La Nogalera desde el aire.", "aerea-acceso": "El acceso y el bulevar desde el aire."}
+def concurso_html():
+    """Los renders fotorrealistas (WebGL) que ya existen en public/renders/foto/img, con sus mapas de control."""
+    figs = []
+    for n, esc_, hora, vista, w, h in FOTOS_LISTA:
+        if not os.path.exists(os.path.join(PUB, "renders", "foto", "img", n + ".jpg")): continue
+        ctl = " · ".join(f'<a href="/renders/foto/control/{n}-{t}.png">{t}</a>' for t in ("depth", "normal", "lineart") if os.path.exists(os.path.join(PUB, "renders", "foto", "control", f"{n}-{t}.png")))
+        figs.append(f'''<figure class="render"><a href="/renders/foto/img/{n}.jpg" target="_blank" rel="noopener"><img src="/renders/foto/img/{n}.jpg" alt="{e_(FOTOS_TXT.get(n, n))}" loading="lazy" width="{w}" height="{h}"></a>
+<figcaption><b>{e_(FOTOS_TXT.get(n, n))}</b> <span class="hora">{HORAS_TXT[hora]}</span><p class="nota"><a href="/renders/foto/?escena={esc_}&amp;vista={vista}&amp;hora={hora}">Abrir en el render fotorrealista</a>{" · mapas de control: " + ctl if ctl else ""}</p></figcaption></figure>''')
+    return f'<div class="renders">{"".join(figs)}</div>' if figs else "<p class=nota>Todavía no se han generado (node pipeline/scripts/fotos.js --control).</p>"
+
 def renders():
     figs = []
     for i, k in enumerate(RENDERS_10):
@@ -14,6 +30,10 @@ def renders():
 <figcaption><span class="n">{i + 1:02d}</span> <b>{e_(e["titulo"])}</b> <span class="hora">{HORAS_TXT[e["hora"]]}</span><p>{e_(e["porque"])}</p><p class="nota"><a href="/renders/?escena={k}#crear">Abrir en el creador</a> · {e["prismas"]:,} piezas</p></figcaption></figure>''')
     extras = [e for e in ESC.INDICE if e["id"] not in RENDERS_10]
     cuerpo = f"""
+<h2 id="concurso">Renders de concurso: la fachada y el fraccionamiento de lejos</h2>
+<p>Hechos con el motor fotorrealista (WebGL: materiales físicos, follaje de hojas, cielo con sol, sombras y oclusión ambiental) a 2560 × 1440. Cada uno trae sus mapas de profundidad, normales y líneas para llevarlo a fotografía con FLUX + ControlNet en una máquina con GPU (<code>pipeline/comfy/README.md</code>), o con gpt-image-2 desde el Worker (<code>renders_worker.py</code>).</p>
+{concurso_html()}
+<h2 id="diez">Los diez renders de maqueta</h2>
 <p class="frase"><b>Diez imágenes que venden el proyecto, hechas con la geometría real del proyecto.</b> No son fotos ni ilustraciones: cada render sale del mismo plano, la misma casa y los mismos nogales que el resto del sitio, con un motor de render propio. Abajo está el creador: cualquiera de estas escenas se puede girar, cambiar de hora y descargar en alta resolución para hacer los que hagan falta.</p>
 <div class="renders">{"".join(figs)}</div>
 <p class="nota">Estilo de maqueta: volúmenes, sombra de sol, cristales, bruma y contornos. Sirven para la presentación al dueño y al inversionista, y como guía exacta (encuadre, luz, qué se ve) para un render fotorrealista por computadora cuando se necesite. Más escenas en el creador: {", ".join(e_(e["titulo"]) for e in extras)}.</p>
@@ -58,5 +78,5 @@ def renders():
 <p class="nota">Las escenas están en <code>public/datos/escenas/</code> y las arma <code>pipeline/scripts/n6_escenas.py</code> (casas con sus nueve fachadas, calles, nogales, autos y gente). Para agregar una escena nueva se escribe ahí, con las mismas piezas. Los diez renders de arriba se generan con <code>pipeline/scripts/renders.js</code>.</p>
 """
     pagina("renders", "Renders", "08 · Renders", "Los diez renders que más venden La Nogalera, hechos con la geometría real del proyecto, y el creador para hacer todos los demás.", cuerpo,
-           [("crear", "Creador de renders"), ("foto", "Render fotorrealista (WebGL)"), ("ia", "Render fotorrealista con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
+           [("concurso", "Renders de concurso"), ("diez", "Los diez de maqueta"), ("crear", "Creador de renders"), ("foto", "Render fotorrealista (WebGL)"), ("ia", "Render fotorrealista con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
            descripcion="Renders de La Nogalera: la calle bajo los nogales, la casa, el acceso, el bulevar, el parque, la pista, el interior y el jardín; y el creador de renders.")

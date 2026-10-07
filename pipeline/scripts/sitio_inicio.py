@@ -21,6 +21,12 @@ def foto(n, ancha=False, lazy=True):
     return (f'<figure class="foto{" ancha" if ancha else ""}"><a href="/inicio/img/{n}.jpg" data-grande="/inicio/img/{n}.jpg" data-titulo="{e(t)}">'
             f'<img src="/inicio/img/t/{n}.jpg" alt="{e(t)}" width="960" height="540"{" loading=lazy" if lazy else ""}></a><figcaption>{e(t)}</figcaption></figure>')
 
+FOTO_DIR = os.path.join(PUB, "renders", "foto", "img")
+def foto_c(n, texto, ancha=False):
+    """Render de concurso (WebGL) si existe; si no, nada."""
+    if not os.path.exists(os.path.join(FOTO_DIR, n + ".jpg")): return ""
+    return (f'<figure class="foto{" ancha" if ancha else ""}"><a href="/renders/foto/img/{n}.jpg" data-grande="/renders/foto/img/{n}.jpg" data-titulo="{e(texto)}">'
+            f'<img src="/renders/foto/img/{n}.jpg" alt="{e(texto)}" width="2560" height="1440" loading="lazy"></a><figcaption>{e(texto)}</figcaption></figure>')
 def inicio():
     fachadas = "".join(f'<figure>{CD.fachada(n)}<figcaption><b>{e(n)}</b>{e(CD.TEXTO[n])}</figcaption></figure>' for n in NF.NOMBRES)
     todas = [n for n in INICIO_IMGS if n != "hero-noche"]
@@ -86,6 +92,7 @@ def inicio():
     {foto("casa-tarde")}
   </div>
   <div class="galeria" style="margin-top:1rem">{foto("interior-tarde")}{foto("interior-comedor")}{foto("portal-atardecer")}{foto("casa-vecinas")}</div>
+  <div class="galeria grande" style="margin-top:1rem">{foto_c("fachada-horizonte", "La casa Modelo Nogal, fachada Horizonte, por la tarde.")}{foto_c("fachada-frente", "La misma casa de frente.")}{foto_c("fachada-atardecer", "Al atardecer.")}{foto_c("fachada-noche", "De noche.")}{foto_c("cuadra-lejos", "La cuadra de lejos: nueve fachadas distintas bajo los nogales.", True)}</div>
   <h3 style="margin:2.5rem 0 1rem">Las nueve fachadas</h3>
   <div class="fachadas">{fachadas}</div>
 </div></section>
