@@ -363,3 +363,19 @@ svg .plumaA { stroke: #000; stroke-width: 2.5; } svg .cimiento { fill: #999; str
 .cr-controles textarea { font: 0.75rem/1.3 ui-monospace, monospace; border: 1px solid var(--linea); padding: 0.3rem; width: 100%; box-sizing: border-box; }
 @media (max-width: 60rem) { .creador { grid-template-columns: 1fr; } }
 .cr-controles textarea#ia-prompt { font: 0.75rem/1.35 inherit; min-height: 12rem; } .cr-controles input[type=password] { width: 100%; }
+
+/* ---- hojas de una página (inversionista y comercializador) ---- */
+.hoja { border: 2px solid var(--tinta); padding: 1rem 1.25rem; margin: 1rem 0; max-width: 60rem; break-inside: avoid; }
+.hoja header { border-bottom: 1px solid var(--tinta); padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
+.hoja header .ojo { margin: 0 0 0.2rem; } .hoja header h3 { margin: 0; font-size: 1.125rem; }
+.hoja-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: 0.6rem 1.25rem; }
+.hoja-grid dl { margin: 0; border-top: 1px solid var(--linea); padding-top: 0.35rem; }
+.hoja-grid dt { font-size: 0.6875rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; }
+.hoja-grid dd { margin: 0.15rem 0 0; font-size: 0.875rem; line-height: 1.4; }
+.hoja .nota { margin: 0.75rem 0 0; }
+@media print {
+  body:has(#hoja-inv) .doc > :not(.hoja), body:has(#hoja-com) .doc > :not(.hoja) { display: none !important; }
+  .hoja { border-width: 1px; margin: 0; max-width: none; page-break-after: always; }
+  .hoja-grid { grid-template-columns: repeat(2, 1fr); }
+}
+table.fijo td:nth-child(2) { color: #333; font-size: 0.8125rem; } table.fijo td:last-child { white-space: nowrap; }
