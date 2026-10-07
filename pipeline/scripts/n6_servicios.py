@@ -263,15 +263,134 @@ print("cisterna", CISTERNA, "m³; nogales tapados: tanque", arb_tanque, "acopio"
 F("agua_tanque", tanque, nombre=f"Cisterna {CISTERNA} m³ y bombeo")
 F("acopio", acopio, nombre="Acopio de basura y reciclaje")
 tc = tanque.centroid
-lineas_agua = []
-def LA(pts, d, nombre): lineas_agua.append((pts, d, nombre)); F("agua_linea", LineString(pts), d=d, nombre=nombre)
-LA([(tc.x, tc.y), (c_pri - 8, tc.y), (c_pri - 8, bul[0] + 2)], 200, "Alimentación 8\"")
-for dv in (-11.5, 11.5): LA([(tramo(vb)[0], vb + dv), (tramo(vb)[1], vb + dv)], 200, "Bulevar 8\"")
-for x in cruces:
-    a_, b_ = tramo_v(x); LA([(x + 4.5, a_), (x + 4.5, b_)], 150, "Transversal 6\"")
-for c in calles_v:
-    a_, b_ = tramo(c); LA([(a_, c + 4.5), (b_, c + 4.5)], 100, "Calle 4\"")
-L_agua = {d: sum(LineString(p).length for p, dd, _ in lineas_agua if dd == d) for d in (200, 150, 100)}
+# ---- pozos: el principal junto a la cisterna (lado poniente de la plaza de acceso, aguas arriba de todo) y el de respaldo en el parque más lejos de la planta ----
+from shapely.geometry import MultiPoint
+pz_zona = lado_oeste.difference(tanque.buffer(8))
+pozo1, arb_p1 = mejor_sitio(pz_zona, 14, 14, Point(tc.x - 30, tc.y))
+parque_lejos = max(parques, key=lambda p: p["g"].centroid.distance(planta.centroid))
+pozo2, arb_p2 = mejor_sitio(parque_lejos["g"].buffer(-2, join_style=2), 12, 12, parque_lejos["g"].centroid)
+san_geoms = unary_union([LineString(r[1]) for r in ramas] + [LineString([c_["p"] for c_ in col])])
+absorcion = MultiPoint([Point(b) for b in bocas])
+def separa(g, arb):
+    c = g.centroid
+    return dict(u=float(c.x), v=float(c.y), planta=round(float(c.distance(planta))), vaso=round(float(c.distance(vaso))), drenaje=round(float(c.distance(san_geoms))),
+                absorcion=round(float(c.distance(absorcion))), cisterna=round(float(c.distance(tc))), nogales=int(arb))
+POZOS = dict(p1=separa(pozo1, arb_p1), p2=separa(pozo2, arb_p2))
+POZOS["p2"]["parque"] = f"Parque {CRUCES[min(range(len(cruces)), key=lambda i: abs(cruces[i] - parque_lejos['g'].centroid.x))]}"
+p1c, p2c = pozo1.centroid, pozo2.centroid
+cond1 = [(p1c.x, p1c.y), (tc.x, p1c.y), (tc.x, tc.y)]
+xq = min(cruces, key=lambda x: abs(x - p2c.x))
+cond2 = [(p2c.x, p2c.y), (xq - 9, p2c.y), (xq - 9, vb - 13.5), (c_pri - 10, vb - 13.5), (c_pri - 10, tc.y), (tc.x, tc.y)]
+L_cond = {k: float(LineString(c).length) for k, c in (("p1", cond1), ("p2", cond2))}
+F("agua_pozo", pozo1, nombre="Pozo 1 (principal): 14 × 14 m, junto a la cisterna", pozo="p1")
+F("agua_pozo", pozo2, nombre=f"Pozo 2 (respaldo): 12 × 12 m, en {POZOS['p2']['parque']}", pozo="p2")
+F("agua_conduccion", LineString(cond1), d=150, nombre=f"Conducción del pozo 1 a la cisterna · 6\" · {L_cond['p1']:.0f} m")
+F("agua_conduccion", LineString(cond2), d=150, nombre=f"Conducción del pozo 2 a la cisterna · 6\" · {L_cond['p2']:.0f} m")
+Q_POZO = math.ceil(Qmd * 24 / 20)                                  # cada pozo da el gasto máximo diario trabajando 20 h
+print("pozos", POZOS, "conducción", {k: round(v) for k, v in L_cond.items()}, "Q pozo", Q_POZO)
+
+# ---- red de agua potable: nodos en cada cruce de líneas, demanda por lotes, Hazen-Williams (PVC C = 150), presión en cada esquina ----
+C_HW = 150.0
+def nom_c(c): return next(k for k, v in calle_c.items() if abs(v - c) < 1)
+HL = [[c + 4.5, tramo(c)[0], tramo(c)[1], nom_c(c), 100] for c in calles_v] + [[vb + dv, tramo(vb)[0], tramo(vb)[1], f"Bulevar {nom_c(vb)} {'sur' if dv < 0 else 'norte'}", 200] for dv in (-11.5, 11.5)]
+VL = [[x + 4.5, tramo_v(x)[0], tramo_v(x)[1], CRUCES[i], 150] for i, x in enumerate(cruces)]
+nodos = {}
+def nodo(u, v, nombre):
+    k = (round(u, 1), round(v, 1))
+    if k not in nodos: nodos[k] = dict(u=float(u), v=float(v), z=float(zf(u, v)), nombre=nombre, lotes=0)
+    return k
+tubos = []                                                         # [ka, kb, L, d, nombre]
+u_ali = c_pri - 8
+for v_, ua_, ub_, nm, d in HL:
+    pts = [(ua_, f"{nm}, extremo poniente")] + sorted([(u_, f"{nm} y {nv}") for u_, va_, vz_, nv, _ in VL if ua_ + 1 < u_ < ub_ - 1 and va_ <= v_ <= vz_]) + [(ub_, f"{nm}, extremo oriente")]
+    if abs(v_ - (vb - 11.5)) < 0.1: pts.append((u_ali, "Llegada de la cisterna")); pts.sort()
+    ks = [nodo(u_, v_, t_) for u_, t_ in pts]
+    for a, b in zip(ks[:-1], ks[1:]):
+        if abs(a[0] - b[0]) > 0.5: tubos.append([a, b, abs(a[0] - b[0]), d, nm])
+for u_, va_, vz_, nm, d in VL:
+    pts = [(va_, f"{nm}, extremo sur")] + sorted([(v_, f"{nh} y {nm}") for v_, ua_, ub_, nh, _ in HL if ua_ + 1 < u_ < ub_ - 1 and va_ <= v_ <= vz_]) + [(vz_, f"{nm}, extremo norte")]
+    ks = [nodo(u_, v_, t_) for v_, t_ in pts]
+    for a, b in zip(ks[:-1], ks[1:]):
+        if abs(a[1] - b[1]) > 0.5: tubos.append([a, b, abs(a[1] - b[1]), d, nm])
+ks_ = nodo(tc.x, tc.y, "Cisterna y bombeo"); k_ali = nodo(u_ali, vb - 11.5, "Llegada de la cisterna")
+ali_pts = [(tc.x, tc.y), (u_ali, tc.y), (u_ali, vb - 11.5)]
+tubos.append([ks_, k_ali, float(LineString(ali_pts).length), 200, "Alimentación"])
+# conectividad: lo que no llega a la cisterna (tramos sueltos) se quita y se avisa
+import collections
+ady = collections.defaultdict(set)
+for ka, kb, *_ in tubos: ady[ka].add(kb); ady[kb].add(ka)
+vistos = {ks_}; cola = collections.deque([ks_])
+while cola:
+    k = cola.popleft()
+    for k2 in ady[k]:
+        if k2 not in vistos: vistos.add(k2); cola.append(k2)
+sueltos = [k for k in nodos if k not in vistos]
+if sueltos: print("agua: nodos sin conexión (se quitan):", [nodos[k]["nombre"] for k in sueltos])
+for k in sueltos: del nodos[k]
+tubos = [t_ for t_ in tubos if t_[0] in nodos and t_[1] in nodos]
+# demanda: cada lote al nodo más cercano
+NK = list(nodos); NU = np.array([[nodos[k]["u"], nodos[k]["v"]] for k in NK])
+for L_ in lotes:
+    c_ = L_["g"].centroid; i = int(np.argmin((NU[:, 0] - c_.x) ** 2 + (NU[:, 1] - c_.y) ** 2)); nodos[NK[i]]["lotes"] += 1
+idx = {k: i for i, k in enumerate(NK)}; nn = len(NK); s_ = idx[ks_]; libres = [i for i in range(nn) if i != s_]
+def resolver(dem):
+    """Cargas en cada nodo (m, con la cisterna en 0) para la demanda `dem` (m³/s por nodo). Newton sobre los nodos."""
+    H = np.array([-0.02 * math.dist((nodos[k]["u"], nodos[k]["v"]), (tc.x, tc.y)) for k in NK]); H[s_] = 0.0
+    for it in range(80):
+        Fv = -dem.copy(); J = np.zeros((nn, nn))
+        for ka, kb, L_, d, nm in tubos:
+            a, b = idx[ka], idx[kb]; r = 10.67 * L_ / (C_HW ** 1.852 * (d / 1000) ** 4.87)
+            dh = H[a] - H[b]; adh = max(abs(dh), 1e-3); q = math.copysign((adh / r) ** 0.54, dh); g = 0.54 * (adh / r) ** 0.54 / adh
+            Fv[a] -= q; Fv[b] += q; J[a, a] += g; J[b, b] += g; J[a, b] -= g; J[b, a] -= g
+        dH = np.linalg.solve(J[np.ix_(libres, libres)], Fv[libres]); dH = np.clip(dH, -8, 8)
+        H[libres] += dH
+        if np.max(np.abs(dH)) < 1e-6: break
+    return H
+def tramos(H):
+    out = []
+    for ka, kb, L_, d, nm in tubos:
+        a, b = idx[ka], idx[kb]; r = 10.67 * L_ / (C_HW ** 1.852 * (d / 1000) ** 4.87); dh = H[a] - H[b]
+        q = math.copysign((abs(dh) / r) ** 0.54, dh); v_ = abs(q) / (math.pi * (d / 1000) ** 2 / 4)
+        out.append(dict(a=ka, b=kb, L=L_, d=d, nombre=nm, q=abs(q) * 1000, v=v_, hf=abs(dh), j=abs(dh) / L_ * 1000))
+    return out
+dem_h = np.array([Qmh / 1000 * nodos[k]["lotes"] / N for k in NK]); dem_d = dem_h * (Qmd / Qmh)
+for vuelta in range(4):                                             # sube el diámetro donde la velocidad o la pérdida se pasan
+    H_h = resolver(dem_h); T_h = tramos(H_h); cambio = False
+    for t_, tb in zip(T_h, tubos):
+        if (t_["v"] > 1.5 or t_["j"] > 8.0) and tb[3] < 300: tb[3] = {100: 150, 150: 200, 200: 250, 250: 300}[tb[3]]; cambio = True
+    if not cambio: break
+P_MIN, P_MIN_INC = 20.0, 10.0                                        # m de columna: 2.0 kg/cm² en la hora de máximo consumo; 1.0 kg/cm² con un hidrante abierto
+zs = nodos[ks_]["z"]; pres = lambda H, Hb: np.array([Hb + H[i] - (nodos[k]["z"] - zs) for i, k in enumerate(NK)])
+H_SET = 30.0                                                        # consigna del bombeo: 3.0 kg/cm² a la salida de la cisterna, constante todo el día
+H_BOMBA = max(H_SET, P_MIN - min((H_h[i] - (nodos[k]["z"] - zs)) for i, k in enumerate(NK) if i != s_))
+p_h = pres(H_h, H_BOMBA)
+i_min = min((i for i in range(nn) if i != s_), key=lambda i: p_h[i]); i_max = max((i for i in range(nn) if i != s_), key=lambda i: p_h[i])
+dem_f = dem_d.copy(); dem_f[i_min] += 0.015                          # incendio: gasto máximo diario + un hidrante de 15 l/s en el peor nodo
+H_f = resolver(dem_f); p_f = pres(H_f, H_BOMBA); T_f = tramos(H_f)
+H_BOMBA_INC = max(H_BOMBA, P_MIN_INC - min((H_f[i] - (nodos[k]["z"] - zs)) for i, k in enumerate(NK) if i != s_))
+p_f2 = pres(H_f, H_BOMBA_INC)
+N_BOMBAS = 3; Q_BOMBA = Qmh / N_BOMBAS; H_EQ = H_BOMBA + 4            # pérdidas en el cuarto de bombas y el múltiple
+KW_BOMBA = 9.81 * Q_BOMBA / 1000 * H_EQ / 0.65; HP_BOMBA = KW_BOMBA / 0.746
+KW_POZO = 9.81 * Q_POZO / 1000 * 150 / 0.70                           # columna dinámica supuesta de 150 m (por confirmar con el aforo)
+L_agua = {}
+for t_ in T_h: L_agua[t_["d"]] = L_agua.get(t_["d"], 0.0) + t_["L"]
+for t_ in T_h:
+    a, b = nodos[t_["a"]], nodos[t_["b"]]
+    pts = ali_pts if t_["nombre"] == "Alimentación" else [(a["u"], a["v"]), (b["u"], b["v"])]
+    F("agua_linea", LineString(pts), d=t_["d"], nombre=f'{t_["nombre"]} · Ø {t_["d"]} mm', q=round(t_["q"], 1), v=round(t_["v"], 2), j=round(t_["j"], 1))
+NODOS = []
+for i, k in enumerate(NK):
+    nd = nodos[k]
+    if i == s_: F("agua_nodo", Point(nd["u"], nd["v"]), nombre=f"Cisterna y bombeo: {H_BOMBA:.0f} m de carga ({H_BOMBA/10:.1f} kg/cm²)", p=round(H_BOMBA / 10, 2), p_inc=round(H_BOMBA_INC / 10, 2), lotes=0, fuente=1); continue
+    F("agua_nodo", Point(nd["u"], nd["v"]), nombre=nd["nombre"], p=round(p_h[i] / 10, 2), p_inc=round(p_f2[i] / 10, 2), lotes=nd["lotes"])
+    NODOS.append(dict(nombre=nd["nombre"], u=nd["u"], v=nd["v"], lotes=nd["lotes"], p=round(p_h[i] / 10, 2), p_inc=round(p_f2[i] / 10, 2)))
+AGUA_RED = dict(H_set=H_SET, P_min_norma=P_MIN, H_bomba=H_BOMBA, H_bomba_inc=H_BOMBA_INC, p_min=p_h[i_min] / 10, p_max=p_h[i_max] / 10, nodo_min=nodos[NK[i_min]]["nombre"], nodo_max=nodos[NK[i_max]]["nombre"],
+                p_min_inc=p_f2[i_min] / 10 if True else 0, p_min_inc_nodo=min((p_f2[i] for i in range(nn) if i != s_)) / 10, nodo_inc=nodos[NK[i_min]]["nombre"],
+                v_max=max(t_["v"] for t_ in T_h), j_max=max(t_["j"] for t_ in T_h), v_max_inc=max(t_["v"] for t_ in T_f), n_nodos=nn - 1, n_tubos=len(tubos),
+                tramos=[dict(nombre=t_["nombre"], d=t_["d"], L=t_["L"], q=t_["q"], v=t_["v"], j=t_["j"], de=nodos[t_["a"]]["nombre"], a=nodos[t_["b"]]["nombre"]) for t_ in T_h],
+                nodos=NODOS, bombas=dict(n=N_BOMBAS, q=Q_BOMBA, H=H_EQ, kw=KW_BOMBA, hp=HP_BOMBA), pozo=dict(q=Q_POZO, kw=KW_POZO, hp=KW_POZO / 0.746, L_cond=L_cond), pozos=POZOS,
+                por_diametro={str(d): dict(L=L_, v_max=max(t_["v"] for t_ in T_h if t_["d"] == d), q_max=max(t_["q"] for t_ in T_h if t_["d"] == d), j_max=max(t_["j"] for t_ in T_h if t_["d"] == d)) for d, L_ in sorted(L_agua.items())})
+print(f"red de agua: {nn-1} nodos, {len(tubos)} tramos; bomba {H_BOMBA:.1f} m (incendio {H_BOMBA_INC:.1f}); presión {p_h[i_min]/10:.2f}–{p_h[i_max]/10:.2f} kg/cm²; v máx {AGUA_RED['v_max']:.2f} m/s; diámetros {sorted(L_agua)}")
 hidrantes = []
 for j, c in enumerate(calles_v + [vb]):
     for i, x in enumerate(cruces):
@@ -355,14 +474,18 @@ partida("Tratamiento", "Tanque de agua tratada", "Concreto, enterrado, con bombe
 partida("Tratamiento", "Red morada principal", "PEAD morado Ø 4\" por el camellón", L_morada[100], "m", 650)
 partida("Tratamiento", "Red morada transversal", "PEAD morado Ø 3\" por las transversales", L_morada[75], "m", 480)
 partida("Tratamiento", "Goteo a los nogales", "PEAD morado Ø 2\" en las dos banquetas con 2 goteros autocompensados de 8 l/h por nogal y válvulas por sector", L_goteo, "m", 260)
-partida("Agua potable", "Pozo y derechos", "Rehabilitación del pozo de la huerta, equipo sumergible, macromedidor y cambio de uso de los derechos (agrícola a público urbano) ante Conagua", 1, "lote", 6_000_000)
-partida("Agua potable", "Cisterna y bombeo", f"Cisterna de concreto {CISTERNA} m³ y equipo de presión constante (3 + 1 bombas con variador), cloración", 1, "lote", CISTERNA * 9500 + 3_200_000)
-partida("Agua potable", "Línea de 8\"", "PEAD RD 17 / PVC hidráulico C-10 Ø 200 mm", L_agua[200], "m", 1700)
-partida("Agua potable", "Línea de 6\"", "PVC hidráulico C-10 Ø 150 mm", L_agua[150], "m", 1250)
-partida("Agua potable", "Línea de 4\"", "PVC hidráulico C-10 Ø 100 mm, bajo la banqueta norte de cada calle", L_agua[100], "m", 900)
+partida("Agua potable", "Pozo 1 (principal)", f"Perforación de 12\" a 200 m (por confirmar con el estudio geohidrológico), ademe de acero, filtro de grava, sello sanitario de 20 m, aforo, bomba sumergible de {HP_BOMBA*0+KW_POZO/0.746:.0f} HP para {Q_POZO} l/s, macromedidor y caseta; junto a la cisterna", 1, "lote", 5_500_000)
+partida("Agua potable", "Pozo 2 (respaldo)", f"Rehabilitación del pozo de la huerta si está sano y bien ubicado, o segundo pozo igual al 1 en {POZOS['p2']['parque']}; equipo de {KW_POZO/0.746:.0f} HP", 1, "lote", 3_500_000)
+partida("Agua potable", "Derechos de agua", "Cambio de uso de los derechos de la huerta (agrícola a público urbano) ante Conagua, título a nombre del fideicomiso y cesión al organismo operador si lo pide la factibilidad", 1, "lote", 1_500_000)
+partida("Agua potable", "Líneas de conducción de los pozos", "PEAD RD 11 Ø 150 mm de cada pozo a la cisterna, con válvula de retención y medidor", L_cond["p1"] + L_cond["p2"], "m", 1350)
+partida("Agua potable", "Cisterna y bombeo", f"Cisterna de concreto {CISTERNA} m³ (11 h del gasto máximo diario) y equipo de presión constante: {N_BOMBAS} + 1 bombas de {Q_BOMBA:.0f} l/s a {H_EQ:.0f} m ({HP_BOMBA:.0f} HP cada una) con variador, cloración con hipoclorito, planta de emergencia", 1, "lote", CISTERNA * 9500 + 3_600_000)
+if 250 in L_agua: partida("Agua potable", "Línea de 10\"", "PVC hidráulico C-10 Ø 250 mm" + (", bajo la banqueta norte de cada calle" if 250 == 100 else ""), L_agua[250], "m", 2300)
+if 200 in L_agua: partida("Agua potable", "Línea de 8\"", "PVC hidráulico C-10 Ø 200 mm" + (", bajo la banqueta norte de cada calle" if 200 == 100 else ""), L_agua[200], "m", 1700)
+if 150 in L_agua: partida("Agua potable", "Línea de 6\"", "PVC hidráulico C-10 Ø 150 mm" + (", bajo la banqueta norte de cada calle" if 150 == 100 else ""), L_agua[150], "m", 1250)
+if 100 in L_agua: partida("Agua potable", "Línea de 4\"", "PVC hidráulico C-10 Ø 100 mm" + (", bajo la banqueta norte de cada calle" if 100 == 100 else ""), L_agua[100], "m", 900)
 partida("Agua potable", "Cajas de válvulas", "Válvulas de seccionamiento en cada cruce: se puede cortar una cuadra sin dejar sin agua al resto", valvulas, "pza", 35000)
 partida("Agua potable", "Hidrantes", "Hidrante de columna 6\" con 2 salidas de 2.5\" y una de 4.5\", a tresbolillo en los cruces (ninguna casa a más de 150 m)", len(hidrantes), "pza", 48000)
-partida("Agua potable", "Tomas domiciliarias", "PEAD Ø 1/2\" con abrazadera, llave de banqueta y medidor en nicho", N + 20, "pza", 6800)
+partida("Agua potable", "Tomas domiciliarias", "PEAD Ø 3/4\" con abrazadera, llave de banqueta y medidor de 3/4\" en nicho: la casa recibe la presión de la red sin tinaco", N + 20, "pza", 7800)
 partida("Electricidad", "Red subterránea por lote", "Media tensión 13.2 kV en anillo, transformadores pedestal monofásicos de 75 kVA (uno cada ≈ 16 casas), baja tensión 240/120 V, ductos y registros, según norma CFE de distribución subterránea", N, "lote", 46000)
 partida("Electricidad", "Transformadores trifásicos", "Pedestal trifásico para club, acceso y súper, y planta con bombeo", len(especiales), "pza", 420000)
 partida("Electricidad", "Aportación y obras de conexión CFE", "Por confirmar con la factibilidad de CFE", 1, "lote", 6_000_000)

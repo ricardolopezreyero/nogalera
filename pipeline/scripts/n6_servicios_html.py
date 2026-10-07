@@ -133,7 +133,7 @@ MEJORAS = [
 J = dict(
     N=N, POB=POB, HAB=HAB, DOT=DOT, EXTRA=EXTRA, APORTA=APORTA, gross=gross,
     TERR=dict(z_media=float(TERR["z_media"]), pend_km=float(TERR["pend_km"]), rumbo=float(TERR["rumbo"]), desnivel=float(TERR["desnivel"])),
-    agua=dict(Qmed=Qmed, Qmd=Qmd, Qmh=Qmh, vol_anual=vol_anual, CISTERNA=CISTERNA, hidrantes=len(hidrantes), valvulas=valvulas, L_agua={str(k): v for k, v in L_agua.items()}),
+    agua=dict(Qmed=Qmed, Qmd=Qmd, Qmh=Qmh, vol_anual=vol_anual, CISTERNA=CISTERNA, hidrantes=len(hidrantes), valvulas=valvulas, L_agua={str(k): v for k, v in L_agua.items()}, red=AGUA_RED),
     sanitario=dict(Qs_med=Qs_med, Qs_max=Qs_max, Qs_ext=Qs_ext, harmon=harmon(POB), S_AT=S_AT, S_COL=S_COL, L_atarjea=L_atarjea, L_colector=L_colector, d_col=d_col,
                    d_at_min=d_at_min, d_at_max=d_at_max, prof_llegada=prof_llegada, pozos=len(pozos), ramas=detalle_ramas, perfil=perfil_svg()),
     pluvial=dict(P10=P10, P50=P50, E10=E10, E50=E50, ret_lotes=ret_lotes, almacen=almacen, ret_tot=ret_tot, bocas=len(bocas), E10t=E10t, E50t=E50t),

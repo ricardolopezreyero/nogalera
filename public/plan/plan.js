@@ -143,13 +143,13 @@
     var GRUPO = {
       pluvial: ["plu_parque", "plu_jardin", "plu_cajas", "vaso", "plu_zanja", "plu_flujo", "plu_flujo_punta", "plu_pozo"],
       sanitario: ["ptar_planta", "san_atarjea", "san_colector", "san_pozo", "san_llegada"],
-      agua: ["ptar_planta", "agua_tanque", "morada", "agua_linea", "hidrante"],
+      agua: ["ptar_planta", "agua_tanque", "agua_pozo", "agua_conduccion", "morada", "agua_linea", "hidrante", "agua_nodo"],
       luz: ["acopio", "mesa", "emergencia", "trafo", "trafo_esp", "emergencia_p"]
     };
     var NOTA = {
       pluvial: "Las calles bajan a los cruces (bocas de tormenta y pozos de absorción) y de ahí al bulevar. El camellón es un jardín de lluvia; los parques tienen un bordo de 30 cm; hay zanja bajo la pista, cajas bajo los estacionamientos y un vaso en la punta oriente. El agua de La Nogalera se queda en La Nogalera.",
       sanitario: "Todo por gravedad hacia la punta oriente, el punto más bajo: atarjeas de 20 cm en cada calle, colector bajo la pista y la calle Tórtola, pozos de visita en cada cruce y a no más de 100 m, y planta de tratamiento.",
-      agua: "Agua potable en circuitos: 8\" desde la cisterna y por el bulevar, 6\" en las transversales, 4\" en las calles; hidrantes a tresbolillo. Punteado: agua tratada de la planta, que riega los nogales.",
+      agua: "Dos pozos (cuadros rayados) mandan a la cisterna por líneas de 6\" (punto y raya); de ahí, bombeo a presión constante a la red en circuitos: 8\" por el bulevar, 6\" en las transversales, 4\" en las calles. Los círculos son los nodos con su presión; hidrantes a tresbolillo. Punteado: agua tratada de la planta, que riega los nogales.",
       luz: "Transformadores de pedestal (uno cada ≈ 16 casas) y trifásicos para club, acceso y planta; cruces elevados; salida de emergencia al norte y acopio de basura antes de las plumas."
     };
     function estiloServ(f) {
@@ -164,7 +164,9 @@
         case "ptar_planta": case "agua_tanque": case "acopio": return { color: "#000", weight: 1, fillColor: "#000", fillOpacity: 1 };
         case "san_atarjea": return { color: "#000", weight: 2 };
         case "san_colector": return { color: "#000", weight: 5 };
-        case "agua_linea": return { color: "#000", weight: d >= 200 ? 4.5 : d >= 150 ? 2.6 : 1.4 };
+        case "agua_linea": return { color: "#000", weight: d >= 250 ? 5.5 : d >= 200 ? 4.5 : d >= 150 ? 2.6 : 1.4 };
+        case "agua_conduccion": return { color: "#000", weight: 2.4, dashArray: "10 4 2 4" };
+        case "agua_pozo": return { color: "#000", weight: 2, fillColor: "#000", fillOpacity: 0.35 };
         case "morada": return { color: "#000", weight: d >= 100 ? 3 : 2, dashArray: "6 4" };
         case "mesa": return { color: "#000", weight: 1, fillColor: "#000", fillOpacity: 1 };
         case "emergencia": return { color: "#000", weight: 6 };
@@ -177,6 +179,7 @@
       var o = { renderer: lienzoServ, color: "#000", weight: 1.5, fillOpacity: 1 };
       if (c === "plu_pozo" || c === "san_pozo") { o.radius = 2.6; o.fillColor = "#fff"; }
       else if (c === "hidrante") { o.radius = 3.6; o.fillColor = "#000"; }
+      else if (c === "agua_nodo") { o.radius = f.properties.fuente ? 6 : 3.2; o.fillColor = "#fff"; o.weight = 1.2; }
       else if (c === "trafo") { o.radius = 3; o.fillColor = "#000"; o.weight = 0; }
       else { o.radius = 6; o.fillColor = "#000"; o.color = "#fff"; o.weight = 2; }
       return L.circleMarker(ll, o);
@@ -193,7 +196,11 @@
         GRUPO[g].forEach(function (c) {
           L.geoJSON({ type: "FeatureCollection", features: d.features.filter(function (f) { return f.properties.capa === c; }) }, {
             renderer: lienzoServ, style: estiloServ, pointToLayer: puntoServ, interactive: !/_punta$|plu_flujo/.test(c),
-            onEachFeature: function (f, l) { var p = f.properties, t = p.nombre || NOMBRES[p.capa]; if (t && l.bindPopup) l.bindPopup(t + (p.d ? " · Ø " + (p.capa === "san_atarjea" || p.capa === "san_colector" ? p.d + " cm" : p.d + " mm") : "")); }
+            onEachFeature: function (f, l) { var p = f.properties, t = p.nombre || NOMBRES[p.capa]; if (!t || !l.bindPopup) return;
+              if (p.capa === "agua_nodo") t = "<b>" + t + "</b>" + (p.fuente ? "" : "<br>Presión: " + p.p.toFixed(1) + " kg/cm² en la hora pico · " + p.p_inc.toFixed(1) + " con un hidrante abierto" + (p.lotes ? "<br>" + p.lotes + " lotes" : ""));
+              else if (p.capa === "agua_linea") t = "<b>" + t + "</b><br>" + p.q + " l/s · " + p.v + " m/s · " + p.j + " m/km de pérdida";
+              else if (p.d && p.capa !== "agua_conduccion") t += " · Ø " + (p.capa === "san_atarjea" || p.capa === "san_colector" ? p.d + " cm" : p.d + " mm");
+              l.bindPopup(t); }
           }).addTo(capaServ);
         });
         capaServ.addTo(map);
