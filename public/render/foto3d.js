@@ -345,13 +345,36 @@ export class Foto3D {
     const guardar = []; scene.traverse(m => { if (m.isMesh) guardar.push([m, m.material, m.visible]); });
     const fondo = scene.background, niebla = scene.fog, env = scene.environment; scene.fog = null; scene.environment = null;
     if (this.luzGrupo) this.luzGrupo.visible = false;
-    const near = camera.near, far = Math.max(60, cam.dist * 4);
-    const matDepth = (map) => new THREE.ShaderMaterial({ uniforms: { near: { value: near }, far: { value: far }, map: { value: map || null }, usaMapa: { value: map ? 1 : 0 } }, side: THREE.DoubleSide,
-      vertexShader: "varying float vz; varying vec2 vUv; #include <common> void main(){ vUv = uv; vec3 transformed = position; #ifdef USE_INSTANCING \n vec4 mv = modelViewMatrix * instanceMatrix * vec4(position,1.0); #else \n vec4 mv = modelViewMatrix * vec4(position,1.0); #endif \n vz = -mv.z; gl_Position = projectionMatrix * mv; }",
-      fragmentShader: "uniform float near; uniform float far; uniform sampler2D map; uniform int usaMapa; varying float vz; varying vec2 vUv; void main(){ if (usaMapa == 1 && texture2D(map, vUv).a < 0.5) discard; float d = clamp((vz - near) / (far - near), 0.0, 1.0); float v = 1.0 - pow(d, 0.45); gl_FragColor = vec4(v, v, v, 1.0); }" });
-    const matNormal = (map) => new THREE.ShaderMaterial({ uniforms: { map: { value: map || null }, usaMapa: { value: map ? 1 : 0 } }, side: THREE.DoubleSide,
-      vertexShader: "varying vec3 vn; varying vec2 vUv; void main(){ vUv = uv; #ifdef USE_INSTANCING \n mat3 nm = mat3(modelViewMatrix * instanceMatrix); vec4 mv = modelViewMatrix * instanceMatrix * vec4(position,1.0); #else \n mat3 nm = mat3(modelViewMatrix); vec4 mv = modelViewMatrix * vec4(position,1.0); #endif \n vn = normalize(nm * normal); gl_Position = projectionMatrix * mv; }",
-      fragmentShader: "uniform sampler2D map; uniform int usaMapa; varying vec3 vn; varying vec2 vUv; void main(){ if (usaMapa == 1 && texture2D(map, vUv).a < 0.5) discard; vec3 n = normalize(vn); if (!gl_FrontFacing) n = -n; gl_FragColor = vec4(n * 0.5 + 0.5, 1.0); }" });
+    const near = camera.near, far = Math.max(40, cam.dist * 2.5);
+    const vtx = `varying float vz; varying vec3 vn; varying vec2 vUv;
+void main() {
+  vUv = uv;
+#ifdef USE_INSTANCING
+  mat4 mvm = modelViewMatrix * instanceMatrix;
+#else
+  mat4 mvm = modelViewMatrix;
+#endif
+  vec4 mv = mvm * vec4(position, 1.0);
+  vn = normalize(mat3(mvm) * normal);
+  vz = -mv.z;
+  gl_Position = projectionMatrix * mv;
+}`;
+    const matDepth = (map) => new THREE.ShaderMaterial({ uniforms: { near: { value: near }, far: { value: far }, map: { value: map || null }, usaMapa: { value: map ? 1 : 0 } }, side: THREE.DoubleSide, vertexShader: vtx,
+      fragmentShader: `uniform float near; uniform float far; uniform sampler2D map; uniform int usaMapa; varying float vz; varying vec3 vn; varying vec2 vUv;
+void main() {
+  if (usaMapa == 1 && texture2D(map, vUv).a < 0.5) discard;
+  float d = clamp((vz - near) / (far - near), 0.0, 1.0);
+  float v = 1.0 - pow(d, 0.6);
+  gl_FragColor = vec4(v, v, v, 1.0);
+}` });
+    const matNormal = (map) => new THREE.ShaderMaterial({ uniforms: { map: { value: map || null }, usaMapa: { value: map ? 1 : 0 } }, side: THREE.DoubleSide, vertexShader: vtx,
+      fragmentShader: `uniform sampler2D map; uniform int usaMapa; varying float vz; varying vec3 vn; varying vec2 vUv;
+void main() {
+  if (usaMapa == 1 && texture2D(map, vUv).a < 0.5) discard;
+  vec3 n = normalize(vn);
+  if (!gl_FrontFacing) n = -n;
+  gl_FragColor = vec4(n * 0.5 + 0.5, 1.0);
+}` });
     const mk = tipo === "normal" ? matNormal : matDepth;
     for (const [m, mat] of guardar) m.material = mk(m.isInstancedMesh ? TEX.hoja : null);
     scene.background = new THREE.Color(tipo === "normal" ? 0x8080ff : 0x000000);
