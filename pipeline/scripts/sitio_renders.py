@@ -32,6 +32,7 @@ def renders():
     cuerpo = f"""
 <h2 id="concurso">Renders de concurso: la fachada y el fraccionamiento de lejos</h2>
 <p>Hechos con el motor fotorrealista (WebGL: materiales físicos, follaje de hojas, cielo con sol, sombras y oclusión ambiental) a 2560 × 1440. Cada uno trae sus mapas de profundidad, normales y líneas para llevarlo a fotografía con FLUX + ControlNet en una máquina con GPU (<code>pipeline/comfy/README.md</code>), o con gpt-image-2 desde el Worker (<code>renders_worker.py</code>).</p>
+<p><a class="boton" href="/renders/concurso/">Ver la galería a pantalla completa</a> <span class="nota">clic a la derecha para avanzar, a la izquierda para regresar, F para pantalla completa.</span></p>
 {concurso_html()}
 <h2 id="diez">Los diez renders de maqueta</h2>
 <p class="frase"><b>Diez imágenes que venden el proyecto, hechas con la geometría real del proyecto.</b> No son fotos ni ilustraciones: cada render sale del mismo plano, la misma casa y los mismos nogales que el resto del sitio, con un motor de render propio. Abajo está el creador: cualquiera de estas escenas se puede girar, cambiar de hora y descargar en alta resolución para hacer los que hagan falta.</p>
