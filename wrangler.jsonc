@@ -1,12 +1,16 @@
 // Cloudflare Workers para nogalera.capitaltorreon.com
-// Sitio estático: Cloudflare publica la carpeta public/ tal cual con `npx wrangler deploy`.
-// No hay paso de build ni código de servidor. public/_headers pone las cabeceras.
+// Sitio estático (public/) servido por el Worker, más /api/render-ia (worker/index.js): genera renders fotorrealistas con OpenAI
+// usando los secretos del Worker OPENAI_API_KEY y RENDER_CLAVE (npx wrangler secret put …, o Settings → Variables and Secrets).
+// public/_headers pone las cabeceras de los archivos estáticos.
 {
   // Debe coincidir con el nombre del Worker en Cloudflare (Workers & Pages → nogalera).
   "name": "nogalera",
+  "main": "worker/index.js",
   "compatibility_date": "2026-09-01",
   "assets": {
-    "directory": "./public"
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
   },
   // Al publicar, Cloudflare conecta el subdominio y crea el registro DNS y el certificado.
   // Requiere que la zona capitaltorreon.com esté en la misma cuenta de Cloudflare.

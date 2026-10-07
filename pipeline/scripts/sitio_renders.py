@@ -1,5 +1,7 @@
 # ======================= RENDERS (se ejecuta dentro de sitio.py) =======================
 import n6_escenas as ESC                                   # genera public/datos/escenas/*.json al importarse
+import renders_ia as RIA
+json.dump(RIA.PROMPTS, open(f"{DAT}/escenas/prompts_ia.json", "w"), ensure_ascii=False, indent=1)
 RENDERS_10 = ["calle", "casa", "aerea", "acceso", "bulevar", "parque", "pista", "interior", "portal", "noche"]
 IDX = {e["id"]: e for e in ESC.INDICE}
 HORAS_TXT = dict(dia="mediodía", tarde="tarde", atardecer="atardecer", noche="noche")
@@ -36,8 +38,23 @@ def renders():
     <textarea id="cr-ajustes" rows="3" readonly aria-label="Ajustes del encuadre"></textarea>
   </div>
 </div>
+<h2 id="ia">Render fotorrealista con IA</h2>
+<p>Toma el encuadre que tengas arriba en el creador, lo manda como referencia al modelo de imágenes de OpenAI junto con un prompt muy detallado del proyecto (nogales pecaneros, las nueve fachadas, materiales, luz de Torreón) y devuelve una fotografía. La llave de OpenAI vive en los secretos del Worker de Cloudflare, nunca en el sitio; la clave de abajo es la contraseña que protege el gasto. Cada imagen en alta calidad cuesta centavos de dólar y tarda de 30 a 90 segundos.</p>
+<div class="creador">
+  <div class="cr-lienzo"><div id="ia-salida" class="renders"></div><p id="ia-estado" class="nota">Comprobando…</p></div>
+  <div class="cr-controles">
+    <label>Clave <input type="password" id="ia-clave" class="sel" autocomplete="off" placeholder="RENDER_CLAVE del Worker"></label>
+    <label>Modelo <select id="ia-modelo" class="sel"><option value="gpt-image-2">gpt-image-2</option><option value="gpt-image-1">gpt-image-1</option></select></label>
+    <label>Calidad <select id="ia-calidad" class="sel"><option value="high">Alta</option><option value="medium">Media</option><option value="low">Baja (pruebas)</option></select></label>
+    <label>Tamaño <select id="ia-tamano" class="sel"><option value="1536x1024">1536 × 1024 (horizontal)</option><option value="1024x1536">1024 × 1536 (vertical)</option><option value="1024x1024">1024 × 1024</option></select></label>
+    <label><input type="checkbox" id="ia-ref" checked> Usar el encuadre del creador como referencia</label>
+    <label>Prompt (edítalo si quieres) <textarea id="ia-prompt" rows="12"></textarea></label>
+    <div class="cr-botones"><button type="button" id="ia-generar" class="boton">Generar render fotorrealista</button></div>
+  </div>
+</div>
+<p class="nota">Los prompts de cada escena están en <code>pipeline/scripts/renders_ia.py</code> (y en <code>public/datos/escenas/prompts_ia.json</code>); el mismo archivo genera las diez imágenes en lote desde una computadora con la llave en la variable <code>OPENAI_API_KEY</code>: <code>python3 pipeline/scripts/renders_ia.py</code>. El endpoint es <code>worker/index.js</code>.</p>
 <p class="nota">Las escenas están en <code>public/datos/escenas/</code> y las arma <code>pipeline/scripts/n6_escenas.py</code> (casas con sus nueve fachadas, calles, nogales, autos y gente). Para agregar una escena nueva se escribe ahí, con las mismas piezas. Los diez renders de arriba se generan con <code>pipeline/scripts/renders.js</code>.</p>
 """
     pagina("renders", "Renders", "08 · Renders", "Los diez renders que más venden La Nogalera, hechos con la geometría real del proyecto, y el creador para hacer todos los demás.", cuerpo,
-           [("crear", "Creador de renders")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
+           [("crear", "Creador de renders"), ("ia", "Render fotorrealista con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
            descripcion="Renders de La Nogalera: la calle bajo los nogales, la casa, el acceso, el bulevar, el parque, la pista, el interior y el jardín; y el creador de renders.")

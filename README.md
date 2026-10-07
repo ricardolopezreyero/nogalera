@@ -40,6 +40,8 @@ La zona `capitaltorreon.com` ya está en Cloudflare. Se publica como Worker de a
 3. **Build command:** vacío. **Deploy command:** `npx wrangler deploy`. Rama de producción: `main`.
 4. Pulsa **Deploy**.
 
+**Secretos del Worker (render fotorrealista con IA).** El creador de renders (`/renders/#ia`) llama a `/api/render-ia`, que vive en `worker/index.js` y usa dos secretos del Worker `nogalera`: `OPENAI_API_KEY` (la llave de OpenAI) y `RENDER_CLAVE` (la contraseña que se escribe en la página para poder generar). Se ponen en Cloudflare → Workers & Pages → nogalera → Settings → Variables and Secrets (tipo *Secret*), o con `npx wrangler secret put OPENAI_API_KEY` y `npx wrangler secret put RENDER_CLAVE`. Con los dos puestos, el siguiente deploy los toma; la página avisa si falta alguno.
+
 `wrangler.jsonc` ya trae el dominio `nogalera.capitaltorreon.com` («custom domain»): al publicar, Cloudflare crea solo el registro DNS y el certificado. Si marca error de zona (porque `capitaltorreon.com` está en otra cuenta), borra el bloque `routes` de `wrangler.jsonc` y agrega el dominio a mano en **nogalera → Settings → Domains & Routes → Add → Custom domain**.
 
 Desde ese momento, cada cambio en `main` se publica solo en uno o dos minutos.

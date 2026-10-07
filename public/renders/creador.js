@@ -67,5 +67,41 @@
     }, 30);
   });
   $("cr-copiar").addEventListener("click", function () { $("cr-ajustes").select(); document.execCommand("copy"); });
+
+  /* ---------- render fotorrealista con IA (Worker /api/render-ia, llave en los secretos de Cloudflare) ---------- */
+  var ia = { clave: $("ia-clave"), modelo: $("ia-modelo"), calidad: $("ia-calidad"), tamano: $("ia-tamano"), prompt: $("ia-prompt"), ref: $("ia-ref"), boton: $("ia-generar"), estado: $("ia-estado"), salida: $("ia-salida") };
+  var PROMPTS_IA = {};
+  if (ia.boton) {
+    try { ia.clave.value = localStorage.getItem("nogalera-render-clave") || ""; } catch (e) {}
+    fetch("/datos/escenas/prompts_ia.json").then(function (x) { return x.json(); }).then(function (pr) { PROMPTS_IA = pr; promptIA(); });
+    fetch("/api/render-ia").then(function (x) { return x.json(); }).then(function (st) {
+      if (!st.listo || !st.clave) ia.estado.textContent = "Falta configurar en Cloudflare: " + (!st.listo ? "OPENAI_API_KEY " : "") + (!st.clave ? "RENDER_CLAVE" : "") + " (Worker nogalera → Settings → Variables and Secrets).";
+      else ia.estado.textContent = "Listo: escribe la clave, revisa el prompt y genera.";
+    }).catch(function () { ia.estado.textContent = "El endpoint /api/render-ia no responde (¿el Worker ya se publicó con worker/index.js?)."; });
+    function promptIA() { if (!esc) return; var base = PROMPTS_IA[esc.id] || ""; var h = { dia: "a media mañana", tarde: "en la tarde", atardecer: "al atardecer", noche: "de noche" }[selHora.value] || ""; ia.prompt.value = base + (h ? " Hora: " + h + "." : ""); }
+    selEsc.addEventListener("change", function () { setTimeout(promptIA, 400); }); selHora.addEventListener("change", promptIA);
+    ia.boton.addEventListener("click", function () {
+      if (!r) return;
+      var clave = ia.clave.value.trim(); if (!clave) { ia.estado.textContent = "Escribe la clave."; return; }
+      try { localStorage.setItem("nogalera-render-clave", clave); } catch (e) {}
+      var referencia = ia.ref.checked ? r.imagen(1536, 1024, 2, "image/jpeg", 0.9) : null;
+      ia.boton.disabled = true; ia.estado.textContent = "Generando con " + ia.modelo.value + "… suele tardar de 30 a 90 segundos.";
+      var t0 = Date.now();
+      fetch("/api/render-ia", { method: "POST", headers: { "content-type": "application/json", "x-clave": clave },
+        body: JSON.stringify({ prompt: ia.prompt.value, modelo: ia.modelo.value, calidad: ia.calidad.value, tamano: ia.tamano.value, variantes: 1, referencia: referencia }) })
+      .then(function (x) { return x.json(); }).then(function (res) {
+        ia.boton.disabled = false;
+        if (res.error) { ia.estado.textContent = "Error: " + res.error + (res.detalle ? " · " + res.detalle.slice(0, 300) : ""); return; }
+        ia.salida.innerHTML = "";
+        res.imagenes.forEach(function (src, i) {
+          var fig = document.createElement("figure"); fig.className = "render";
+          var img = document.createElement("img"); img.src = src; img.alt = "Render fotorrealista"; fig.appendChild(img);
+          var cap = document.createElement("figcaption"); var a = document.createElement("a"); a.href = src; a.download = "nogalera-" + esc.id + "-" + selHora.value + "-ia" + (i ? "-" + (i + 1) : "") + ".png"; a.textContent = "Descargar PNG"; cap.appendChild(a);
+          cap.appendChild(document.createTextNode(" · " + res.modelo + " · " + res.calidad + " · " + res.tamano + " · " + Math.round(res.ms / 1000) + " s")); fig.appendChild(cap); ia.salida.appendChild(fig);
+        });
+        ia.estado.textContent = "Listo en " + Math.round((Date.now() - t0) / 1000) + " s. Si no te convence, ajusta el prompt o el encuadre y vuelve a generar.";
+      }).catch(function (e) { ia.boton.disabled = false; ia.estado.textContent = "Error de red: " + e; });
+    });
+  }
   window.addEventListener("resize", function () { if (r) r.pedir(); });
 })();
