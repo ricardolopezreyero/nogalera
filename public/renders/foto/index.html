@@ -41,7 +41,7 @@
 import Foto3D from "/render/foto3d.js";
 const $ = id => document.getElementById(id), cv = $("foto-canvas"), estado = $("f-estado");
 let F = null, indice = [], escena = null, ultimo = null;
-const API = window.FOTO = { listo: null };
+const API = window.FOTO = { listo: null, motor: () => F };
 function q(k) { return new URLSearchParams(location.search).get(k); }
 async function cargarEscena(id) {
   escena = indice.find(e => e.id === id) || indice[0]; estado.textContent = "Cargando " + escena.titulo + "…";

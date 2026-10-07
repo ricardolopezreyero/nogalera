@@ -15,8 +15,8 @@ import * as BGU from "three/addons/utils/BufferGeometryUtils.js";
 
 /* ---------- horas: sol, cielo, exposición ---------- */
 const HORAS = {
-  dia:       { sol: [-0.3, -0.62, 0.72], int: 4.0, colSol: 0xfff4e6, hemi: [0xbfd8f2, 0x8a7a5a, 0.6], turb: 2.5, ray: 1.1, mie: 0.003, mieG: 0.8, expo: 0.8, env: 0.06, bloom: [0.05, 0.4, 1.0], bruma: 0.0012, noche: false, pl: 0, emis: 0 },
-  tarde:     { sol: [-0.6, -0.58, 0.48], int: 3.6, colSol: 0xffe2b8, hemi: [0xb9d0ec, 0x8a7a5a, 0.55], turb: 4, ray: 1.6, mie: 0.005, mieG: 0.82, expo: 0.85, env: 0.07, bloom: [0.07, 0.4, 1.0], bruma: 0.0015, noche: false, pl: 0, emis: 0 },
+  dia:       { sol: [-0.3, -0.62, 0.72], int: 4.0, colSol: 0xfff4e6, hemi: [0xbfd8f2, 0x8a7a5a, 0.6], turb: 2.0, ray: 0.9, mie: 0.0025, mieG: 0.78, expo: 0.72, env: 0.06, bloom: [0.05, 0.4, 1.0], bruma: 0.0012, noche: false, pl: 0, emis: 0 },
+  tarde:     { sol: [-0.6, -0.58, 0.48], int: 3.6, colSol: 0xffe2b8, hemi: [0xb9d0ec, 0x8a7a5a, 0.55], turb: 3, ray: 1.3, mie: 0.004, mieG: 0.8, expo: 0.78, env: 0.07, bloom: [0.07, 0.4, 1.0], bruma: 0.0015, noche: false, pl: 0, emis: 0 },
   atardecer: { sol: [-0.9, -0.32, 0.2], int: 2.8, colSol: 0xffb978, hemi: [0x7f93b8, 0x6e5a44, 0.45], turb: 9, ray: 3.0, mie: 0.02, mieG: 0.9, expo: 0.85, env: 0.07, bloom: [0.15, 0.5, 0.9], bruma: 0.002, noche: false, pl: 1.5, emis: 1.2 },
   noche:     { sol: [-0.3, -0.4, 0.87], int: 0.6, colSol: 0x8aa0ff, hemi: [0x1c2a4a, 0x0c0f16, 0.5], turb: 2, ray: 0.5, mie: 0.001, mieG: 0.7, expo: 1.3, env: 0.15, bloom: [0.3, 0.6, 0.75], bruma: 0.0025, noche: true, pl: 8.0, emis: 1.4 }
 };
@@ -55,6 +55,22 @@ function normalDe(c, n, fuerza) {
   }
   x2.putImageData(out, 0, 0); return c2;
 }
+function grietas(x, n, cuantas, color, ancho) {
+  for (let k = 0; k < cuantas; k++) {
+    let px = rnd() * n, py = rnd() * n, a = rnd() * 6.28; x.strokeStyle = color; x.lineWidth = ancho * (0.6 + rnd()); x.beginPath(); x.moveTo(px, py);
+    for (let j = 0; j < 12 + rnd() * 20; j++) { a += (rnd() - 0.5) * 1.2; px += Math.cos(a) * n * 0.012; py += Math.sin(a) * n * 0.012; x.lineTo(px, py); if (rnd() < 0.12) { x.stroke(); x.beginPath(); x.moveTo(px, py); } }
+    x.stroke();
+  }
+}
+function manchas(x, n, cuantas, color, rmin, rmax) {
+  for (let k = 0; k < cuantas; k++) { const g = x.createRadialGradient(0, 0, 0, 0, 0, 1); g.addColorStop(0, color); g.addColorStop(1, "rgba(0,0,0,0)"); x.save(); x.translate(rnd() * n, rnd() * n); const r = rmin + rnd() * (rmax - rmin); x.scale(r, r * (0.5 + rnd())); x.rotate(rnd() * 3); x.fillStyle = g; x.fillRect(-1, -1, 2, 2); x.restore(); }
+}
+function rugoso(c, n, base, amp) {
+  // mapa de rugosidad a partir de la luminancia (lo claro es un poco más liso)
+  const src = c.getContext("2d").getImageData(0, 0, n, n).data, [c2, x2] = lienzo(n), out = x2.createImageData(n, n), d = out.data;
+  for (let i = 0; i < n * n; i++) { const L = (src[i * 4] * 0.3 + src[i * 4 + 1] * 0.59 + src[i * 4 + 2] * 0.11) / 255; const v = Math.max(0, Math.min(255, (base - amp * (L - 0.5)) * 255)); d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = v; d[i * 4 + 3] = 255; }
+  x2.putImageData(out, 0, 0); return c2;
+}
 function tex(c, metros, srgb) {
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1 / metros, 1 / metros); t.anisotropy = 8;
   if (srgb) t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; return t;
@@ -62,34 +78,45 @@ function tex(c, metros, srgb) {
 const TEX = {};
 function texturas() {
   let c, x, n;
-  // pasto: base verde con ruido fino y manchas
-  n = 1024; [c, x] = lienzo(n); x.fillStyle = "#6f9a48"; x.fillRect(0, 0, n, n); ruido(x, n, 0.35, 160); ruido(x, n, 0.18, 12);
-  for (let i = 0; i < 14000; i++) { x.fillStyle = `rgba(${40 + rnd() * 60 | 0},${90 + rnd() * 70 | 0},${30 + rnd() * 40 | 0},0.55)`; const px = rnd() * n, py = rnd() * n; x.fillRect(px, py, 1 + rnd() * 2, 3 + rnd() * 7); }
-  TEX.pasto = [tex(c, 3, true), tex(normalDe(c, n, 1.2), 3)];
-  // asfalto: gris oscuro granulado
-  n = 1024; [c, x] = lienzo(n); x.fillStyle = "#4e4e4c"; x.fillRect(0, 0, n, n); ruido(x, n, 0.22, 200); ruido(x, n, 0.12, 24);
-  for (let i = 0; i < 30000; i++) { x.fillStyle = `rgba(${150 + rnd() * 80 | 0},${150 + rnd() * 80 | 0},${150 + rnd() * 70 | 0},${0.08 + rnd() * 0.14})`; x.fillRect(rnd() * n, rnd() * n, 1, 1); }
-  TEX.asfalto = [tex(c, 4, true), tex(normalDe(c, n, 0.6), 4)];
-  // concreto / banqueta: claro, con juntas cada 1.5 m
-  n = 1024; [c, x] = lienzo(n); x.fillStyle = "#c9c5bc"; x.fillRect(0, 0, n, n); ruido(x, n, 0.14, 120); ruido(x, n, 0.07, 18);
-  x.strokeStyle = "rgba(60,58,54,0.55)"; x.lineWidth = 3; for (let k = 0; k <= 4; k++) { x.beginPath(); x.moveTo(k * n / 4, 0); x.lineTo(k * n / 4, n); x.moveTo(0, k * n / 4); x.lineTo(n, k * n / 4); x.stroke(); }
-  TEX.concreto = [tex(c, 6, true), tex(normalDe(c, n, 0.8), 6)];
-  // adoquín / andador: piezas 30 × 15
-  n = 1024; [c, x] = lienzo(n); x.fillStyle = "#cfcac1"; x.fillRect(0, 0, n, n);
+  // pasto: capas de briznas, calvas secas y trébol más oscuro
+  n = 2048; [c, x] = lienzo(n); x.fillStyle = "#5e8a3c"; x.fillRect(0, 0, n, n); ruido(x, n, 0.32, 200); ruido(x, n, 0.18, 24);
+  manchas(x, n, 40, "rgba(150,140,70,0.35)", 60, 200); manchas(x, n, 60, "rgba(30,70,25,0.3)", 40, 140);
+  for (let i = 0; i < 90000; i++) { x.strokeStyle = `hsla(${80 + rnd() * 35},${35 + rnd() * 30}%,${20 + rnd() * 30}%,0.6)`; x.lineWidth = 1 + rnd() * 1.5; const px = rnd() * n, py = rnd() * n, l = 4 + rnd() * 12, a = -1.2 - rnd() * 0.8; x.beginPath(); x.moveTo(px, py); x.lineTo(px + Math.cos(a) * l, py + Math.sin(a) * l); x.stroke(); }
+  TEX.pasto = [tex(c, 3, true), tex(normalDe(c, n, 1.4), 3)];
+  // asfalto: agregado, grietas, parches y manchas de aceite
+  n = 2048; [c, x] = lienzo(n); x.fillStyle = "#4a4a48"; x.fillRect(0, 0, n, n); ruido(x, n, 0.2, 240); ruido(x, n, 0.1, 30);
+  for (let i = 0; i < 120000; i++) { const g = 120 + rnd() * 110; x.fillStyle = `rgba(${g},${g},${g - 8},${0.08 + rnd() * 0.16})`; x.fillRect(rnd() * n, rnd() * n, 1 + rnd(), 1 + rnd()); }
+  manchas(x, n, 25, "rgba(20,20,20,0.35)", 60, 220); manchas(x, n, 12, "rgba(90,90,88,0.3)", 120, 400);
+  x.fillStyle = "rgba(60,60,58,0.5)"; for (let k = 0; k < 4; k++) x.fillRect(rnd() * n, rnd() * n, 200 + rnd() * 400, 120 + rnd() * 300);
+  grietas(x, n, 14, "rgba(25,25,25,0.8)", 2.2); grietas(x, n, 30, "rgba(35,35,35,0.5)", 1.2);
+  TEX.asfalto = [tex(c, 4, true), tex(normalDe(c, n, 0.7), 4), tex(rugoso(c, n, 0.95, 0.25), 4)];
+  // concreto / banqueta: agregado fino, juntas cada 1.5 m, manchas de humedad y grietas finas
+  n = 2048; [c, x] = lienzo(n); x.fillStyle = "#c6c2b8"; x.fillRect(0, 0, n, n); ruido(x, n, 0.12, 160); ruido(x, n, 0.06, 20);
+  for (let i = 0; i < 70000; i++) { const g = 150 + rnd() * 90; x.fillStyle = `rgba(${g},${g - 4},${g - 12},${0.1 + rnd() * 0.15})`; x.fillRect(rnd() * n, rnd() * n, 1 + rnd() * 2, 1 + rnd() * 2); }
+  manchas(x, n, 30, "rgba(90,85,75,0.22)", 80, 300); grietas(x, n, 10, "rgba(70,66,60,0.45)", 1.0);
+  x.strokeStyle = "rgba(60,58,54,0.6)"; x.lineWidth = 4; for (let k = 0; k <= 4; k++) { x.beginPath(); x.moveTo(k * n / 4, 0); x.lineTo(k * n / 4, n); x.moveTo(0, k * n / 4); x.lineTo(n, k * n / 4); x.stroke(); }
+  x.strokeStyle = "rgba(255,255,255,0.25)"; x.lineWidth = 2; for (let k = 0; k <= 4; k++) { x.beginPath(); x.moveTo(k * n / 4 + 3, 0); x.lineTo(k * n / 4 + 3, n); x.moveTo(0, k * n / 4 + 3); x.lineTo(n, k * n / 4 + 3); x.stroke(); }
+  TEX.concreto = [tex(c, 6, true), tex(normalDe(c, n, 1.0), 6), tex(rugoso(c, n, 0.9, 0.2), 6)];
+  // adoquín / andador: piezas 30 × 15 con bisel y variación
+  n = 1024; [c, x] = lienzo(n); x.fillStyle = "#b9b3a8"; x.fillRect(0, 0, n, n);
   const pw = n / 8, ph = n / 16;
-  for (let j = 0; j < 16; j++) for (let i = -1; i < 9; i++) { const ox = (j % 2) * pw / 2; x.fillStyle = `hsl(${35 + rnd() * 10},${8 + rnd() * 8}%,${72 + rnd() * 10}%)`; x.fillRect(i * pw + ox + 2, j * ph + 2, pw - 4, ph - 4); }
-  ruido(x, n, 0.1, 60); TEX.adoquin = [tex(c, 2.4, true), tex(normalDe(c, n, 1.0), 2.4)];
-  // tierra / huerta
-  n = 1024; [c, x] = lienzo(n); x.fillStyle = "#b9a883"; x.fillRect(0, 0, n, n); ruido(x, n, 0.3, 90); ruido(x, n, 0.15, 10);
-  TEX.tierra = [tex(c, 8, true), tex(normalDe(c, n, 0.7), 8)];
+  for (let j = 0; j < 16; j++) for (let i = -1; i < 9; i++) { const ox = (j % 2) * pw / 2; x.fillStyle = `hsl(${30 + rnd() * 14},${8 + rnd() * 10}%,${68 + rnd() * 14}%)`; x.fillRect(i * pw + ox + 3, j * ph + 3, pw - 6, ph - 6); x.fillStyle = "rgba(255,255,255,0.18)"; x.fillRect(i * pw + ox + 3, j * ph + 3, pw - 6, 2); }
+  ruido(x, n, 0.12, 80); manchas(x, n, 12, "rgba(80,75,65,0.2)", 60, 200); TEX.adoquin = [tex(c, 2.4, true), tex(normalDe(c, n, 1.3), 2.4), tex(rugoso(c, n, 0.85, 0.2), 2.4)];
+  // tierra / huerta: terrones, piedritas y surcos
+  n = 2048; [c, x] = lienzo(n); x.fillStyle = "#b5a480"; x.fillRect(0, 0, n, n); ruido(x, n, 0.3, 120); ruido(x, n, 0.18, 14);
+  for (let i = 0; i < 50000; i++) { const g = 90 + rnd() * 120; x.fillStyle = `rgba(${g + 20},${g},${g - 30},${0.25 + rnd() * 0.4})`; x.fillRect(rnd() * n, rnd() * n, 1 + rnd() * 3, 1 + rnd() * 3); }
+  manchas(x, n, 40, "rgba(80,65,40,0.3)", 50, 260); manchas(x, n, 30, "rgba(220,205,170,0.25)", 50, 200);
+  TEX.tierra = [tex(c, 8, true), tex(normalDe(c, n, 0.9), 8)];
   // aplanado de muro: ruido muy fino
-  n = 512; [c, x] = lienzo(n); x.fillStyle = "#ffffff"; x.fillRect(0, 0, n, n); ruido(x, n, 0.08, 64); ruido(x, n, 0.05, 8);
-  TEX.aplanado = [tex(c, 2.5, true), tex(normalDe(c, n, 0.35), 2.5)];
+  n = 1024; [c, x] = lienzo(n); x.fillStyle = "#ffffff"; x.fillRect(0, 0, n, n); ruido(x, n, 0.07, 120); ruido(x, n, 0.05, 12);
+  for (let i = 0; i < 30000; i++) { x.fillStyle = `rgba(0,0,0,${0.03 + rnd() * 0.06})`; x.fillRect(rnd() * n, rnd() * n, 1, 1); }
+  for (let k = 0; k < 60; k++) { x.strokeStyle = `rgba(0,0,0,${0.02 + rnd() * 0.03})`; x.lineWidth = 6 + rnd() * 14; x.beginPath(); const px = rnd() * n, py = rnd() * n; x.moveTo(px, py); x.quadraticCurveTo(px + 100, py + (rnd() - 0.5) * 60, px + 220, py + (rnd() - 0.5) * 40); x.stroke(); }   // llana
+  TEX.aplanado = [tex(c, 2.5, true), tex(normalDe(c, n, 0.5), 2.5), tex(rugoso(c, n, 0.88, 0.12), 2.5)];
   // ladrillo: 24 × 6 cm con junta clara
   n = 1024; [c, x] = lienzo(n); x.fillStyle = "#d9d2c6"; x.fillRect(0, 0, n, n);
   const bw = n / 5, bh = n / 20;
   for (let j = 0; j < 20; j++) for (let i = -1; i < 6; i++) { const ox = (j % 2) * bw / 2; x.fillStyle = `hsl(${12 + rnd() * 10},${48 + rnd() * 14}%,${38 + rnd() * 12}%)`; x.fillRect(i * bw + ox + 3, j * bh + 3, bw - 6, bh - 6); }
-  ruido(x, n, 0.12, 100); TEX.ladrillo = [tex(c, 1.2, true), tex(normalDe(c, n, 1.4), 1.2)];
+  ruido(x, n, 0.12, 100); manchas(x, n, 10, "rgba(40,20,10,0.25)", 60, 200); TEX.ladrillo = [tex(c, 1.2, true), tex(normalDe(c, n, 2.0), 1.2), tex(rugoso(c, n, 0.95, 0.15), 1.2)];
   // madera: veta
   n = 512; [c, x] = lienzo(n); x.fillStyle = "#9a6a3a"; x.fillRect(0, 0, n, n);
   for (let k = 0; k < 140; k++) { x.strokeStyle = `rgba(${40 + rnd() * 50 | 0},${20 + rnd() * 30 | 0},${5 + rnd() * 15 | 0},${0.12 + rnd() * 0.25})`; x.lineWidth = 1 + rnd() * 3; x.beginPath(); const y0 = rnd() * n; x.moveTo(0, y0); x.bezierCurveTo(n * 0.3, y0 + (rnd() - 0.5) * 30, n * 0.7, y0 + (rnd() - 0.5) * 30, n, y0 + (rnd() - 0.5) * 10); x.stroke(); }
@@ -127,6 +154,16 @@ function texturas() {
     x.beginPath(); x.moveTo(x0, n); x.quadraticCurveTo(x0 + dx * 0.3, n - h * 0.6, x0 + dx, n - h); x.stroke();
   }
   TEX.brizna = new THREE.CanvasTexture(c); TEX.brizna.colorSpace = THREE.SRGBColorSpace;
+  // nubes: cúmulos dispersos por ruido con umbral, con base sombreada y bordes suaves; textura RGBA directa (sin alfa premultiplicado del canvas)
+  const nw = 2048, nh = 1024; const dd = new Uint8Array(nw * nh * 4); const oct = []; for (let o = 0; o < 5; o++) { const sN = 6 << o, g = new Float32Array(sN * sN); for (let i = 0; i < sN * sN; i++) g[i] = rnd(); oct.push([sN, g]); }
+  const val = (fx, fy) => { let v = 0, amp = 1, tot = 0; for (const [sN, g] of oct) { const X = fx * sN, Y = fy * sN, x0 = ((Math.floor(X) % sN) + sN) % sN, y0 = ((Math.floor(Y) % sN) + sN) % sN, x1 = (x0 + 1) % sN, y1 = (y0 + 1) % sN, tx = X - Math.floor(X), ty = Y - Math.floor(Y), sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty); const a = g[y0 * sN + x0] * (1 - sx) + g[y0 * sN + x1] * sx, b = g[y1 * sN + x0] * (1 - sx) + g[y1 * sN + x1] * sx; v += (a * (1 - sy) + b * sy) * amp; tot += amp; amp *= 0.55; } return v / tot; };
+  for (let y = 0; y < nh; y++) for (let xx = 0; xx < nw; xx++) {
+    const v = val(xx / nw, y / nh * 2), alt = y / nh;                                       // alt = 1 arriba (fila 0 del DataTexture es el borde inferior de la textura → uv.y 0 = horizonte)
+    const alpha = Math.max(0, Math.min(1, (v - 0.5) * 7)) * Math.max(0, Math.min(1, (alt - 0.05) * 5));
+    const espesor = Math.max(0, v - 0.5) * 6; const lum = Math.round(255 - 70 * Math.min(1, espesor) + 25 * Math.max(0, Math.min(1, (val(xx / nw + 0.004, y / nh * 2 + 0.008) - v) * 14)));
+    const i = (y * nw + xx) * 4; dd[i] = Math.min(255, lum); dd[i + 1] = Math.min(255, lum); dd[i + 2] = Math.min(255, lum + 4); dd[i + 3] = Math.round(alpha * 255);
+  }
+  TEX.nubes = new THREE.DataTexture(dd, nw, nh, THREE.RGBAFormat); TEX.nubes.colorSpace = THREE.SRGBColorSpace; TEX.nubes.wrapS = THREE.RepeatWrapping; TEX.nubes.magFilter = THREE.LinearFilter; TEX.nubes.minFilter = THREE.LinearMipmapLinearFilter; TEX.nubes.generateMipmaps = true; TEX.nubes.needsUpdate = true;
 }
 
 /* ---------- geometría: prismas → caras con UV planar ---------- */
@@ -204,24 +241,34 @@ export class Foto3D {
     this._mats = this._mats || {};
     const c = new THREE.Color(hex); let m;
     const std = (o) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.9, metalness: 0 }, o));
-    const t = (k2) => ({ map: TEX[k2][0], normalMap: TEX[k2][1] });
+    const t = (k2) => Object.assign({ map: TEX[k2][0], normalMap: TEX[k2][1] }, TEX[k2][2] ? { roughnessMap: TEX[k2][2] } : {});
+    const inyectar = (mat, tipo) => {
+      mat.onBeforeCompile = (sh) => {
+        sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\nvarying vec3 vWp;").replace("#include <worldpos_vertex>", "#include <worldpos_vertex>\nvWp = (modelMatrix * vec4(transformed, 1.0)).xyz;");
+        const extra = tipo === "suelo" ? "diffuseColor.rgb *= 0.8 + 0.4 * fbm(vWp.xy * 0.035); diffuseColor.rgb *= 0.92 + 0.16 * fbm(vWp.xy * 0.5 + 7.0);"
+          : "float mugre = smoothstep(-0.35, 1.1, vWp.z); diffuseColor.rgb *= mix(0.7, 1.0, mugre); diffuseColor.rgb *= 0.94 + 0.12 * fbm(vec2(vWp.x + vWp.y, vWp.z) * 0.9); diffuseColor.rgb *= 1.0 - 0.1 * smoothstep(0.62, 0.95, fbm(vec2((vWp.x + vWp.y) * 2.5, vWp.z * 0.12)));";
+        sh.fragmentShader = sh.fragmentShader.replace("#include <common>", "#include <common>\nvarying vec3 vWp;\nfloat hash2(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }\nfloat vnoise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f); return mix(mix(hash2(i), hash2(i+vec2(1.0,0.0)), f.x), mix(hash2(i+vec2(0.0,1.0)), hash2(i+vec2(1.0,1.0)), f.x), f.y); }\nfloat fbm(vec2 p){ return 0.5*vnoise(p) + 0.25*vnoise(p*2.1) + 0.125*vnoise(p*4.3) + 0.0625*vnoise(p*8.7); }")
+          .replace("#include <map_fragment>", "#include <map_fragment>\n" + extra);
+      };
+      return mat;
+    };
     switch (k) {
-      case "pasto": m = std(Object.assign(t("pasto"), { color: c.clone().multiplyScalar(1.15), roughness: 1 })); break;
-      case "asfalto": m = std(Object.assign(t("asfalto"), { color: new THREE.Color(0x8c8c8a), roughness: 0.95 })); break;
-      case "tierra": m = std(Object.assign(t("tierra"), { color: c.clone().multiplyScalar(1.05), roughness: 1 })); break;
-      case "adoquin": m = std(Object.assign(t("adoquin"), { color: c.clone().multiplyScalar(1.05), roughness: 0.85 })); break;
-      case "concreto": m = std(Object.assign(t("concreto"), { color: c.clone().multiplyScalar(1.05), roughness: 0.9 })); break;
-      case "grava": m = std(Object.assign(t("tierra"), { color: c, roughness: 1 })); break;
-      case "ladrillo": m = std(Object.assign(t("ladrillo"), { color: new THREE.Color(0xffffff), roughness: 0.95 })); break;
-      case "cantera": m = std(Object.assign(t("cantera"), { color: c.clone().multiplyScalar(1.1), roughness: 0.9 })); break;
+      case "pasto": m = inyectar(std(Object.assign(t("pasto"), { color: c.clone().multiplyScalar(1.2), roughness: 1 })), "suelo"); break;
+      case "asfalto": m = inyectar(std(Object.assign(t("asfalto"), { color: new THREE.Color(0x9a9a98), roughness: 0.95 })), "suelo"); break;
+      case "tierra": m = inyectar(std(Object.assign(t("tierra"), { color: c.clone().multiplyScalar(1.05), roughness: 1 })), "suelo"); break;
+      case "adoquin": m = inyectar(std(Object.assign(t("adoquin"), { color: c.clone().multiplyScalar(1.05), roughness: 0.85 })), "suelo"); break;
+      case "concreto": m = inyectar(std(Object.assign(t("concreto"), { color: c.clone().multiplyScalar(1.05), roughness: 0.9 })), "suelo"); break;
+      case "grava": m = inyectar(std(Object.assign(t("tierra"), { color: c, roughness: 1 })), "suelo"); break;
+      case "ladrillo": m = inyectar(std(Object.assign(t("ladrillo"), { color: new THREE.Color(0xffffff), roughness: 0.95 })), "muro"); break;
+      case "cantera": m = inyectar(std(Object.assign(t("cantera"), { color: c.clone().multiplyScalar(1.1), roughness: 0.9 })), "muro"); break;
       case "madera": m = std(Object.assign(t("madera"), { color: c.clone().multiplyScalar(1.15), roughness: 0.6 })); break;
       case "corteza": m = std(Object.assign(t("corteza"), { color: c.clone().multiplyScalar(1.7), roughness: 1 })); break;
-      case "aplanado": m = std(Object.assign(t("aplanado"), { color: c, roughness: 0.85 })); break;
-      case "concreto_liso": m = std(Object.assign(t("aplanado"), { color: c, roughness: 0.7 })); break;
+      case "aplanado": m = inyectar(std(Object.assign(t("aplanado"), { color: c, roughness: 0.85 })), "muro"); break;
+      case "concreto_liso": m = inyectar(std(Object.assign(t("aplanado"), { color: c, roughness: 0.7 })), "muro"); break;
       case "metal": m = std({ roughness: 0.45, metalness: 0.6 }); break;
       case "acero": m = std({ roughness: 0.35, metalness: 0.8 }); break;
       case "auto": m = new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.25, metalness: 0.5, clearcoat: 1, clearcoatRoughness: 0.08 }); break;
-      case "vidrio": m = new THREE.MeshPhysicalMaterial({ color: c.clone().multiplyScalar(0.75), roughness: 0.03, metalness: 0.35, transparent: true, opacity: Math.min(0.9, 0.45 + a * 0.35), envMapIntensity: 2.4, side: THREE.DoubleSide, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.02 }); break;
+      case "vidrio": m = new THREE.MeshPhysicalMaterial({ color: c.clone().multiplyScalar(0.45).lerp(new THREE.Color(0x1a2430), 0.45), roughness: 0.02, metalness: 0.55, transparent: true, opacity: Math.min(0.95, 0.72 + a * 0.2), envMapIntensity: 2.8, side: THREE.DoubleSide, depthWrite: false, clearcoat: 1, clearcoatRoughness: 0.01 }); break;
       case "luz": m = new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 1.4, roughness: 0.6 }); m.userData.luz = true; break;
       case "arbusto": m = std({ color: c, roughness: 1 }); break;
       default: m = std({});
@@ -329,11 +376,26 @@ export class Foto3D {
       nz.count = j; nz.instanceMatrix.needsUpdate = true; if (nz.instanceColor) nz.instanceColor.needsUpdate = true; this.scene.add(nz); this.nuecesMesh = nz; this.nNueces = j;
     }
   }
+  horizonte() {
+    // sierras lejanas en dos capas (perfil por ruido; más altas al sur y al poniente, como en Torreón) y domo de nubes
+    const vn = (t) => { const i = Math.floor(t), f = t - i, sm = f * f * (3 - 2 * f); const hsh = (k) => { const x = Math.sin(k * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }; return hsh(i) * (1 - sm) + hsh(i + 1) * sm; };
+    const perfil = (a, semilla, base, amp) => { const t = a / 360; const v = 0.5 * vn(t * 9 + semilla) + 0.3 * vn(t * 23 + semilla * 3) + 0.15 * vn(t * 61 + semilla * 7) + 0.05 * vn(t * 150 + semilla); const k = a * Math.PI / 180; return base + amp * Math.max(0.05, v - 0.25) * (1 + 0.8 * Math.max(0, -Math.cos(k + 0.5))); };
+    this.sierras = [];
+    for (const [R, semilla, base, amp, col] of [[11000, 1, 180, 900, 0x6b7689], [7500, 5, 120, 520, 0x74808f]]) {
+      const n = 720, pos = [], idx = [];
+      for (let i = 0; i <= n; i++) { const a = i * 360 / n, k = a * Math.PI / 180, x = Math.cos(k) * R, y = Math.sin(k) * R; pos.push(x, y, -200, x, y, perfil(a, semilla, base, amp)); if (i < n) idx.push(i * 2, i * 2 + 1, i * 2 + 2, i * 2 + 1, i * 2 + 3, i * 2 + 2); }
+      const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+      const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: col, roughness: 1, side: THREE.DoubleSide })); this.scene.add(m); this.sierras.push(m);
+    }
+    const dg = new THREE.SphereGeometry(7000, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2); const dm = new THREE.MeshBasicMaterial({ map: TEX.nubes, transparent: true, depthWrite: false, side: THREE.BackSide, fog: false, opacity: 0.95 });
+    const dome = new THREE.Mesh(dg, dm); dome.rotation.x = Math.PI / 2; dome.scale.set(1, 0.3, 1); dome.position.z = -150; dome.renderOrder = -5; dome.frustumCulled = false; this.scene.add(dome); this.nubesMesh = dome;
+  }
   suelo() {
+    this.horizonte();
     // el terreno hasta el horizonte, por debajo del suelo de la escena
     const z = (this.esc.suelo_z === undefined ? -0.32 : this.esc.suelo_z) - 0.75;
-    const g = new THREE.PlaneGeometry(12000, 12000, 1, 1); g.translate(0, 0, z);
-    const uv = g.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 12000, uv.getY(i) * 12000);
+    const g = new THREE.PlaneGeometry(30000, 30000, 1, 1); g.translate(0, 0, z);
+    const uv = g.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 30000, uv.getY(i) * 30000);
     const m = new THREE.Mesh(g, this.material("tierra", "#c4b48f", 1)); m.receiveShadow = true; this.scene.add(m);
   }
   /* cielo, sol y luces según la hora */
@@ -347,7 +409,9 @@ export class Foto3D {
     u.turbidity.value = H.turb; u.rayleigh.value = H.ray; u.mieCoefficient.value = H.mie; u.mieDirectionalG.value = H.mieG;
     const Sl = H.noche ? new THREE.Vector3(0.3, 0.4, -0.3) : S;
     u.sunPosition.value.set(Sl.x, Sl.z, -Sl.y); sky.rotation.x = Math.PI / 2;          // el cielo trabaja con +Y arriba; nuestro mundo es +Z arriba
-    u.cloudCoverage.value = H.noche ? 0.1 : (hora === "atardecer" ? 0.45 : 0.3); u.cloudDensity.value = 0.35; u.cloudScale.value = 0.00025; u.showSunDisc.value = 1;
+    u.cloudCoverage.value = 0.0; u.showSunDisc.value = 1;
+    if (this.nubesMesh) { this.nubesMesh.material.color.set(H.noche ? 0x24304a : (hora === "atardecer" ? 0xffc9a0 : 0xffffff)); this.nubesMesh.material.opacity = H.noche ? 0.5 : 0.95; }
+    if (this.sierras) this.sierras.forEach((m, i) => m.material.color.set(H.noche ? 0x141a28 : (hora === "atardecer" ? (i ? 0x7a6a7c : 0x8a7a8c) : (i ? 0x74808f : 0x6b7689))));
     L.add(sky);
     const skyScene = new THREE.Scene(); skyScene.add(sky.clone()); skyScene.children[0].material = sky.material;
     const env = this.pmrem.fromScene(skyScene, 0, 1, 100000); scene.environment = env.texture; scene.environmentIntensity = H.env;
@@ -357,7 +421,7 @@ export class Foto3D {
     sol.position.copy(foco).addScaledVector(S, 800); sol.target.position.copy(foco); L.add(sol); L.add(sol.target);
     sol.castShadow = true; const ext = Math.min(700, Math.max(30, cam.dist * 1.6));
     sol.shadow.mapSize.set(this.opciones.sombras, this.opciones.sombras); sol.shadow.camera.left = -ext; sol.shadow.camera.right = ext; sol.shadow.camera.top = ext; sol.shadow.camera.bottom = -ext;
-    sol.shadow.camera.near = 1; sol.shadow.camera.far = 2000; sol.shadow.bias = -0.0004; sol.shadow.normalBias = 0.02 + ext / 4000; sol.shadow.radius = 2;
+    sol.shadow.camera.near = 1; sol.shadow.camera.far = 2000; sol.shadow.bias = -0.0003; sol.shadow.normalBias = 0.02 + ext / 4000; sol.shadow.radius = 4;
     const hemi = new THREE.HemisphereLight(H.hemi[0], H.hemi[1], H.hemi[2]); hemi.position.set(0, 0, 1); L.add(hemi);
     // luces de la escena (noche y atardecer): las más cercanas a la cámara
     const luces = this.luces.length ? this.luces : this.lamparas.map(l => [l[0], l[1], l[2], 2.6, "#ffd9a0"]);
@@ -427,7 +491,7 @@ export class Foto3D {
     const H = this.H, bloom = new UnrealBloomPass(new THREE.Vector2(w, h), H.bloom[0], H.bloom[1], H.bloom[2]); comp.addPass(bloom);
     comp.addPass(new OutputPass());
     const vin = new ShaderPass({ uniforms: { tDiffuse: { value: null }, f: { value: 0.28 } }, vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
-      fragmentShader: "uniform sampler2D tDiffuse; uniform float f; varying vec2 vUv; void main(){ vec4 c = texture2D(tDiffuse, vUv); float d = distance(vUv, vec2(0.5)); c.rgb *= 1.0 - f * smoothstep(0.35, 0.95, d); gl_FragColor = c; }" }); comp.addPass(vin);
+      fragmentShader: "uniform sampler2D tDiffuse; uniform float f; varying vec2 vUv; void main(){ vec4 c = texture2D(tDiffuse, vUv); float d = distance(vUv, vec2(0.5)); c.rgb *= 1.0 - f * smoothstep(0.35, 0.95, d); float l = dot(c.rgb, vec3(0.299, 0.587, 0.114)); c.rgb = mix(vec3(l), c.rgb, 1.1); c.rgb = (c.rgb - 0.5) * 1.06 + 0.5; gl_FragColor = c; }" }); comp.addPass(vin);
     comp.addPass(new SMAAPass(w, h));
     comp.render(); comp.dispose();
     return this.cv;
