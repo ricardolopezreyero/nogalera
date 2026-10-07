@@ -1,7 +1,9 @@
 // Cloudflare Workers para nogalera.capitaltorreon.com
-// Sitio estático (public/) servido por el Worker, más /api/render-ia (worker/index.js): genera renders fotorrealistas con OpenAI
-// usando los secretos del Worker OPENAI_API_KEY y RENDER_CLAVE (npx wrangler secret put …, o Settings → Variables and Secrets).
-// public/_headers pone las cabeceras de los archivos estáticos.
+// Sitio estático (public/) servido por el Worker, más (worker/index.js):
+//   /api/render-ia   renders fotorrealistas con OpenAI (secretos OPENAI_API_KEY y RENDER_CLAVE)
+//   /api/prospecto   guarda los datos de los clientes de /inicio/ en un Durable Object con SQLite (no hay que crear nada en Cloudflare)
+//   /api/prospectos  descarga de los prospectos con la clave ADMIN_CLAVE (?clave=…&formato=csv)
+// Secretos: npx wrangler secret put …, o Settings → Variables and Secrets. public/_headers pone las cabeceras de los archivos estáticos.
 {
   // Debe coincidir con el nombre del Worker en Cloudflare (Workers & Pages → nogalera).
   "name": "nogalera",
@@ -12,6 +14,11 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
   },
+  // La base de datos de prospectos: un Durable Object con SQLite (incluido en el plan gratuito).
+  "durable_objects": {
+    "bindings": [{ "name": "PROSPECTOS", "class_name": "Prospectos" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Prospectos"] }],
   // Al publicar, Cloudflare conecta el subdominio y crea el registro DNS y el certificado.
   // Requiere que la zona capitaltorreon.com esté en la misma cuenta de Cloudflare.
   "routes": [

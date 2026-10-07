@@ -64,6 +64,7 @@ def pagina(slug, titulo, ojo, lede, cuerpo, sub=(), mapa=False, head="", script=
 <aside class="lateral" id="lateral">
   <div class="cabl"><a class="marca" href="/"><b>{NOMBRE}</b><span>Fraccionamiento en N6 · La Paz, Torreón</span></a><button type="button" id="menu-btn" aria-expanded="false" aria-controls="menu-nav">Menú</button></div>
   <p class="estado">{VERSION}</p>
+  <p class="estado"><a href="/inicio/">Página del cliente →</a></p>
   <nav id="menu-nav" aria-label="Secciones del proyecto"><ul class="menu">{menu(slug, sub)}</ul></nav>
   <p class="pie">Anteproyecto. Lindero por confirmar con catastro. Mapas: © colaboradores de <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>.</p>
 </aside>
@@ -248,6 +249,7 @@ def resumen():
 {kpis([("Terreno", ha(GROSS), f"{f0(GROSS)} m² · La Paz, Torreón"), ("Casas", f0(N), f"lote típico de {R['lote_mediana']} m²"), ("Nogales que se quedan", f"{pct(QUEDAN/R['arboles'],0)}", f"{f0(QUEDAN)} de {f0(R['arboles'])}"),
        ("Venta", mill(MOD["venta_total"]), f"{f0(N)} lotes y {f0(R['predio_comercial_m2'])} m² de comercio, lista +{pct(FI.ESCALON_ETAPA, 0)} por etapa"), ("Obra", mill(OBRA_TOTAL), "urbanización, club, parques, acceso, agua e iluminación"),
        ("Para el dueño del terreno", f"{pct(X_DUENO)} de cada venta", f"{mill(MOD['dueno_total'])} en {MOD['fin_ventas']/12:.1f} años"), ("Operadora", f"${f0(FI.CUOTA_CASA)} · ${f0(FI.CUOTA_LOTE)}", "al mes por casa · por lote, más el agua")])}
+<p class="frase"><b>Así lo ve el cliente:</b> <a href="/inicio/">nogalera.capitaltorreon.com/inicio/</a>. La página de venta, con todos los renders, lo que incluye, los precios de la etapa 1 y el formulario que guarda a cada interesado en la base de datos (nombre, celular, correo, primera o segunda casa, crédito y qué tan rápido quiere comprar). Los prospectos se descargan desde <a href="/datos/#prospectos">Datos</a>.</p>
 <p class="frase">La propuesta al dueño: <b>${f0(PRECIO_FID)} por m² en fideicomiso: te damos el {pct(X_DUENO)} de cada venta.</b> Aportas el terreno, no pones un peso más, y cobras conforme se vende: {mill(DUENO_TOTAL)} a precio de arranque, {mill(MOD['dueno_total'])} con la lista subiendo por etapa. Cómo opera, en <a href="/numeros/">Números y fideicomiso</a>.</p>
 <figure><div class="dibujo">{plano_svg("plan", titulo="Plano maestro")}</div><figcaption><b>Plano maestro.</b> Cada punto es un nogal en su lugar exacto; los blancos son los {f0(R['reubicar'])} que se reubican. El bulevar Nogal corre por la hilera que ya faltaba en la huerta; el club, por la otra.</figcaption></figure>
 <h2 id="secciones">Secciones</h2>
@@ -579,6 +581,7 @@ exec(open(os.path.join(AQUI, "sitio_agua.py"), encoding="utf-8").read())
 exec(open(os.path.join(AQUI, "sitio_acceso.py"), encoding="utf-8").read())
 exec(open(os.path.join(AQUI, "sitio_renders.py"), encoding="utf-8").read())
 exec(open(os.path.join(AQUI, "sitio_hojas.py"), encoding="utf-8").read())
+exec(open(os.path.join(AQUI, "sitio_inicio.py"), encoding="utf-8").read())
 
 # ======================= NÚMEROS Y FIDEICOMISO =======================
 def esquema_fideicomiso(con=False):
@@ -883,6 +886,13 @@ def datos():
     cuerpo = f"""
 <p>Todo lo que muestra el sitio sale de estos archivos, y estos salen del código en <code>pipeline/</code> del repositorio. Coordenadas en WGS 84 (longitud, latitud). Cifras en pesos de 2026 sin IVA.</p>
 {tabla(filas, ["Archivo", "Qué tiene", "Tamaño"], "spec")}
+<h2 id="prospectos">Prospectos de la página del cliente</h2>
+<p>Cada persona que deja sus datos en <a href="/inicio/">/inicio/</a> queda guardada en la base de datos del Worker de Cloudflare (un Durable Object con SQLite: no hay nada que crear ni pagar). Se descargan con la clave del secreto <code>ADMIN_CLAVE</code> del Worker (si no existe, sirve <code>RENDER_CLAVE</code>):</p>
+<ul>
+<li>Excel: <code>https://nogalera.capitaltorreon.com/api/prospectos?clave=LA_CLAVE&amp;formato=csv</code> (abre o descarga un CSV con fecha, nombre, celular, correo, primera o segunda casa, crédito, rapidez, mensaje, ciudad y página).</li>
+<li>JSON: la misma dirección sin <code>&amp;formato=csv</code>.</li>
+<li>Aviso por correo de cada prospecto nuevo: poner en el Worker los secretos <code>RESEND_API_KEY</code> (cuenta de Resend) y <code>AVISO_CORREO</code> (uno o varios correos separados por coma); opcional <code>AVISO_DESDE</code>.</li>
+</ul>
 <h2 id="como">Cómo se hizo</h2>
 <ul>
 <li><b>Nogaleras:</b> detección desde satélite (altura de árboles de Meta y WRI a 1 m, serie de Sentinel-2 2025–2026) con revisión a ojo. Mapa en <a href="/nogaleras/">Nogaleras de La Laguna</a>.</li>
@@ -895,4 +905,4 @@ def datos():
     pagina("datos", "Datos para descargar", "B · Datos", "Los archivos con los que está hecho el proyecto, para abrirlos en QGIS, Excel o cualquier otro programa.", cuerpo, [("como", "Cómo se hizo")])
 
 if __name__ == "__main__":
-    for fn in (resumen, terreno, plan, calles, acceso, casa, fachadas, renders, servicios, agua, iluminacion, pista, numeros, porque, inversionista, comercializador, etapas, nogaleras, datos): fn()
+    for fn in (resumen, terreno, plan, calles, acceso, casa, fachadas, renders, servicios, agua, iluminacion, pista, numeros, porque, inversionista, comercializador, etapas, nogaleras, datos, inicio): fn()

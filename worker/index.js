@@ -1,19 +1,97 @@
-/* La Nogalera · Worker de Cloudflare: sirve el sitio estático (public/) y expone /api/render-ia, que genera renders
-   fotorrealistas con el modelo de imágenes de OpenAI usando los secretos del Worker:
-     OPENAI_API_KEY  la llave de OpenAI (npx wrangler secret put OPENAI_API_KEY)
-     RENDER_CLAVE    una contraseña que se pide en el creador para que nadie más gaste la llave (npx wrangler secret put RENDER_CLAVE)
-   POST /api/render-ia  JSON { clave, prompt, modelo, calidad, tamano, variantes, referencia (data URL JPEG/PNG de la maqueta, opcional) }
-   GET  /api/render-ia  → { listo, clave } para saber si los secretos están configurados. */
+/* La Nogalera · Worker de Cloudflare: sirve el sitio estático (public/) y expone tres rutas:
+     POST /api/render-ia   renders fotorrealistas con el modelo de imágenes de OpenAI (secretos OPENAI_API_KEY y RENDER_CLAVE)
+     POST /api/prospecto   guarda los datos que deja un cliente en /inicio/ (base de datos: Durable Object `Prospectos` con SQLite, sin nada que crear)
+     GET  /api/prospectos  descarga los prospectos (?clave=ADMIN_CLAVE, &formato=csv): la clave es el secreto ADMIN_CLAVE (o RENDER_CLAVE si no hay)
+   Opcional: con los secretos RESEND_API_KEY y AVISO_CORREO, cada prospecto nuevo se avisa por correo (API de Resend). */
+import { DurableObject } from "cloudflare:workers";
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/api/render-ia") return renderIA(request, env);
+    if (url.pathname === "/api/prospecto") return guardarProspecto(request, env, ctx);
+    if (url.pathname === "/api/prospectos") return listarProspectos(request, env);
     return env.ASSETS.fetch(request);
   }
 };
 
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 
+/* ---------- prospectos: la base de datos ---------- */
+export class Prospectos extends DurableObject {
+  constructor(ctx, env) {
+    super(ctx, env);
+    ctx.blockConcurrencyWhile(async () => {
+      ctx.storage.sql.exec(`CREATE TABLE IF NOT EXISTS prospectos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, fecha TEXT NOT NULL, nombre TEXT NOT NULL, celular TEXT NOT NULL, correo TEXT NOT NULL,
+        casa TEXT NOT NULL, credito TEXT NOT NULL, rapidez TEXT NOT NULL, mensaje TEXT, origen TEXT, pais TEXT, ciudad TEXT, agente TEXT)`);
+    });
+  }
+  guardar(p) {
+    this.ctx.storage.sql.exec("INSERT INTO prospectos (fecha, nombre, celular, correo, casa, credito, rapidez, mensaje, origen, pais, ciudad, agente) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+      p.fecha, p.nombre, p.celular, p.correo, p.casa, p.credito, p.rapidez, p.mensaje, p.origen, p.pais, p.ciudad, p.agente);
+    const r = this.ctx.storage.sql.exec("SELECT COUNT(*) AS n FROM prospectos").one();
+    return r.n;
+  }
+  listar() { return this.ctx.storage.sql.exec("SELECT * FROM prospectos ORDER BY id DESC").toArray(); }
+  repetido(celular, correo) {
+    const r = this.ctx.storage.sql.exec("SELECT COUNT(*) AS n FROM prospectos WHERE celular = ? OR correo = ?", celular, correo).one();
+    return r.n > 0;
+  }
+}
+const CASA = { primera: "Primera casa", segunda: "Segunda casa" };
+const CREDITO = { si: "Sí, más de $4 millones", no: "No", nose: "No lo sé" };
+const RAPIDEZ = { viendo: "Estoy viendo", ya: "Quiero comprar ya" };
+const limpia = (s, n) => String(s || "").replace(/\s+/g, " ").trim().slice(0, n);
+
+async function guardarProspecto(request, env, ctx) {
+  if (request.method !== "POST") return json({ error: "Usa POST" }, 405);
+  if (!env.PROSPECTOS) return json({ error: "Falta la base de datos (binding PROSPECTOS en wrangler.jsonc)." }, 503);
+  let c; try { c = await request.json(); } catch (e) { return json({ error: "Cuerpo inválido" }, 400); }
+  if (c.empresa) return json({ ok: true });                                   // campo trampa para robots: se contesta ok y no se guarda
+  const nombre = limpia(c.nombre, 120), correo = limpia(c.correo, 160).toLowerCase(), mensaje = limpia(c.mensaje, 1000);
+  const celular = limpia(c.celular, 30).replace(/[^\d+]/g, "");
+  if (nombre.length < 2) return json({ error: "Falta el nombre" }, 400);
+  if (celular.replace(/\D/g, "").length < 10) return json({ error: "El celular necesita 10 dígitos" }, 400);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) return json({ error: "El correo no parece correcto" }, 400);
+  if (!CASA[c.casa] || !CREDITO[c.credito] || !RAPIDEZ[c.rapidez]) return json({ error: "Faltan respuestas" }, 400);
+  const p = { fecha: new Date().toISOString(), nombre, celular, correo, casa: CASA[c.casa], credito: CREDITO[c.credito], rapidez: RAPIDEZ[c.rapidez], mensaje,
+              origen: limpia(c.origen, 200), pais: request.cf?.country || "", ciudad: request.cf?.city || "", agente: limpia(request.headers.get("user-agent"), 200) };
+  const stub = env.PROSPECTOS.get(env.PROSPECTOS.idFromName("todos"));
+  const repetido = await stub.repetido(p.celular, p.correo);
+  const n = await stub.guardar(p);
+  if (env.RESEND_API_KEY && env.AVISO_CORREO) ctx.waitUntil(avisar(env, p, n, repetido));
+  return json({ ok: true, n, repetido });
+}
+
+async function avisar(env, p, n, repetido) {
+  const filas = [["Nombre", p.nombre], ["Celular", p.celular], ["Correo", p.correo], ["Casa", p.casa], ["Crédito de más de $4 millones", p.credito], ["Rapidez", p.rapidez], ["Mensaje", p.mensaje || "—"], ["Desde", [p.ciudad, p.pais].filter(Boolean).join(", ") || "—"], ["Página", p.origen || "—"]];
+  const texto = filas.map(([k, v]) => `${k}: ${v}`).join("\n");
+  try {
+    await fetch("https://api.resend.com/emails", { method: "POST", headers: { authorization: "Bearer " + env.RESEND_API_KEY, "content-type": "application/json" },
+      body: JSON.stringify({ from: env.AVISO_DESDE || "La Nogalera <onboarding@resend.dev>", to: env.AVISO_CORREO.split(",").map(s => s.trim()),
+        subject: `Prospecto ${n}: ${p.nombre} · ${p.rapidez}${repetido ? " (ya había escrito)" : ""}`, text: texto + "\n\nTodos: https://nogalera.capitaltorreon.com/api/prospectos?clave=…&formato=csv" }) });
+  } catch (e) { /* el prospecto ya quedó guardado; el aviso es un extra */ }
+}
+
+async function listarProspectos(request, env) {
+  const url = new URL(request.url);
+  const clave = env.ADMIN_CLAVE || env.RENDER_CLAVE;
+  if (!clave) return json({ error: "Falta el secreto ADMIN_CLAVE (o RENDER_CLAVE) en el Worker." }, 503);
+  if ((url.searchParams.get("clave") || request.headers.get("x-clave")) !== clave) return json({ error: "Clave incorrecta" }, 401);
+  if (!env.PROSPECTOS) return json({ error: "Falta la base de datos (binding PROSPECTOS)." }, 503);
+  const stub = env.PROSPECTOS.get(env.PROSPECTOS.idFromName("todos"));
+  const filas = await stub.listar();
+  if (url.searchParams.get("formato") === "csv") {
+    const cols = ["id", "fecha", "nombre", "celular", "correo", "casa", "credito", "rapidez", "mensaje", "origen", "pais", "ciudad", "agente"];
+    const esc = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+    const csv = "﻿" + cols.join(",") + "\n" + filas.map(f => cols.map(k => esc(f[k])).join(",")).join("\n");
+    return new Response(csv, { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": 'attachment; filename="prospectos-nogalera.csv"', "cache-control": "no-store" } });
+  }
+  return json({ total: filas.length, prospectos: filas });
+}
+
+/* ---------- renders con IA ---------- */
 async function renderIA(request, env) {
   if (request.method === "GET") return json({ listo: !!env.OPENAI_API_KEY, clave: !!env.RENDER_CLAVE });
   if (request.method !== "POST") return json({ error: "Usa POST" }, 405);
