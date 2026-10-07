@@ -20,6 +20,50 @@ const HORAS = {
   atardecer: { sol: [-0.9, -0.32, 0.2], int: 2.8, colSol: 0xffb978, hemi: [0x7f93b8, 0x6e5a44, 0.45], turb: 9, ray: 3.0, mie: 0.02, mieG: 0.9, expo: 0.85, env: 0.07, bloom: [0.15, 0.5, 0.9], bruma: 0.002, noche: false, pl: 1.5, emis: 1.2 },
   noche:     { sol: [-0.3, -0.4, 0.87], int: 0.6, colSol: 0x8aa0ff, hemi: [0x1c2a4a, 0x0c0f16, 0.5], turb: 2, ray: 0.5, mie: 0.001, mieG: 0.7, expo: 1.3, env: 0.15, bloom: [0.3, 0.6, 0.75], bruma: 0.0025, noche: true, pl: 8.0, emis: 1.4 }
 };
+/* Sol real para Torreón (25.54° N, 103.4° O, UTC−6) en el marco del modelo (el eje u del plano está girado 31.7° respecto al este).
+   sol(hora, dia) → { elev, az, S:[x,y,z] }; luzSolar(hora, dia, ajustes) → parámetros continuos de cielo, sol, ambiente, noche. */
+const LAT = 25.54, LON = -103.4, TZ = -6, GIRO = 31.7;
+const HORA_PRESET = { dia: 13.0, tarde: 17.5, atardecer: 19.15, noche: 21.5, amanecer: 7.2, manana: 10.0 };
+/* salida y puesta del sol (elevación −0.8°, borde del disco con refracción) para un día del año */
+export function horasSol(dia) {
+  let salida = null, puesta = null;
+  for (let t = 0; t <= 24; t += 1 / 60) { const e = sol(t, dia).elev; if (salida === null && t < 12 && e > -0.8) salida = t; if (puesta === null && t > 12 && e < -0.8) puesta = t; }
+  return { salida: salida === null ? 6.5 : salida, puesta: puesta === null ? 18.5 : puesta };
+}
+/* presets de hora relativos al sol real de la fecha: "atardecer" siempre es justo antes de la puesta, en cualquier mes */
+export function horaPreset(nombre, dia) {
+  if (typeof nombre === "number") return nombre; const h = horasSol(dia || 285);
+  const t = { amanecer: h.salida + 0.3, manana: h.salida + 3.2, dia: 13.0, mediodia: 13.0, tarde: h.puesta - 2.4, atardecer: h.puesta - 0.3, crepusculo: h.puesta + 0.45, noche: h.puesta + 3.0 }[nombre];
+  return t === undefined ? (HORA_PRESET[nombre] !== undefined ? HORA_PRESET[nombre] : 13) : Math.round(t * 60) / 60;
+}
+export function sol(hora, dia) {
+  const rad = Math.PI / 180; dia = dia || 285;
+  const B = 360 / 365 * (dia - 81) * rad, eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);     // ecuación del tiempo (min)
+  const decl = 23.44 * rad * Math.sin(360 / 365 * (dia - 81) * rad);
+  const tsol = hora + (LON - TZ * 15) / 15 + eot / 60, H = (tsol - 12) * 15 * rad, phi = LAT * rad;
+  const sinh = Math.sin(phi) * Math.sin(decl) + Math.cos(phi) * Math.cos(decl) * Math.cos(H), elev = Math.asin(Math.max(-1, Math.min(1, sinh)));
+  let az = Math.acos(Math.max(-1, Math.min(1, (Math.sin(decl) - sinh * Math.sin(phi)) / (Math.cos(elev) * Math.cos(phi))))); if (H > 0) az = 2 * Math.PI - az;
+  const azm = az + GIRO * rad; return { elev: elev / rad, az: az / rad, S: [Math.sin(azm) * Math.cos(elev), Math.cos(azm) * Math.cos(elev), Math.sin(elev)] };
+}
+function lerpC(a, b, t) { return new THREE.Color(a).lerp(new THREE.Color(b), Math.max(0, Math.min(1, t))); }
+export function luzSolar(hora, dia, aj) {
+  aj = aj || {}; const p = sol(hora, dia), e = p.elev, sm = (a, b, x) => Math.max(0, Math.min(1, (x - a) / (b - a)));
+  const diaF = sm(-6, 4, e), bajo = 1 - sm(2, 28, e), noche = 1 - sm(-10, -3, e), crep = sm(-8, -1, e) * (1 - sm(-1, 6, e));
+  const colSol = lerpC(0xff8a3c, 0xfff4e6, sm(-2, 30, e)); const colCielo = lerpC(0x0a1226, lerpC(0xe8a070, 0xbfd8f2, sm(-2, 18, e)), sm(-9, -2, e));
+  const H = {
+    sol: noche > 0.5 ? [-0.3, -0.4, 0.87] : p.S, elev: e, az: p.az, hora, dia, nocheF: noche,
+    cieloSol: (() => { const el = Math.max(e, 0.6) * Math.PI / 180, azm = (p.az + GIRO) * Math.PI / 180; return [Math.sin(azm) * Math.cos(el), Math.cos(azm) * Math.cos(el), Math.sin(el)]; })(),
+    cieloBrillo: e >= 0.6 ? 1 : Math.max(0.012, Math.exp((e - 0.6) * 0.3)),
+    int: (noche > 0.5 ? 0.6 * (1 - 0.5 * noche) : 4.2 * sm(-1, 14, e) * (0.75 + 0.25 * sm(10, 35, e))) * (aj.sol === undefined ? 1 : aj.sol),
+    colSol: noche > 0.5 ? 0x8aa0ff : colSol.getHex(), hemi: [colCielo.getHex(), lerpC(0x0c0f16, 0x8a7a5a, diaF).getHex(), 0.3 + 0.35 * diaF],
+    turb: 2 + 7 * bajo * diaF + 1.5 * (1 - diaF), ray: 0.9 + 2.2 * bajo, mie: 0.0025 + 0.02 * bajo * diaF, mieG: 0.78 + 0.14 * bajo,
+    expo: (0.72 + 0.16 * bajo + 0.55 * noche + 1.2 * sm(0, 6, -e) * (1 - noche)) * (aj.expo === undefined ? 1 : aj.expo), env: 0.06 + 0.1 * noche,   // en el crepúsculo la cámara abre más (como el ojo)
+    bloom: [0.05 + 0.1 * bajo + 0.2 * noche, 0.4 + 0.2 * noche, 1.0 - 0.1 * bajo - 0.2 * noche], bruma: (0.0012 + 0.001 * bajo + 0.0012 * noche) * (aj.bruma === undefined ? 1 : aj.bruma),
+    noche: noche > 0.5, luces: Math.max(noche, crep * 0.8, aj.luces || 0), pl: 7.0, emis: 1.1, crep, nubesCol: noche > 0.5 ? 0x24304a : lerpC(0xffb088, 0xffffff, sm(-1, 14, e)).getHex(), nubesOp: 0.95 - 0.45 * noche,
+    sierrasCol: lerpC(0x141a28, lerpC(0x8a7a8c, 0x6b7689, sm(0, 15, e)), sm(-8, -2, e)).getHex(), nieblaCol: lerpC(0x0a1226, lerpC(0xe8c9a8, 0xdbe6f0, sm(0, 15, e)), sm(-8, -2, e)).getHex()
+  };
+  return H;
+}
 const COPAS = new Set(["#4f8f3c", "#5a9a44", "#467f36", "#5f9e4b", "#7fae5a", "#9bbf6a", "#6a9c4e"]);
 const ARBUSTOS = new Set(["#6f9a4a", "#5f8c42", "#8aa85e", "#4f7d3a"]);
 
@@ -155,13 +199,13 @@ function texturas() {
   }
   TEX.brizna = new THREE.CanvasTexture(c); TEX.brizna.colorSpace = THREE.SRGBColorSpace;
   // nubes: cúmulos dispersos por ruido con umbral, con base sombreada y bordes suaves; textura RGBA directa (sin alfa premultiplicado del canvas)
-  const nw = 2048, nh = 1024; const dd = new Uint8Array(nw * nh * 4); const oct = []; for (let o = 0; o < 5; o++) { const sN = 6 << o, g = new Float32Array(sN * sN); for (let i = 0; i < sN * sN; i++) g[i] = rnd(); oct.push([sN, g]); }
+  const nw = 1536, nh = 1536; const dd = new Uint8Array(nw * nh * 4); const oct = []; for (let o = 0; o < 5; o++) { const sN = 6 << o, g = new Float32Array(sN * sN); for (let i = 0; i < sN * sN; i++) g[i] = rnd(); oct.push([sN, g]); }
   const val = (fx, fy) => { let v = 0, amp = 1, tot = 0; for (const [sN, g] of oct) { const X = fx * sN, Y = fy * sN, x0 = ((Math.floor(X) % sN) + sN) % sN, y0 = ((Math.floor(Y) % sN) + sN) % sN, x1 = (x0 + 1) % sN, y1 = (y0 + 1) % sN, tx = X - Math.floor(X), ty = Y - Math.floor(Y), sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty); const a = g[y0 * sN + x0] * (1 - sx) + g[y0 * sN + x1] * sx, b = g[y1 * sN + x0] * (1 - sx) + g[y1 * sN + x1] * sx; v += (a * (1 - sy) + b * sy) * amp; tot += amp; amp *= 0.55; } return v / tot; };
   for (let y = 0; y < nh; y++) for (let xx = 0; xx < nw; xx++) {
-    const v = val(xx / nw, y / nh * 2), alt = y / nh;                                       // alt = 1 arriba (fila 0 del DataTexture es el borde inferior de la textura → uv.y 0 = horizonte)
-    const alpha = Math.max(0, Math.min(1, (v - 0.5) * 7)) * Math.max(0, Math.min(1, (alt - 0.05) * 5));
-    const espesor = Math.max(0, v - 0.5) * 6; const lum = Math.round(255 - 70 * Math.min(1, espesor) + 25 * Math.max(0, Math.min(1, (val(xx / nw + 0.004, y / nh * 2 + 0.008) - v) * 14)));
-    const i = (y * nw + xx) * 4; dd[i] = Math.min(255, lum); dd[i + 1] = Math.min(255, lum); dd[i + 2] = Math.min(255, lum + 4); dd[i + 3] = Math.round(alpha * 255);
+    const v = val(xx / nw, y / nh);                                       // alt = 1 arriba (fila 0 del DataTexture es el borde inferior de la textura → uv.y 0 = horizonte)
+    const dens = Math.max(0, Math.min(1, (v - 0.3) * 2.2));   // densidad continua (textura repetible); la cobertura se decide en el shader con un umbral suave
+    const espesor = Math.max(0, v - 0.5) * 6; const lum = Math.round(255 - 70 * Math.min(1, espesor) + 25 * Math.max(0, Math.min(1, (val(xx / nw + 0.004, y / nh + 0.004) - v) * 14)));
+    const i = (y * nw + xx) * 4; dd[i] = Math.min(255, lum); dd[i + 1] = Math.min(255, lum); dd[i + 2] = Math.min(255, lum + 4); dd[i + 3] = Math.round(dens * 255);
   }
   TEX.nubes = new THREE.DataTexture(dd, nw, nh, THREE.RGBAFormat); TEX.nubes.colorSpace = THREE.SRGBColorSpace; TEX.nubes.wrapS = THREE.RepeatWrapping; TEX.nubes.magFilter = THREE.LinearFilter; TEX.nubes.minFilter = THREE.LinearMipmapLinearFilter; TEX.nubes.generateMipmaps = true; TEX.nubes.needsUpdate = true;
 }
@@ -385,10 +429,27 @@ export class Foto3D {
       const n = 720, pos = [], idx = [];
       for (let i = 0; i <= n; i++) { const a = i * 360 / n, k = a * Math.PI / 180, x = Math.cos(k) * R, y = Math.sin(k) * R; pos.push(x, y, -200, x, y, perfil(a, semilla, base, amp)); if (i < n) idx.push(i * 2, i * 2 + 1, i * 2 + 2, i * 2 + 1, i * 2 + 3, i * 2 + 2); }
       const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
-      const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: col, roughness: 1, side: THREE.DoubleSide })); this.scene.add(m); this.sierras.push(m);
+      const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: col, roughness: 1, side: THREE.DoubleSide, fog: false })); this.scene.add(m); this.sierras.push(m);
     }
-    const dg = new THREE.SphereGeometry(7000, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2); const dm = new THREE.MeshBasicMaterial({ map: TEX.nubes, transparent: true, depthWrite: false, side: THREE.BackSide, fog: false, opacity: 0.95 });
-    const dome = new THREE.Mesh(dg, dm); dome.rotation.x = Math.PI / 2; dome.scale.set(1, 0.3, 1); dome.position.z = -150; dome.renderOrder = -5; dome.frustumCulled = false; this.scene.add(dome); this.nubesMesh = dome;
+    // capa de cúmulos: un plano a 1,800 m con la textura repetida (celdas de ~5 km, nubes de 600–1,500 m); la perspectiva real
+    // los hace grandes sobre la cabeza y apretados hacia el horizonte. Cobertura por umbral suave, velo uniforme cuando está nublado,
+    // desvanecido a lo lejos y color según la hora.
+    const dg = new THREE.PlaneGeometry(60000, 60000, 1, 1); TEX.nubes.repeat.set(12, 12); TEX.nubes.wrapT = THREE.RepeatWrapping;
+    const dm = new THREE.MeshBasicMaterial({ map: TEX.nubes, transparent: true, depthWrite: false, side: THREE.DoubleSide, fog: false, opacity: 1 });
+    dm.userData.u = { uUmbral: { value: 0.5 }, uOp: { value: 0.95 }, uVelo: { value: 0 } };
+    dm.onBeforeCompile = (sh) => {
+      Object.assign(sh.uniforms, dm.userData.u);
+      sh.vertexShader = "varying vec3 vNubeWp;\n" + sh.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n  vNubeWp = (modelMatrix * vec4(position, 1.0)).xyz;");
+      sh.fragmentShader = sh.fragmentShader.replace("uniform vec3 diffuse;", "uniform vec3 diffuse; uniform float uUmbral; uniform float uOp; uniform float uVelo; varying vec3 vNubeWp;")
+        .replace("#include <map_fragment>", "#include <map_fragment>\n  float nubeA = max(smoothstep(uUmbral, uUmbral + 0.22, texture2D(map, vMapUv).a), uVelo);\n  float lejos = 1.0 - smoothstep(9000.0, 26000.0, length(vNubeWp.xy - cameraPosition.xy));\n  diffuseColor.a = nubeA * uOp * lejos;");
+    };
+    const nubes = new THREE.Mesh(dg, dm); nubes.position.z = 1800; nubes.renderOrder = -5; nubes.frustumCulled = false; this.scene.add(nubes); this.nubesMesh = nubes;
+    // estrellas: puntos fijos en la bóveda, visibles solo de noche (opacidad según la hora)
+    const ne = 2600, ep = new Float32Array(ne * 3), ec = new Float32Array(ne * 3);
+    for (let i = 0; i < ne; i++) { const az = rnd() * Math.PI * 2, el = Math.asin(rnd()) * 0.98 + 0.02, R = 20000, b = 0.35 + 0.65 * Math.pow(rnd(), 2.5), t = rnd(); ep.set([Math.cos(az) * Math.cos(el) * R, Math.sin(az) * Math.cos(el) * R, Math.sin(el) * R], i * 3); ec.set([b * (t < 0.15 ? 1.0 : 0.9), b * 0.92, b * (t < 0.15 ? 0.75 : 1.0)], i * 3); }
+    const eg = new THREE.BufferGeometry(); eg.setAttribute("position", new THREE.Float32BufferAttribute(ep, 3)); eg.setAttribute("color", new THREE.Float32BufferAttribute(ec, 3));
+    const em = new THREE.PointsMaterial({ size: 2.2, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, fog: false });
+    const estrellas = new THREE.Points(eg, em); estrellas.frustumCulled = false; estrellas.renderOrder = -6; this.scene.add(estrellas); this.estrellas = estrellas;
   }
   suelo() {
     this.horizonte();
@@ -399,23 +460,29 @@ export class Foto3D {
     const m = new THREE.Mesh(g, this.material("tierra", "#c4b48f", 1)); m.receiveShadow = true; this.scene.add(m);
   }
   /* cielo, sol y luces según la hora */
-  iluminar(hora, cam) {
-    const H = HORAS[hora] || HORAS.dia, scene = this.scene;
+  iluminar(hora, cam, dia, aj) {
+    aj = aj || this.ajustes || {}; const hN = horaPreset(hora, dia || this.dia || 285);
+    const H = luzSolar(hN, dia || this.dia || 285, aj), scene = this.scene; this.horaNum = hN;
     if (this.luzGrupo) scene.remove(this.luzGrupo);
     const L = this.luzGrupo = new THREE.Group(); scene.add(L);
     const S = new THREE.Vector3(...H.sol).normalize();
     // cielo físico
     const sky = new Sky(); sky.scale.setScalar(50000); const u = sky.material.uniforms;
+    // crepúsculo y noche: el cielo físico se apaga en cuanto el sol baja, así que se deja el sol en el horizonte (conserva el
+    // resplandor del poniente) y se atenúa todo el cielo con un uniforme propio `brillo` que decae con la profundidad del sol
+    u.brillo = { value: H.cieloBrillo };
+    sky.material.fragmentShader = sky.material.fragmentShader.replace("uniform float showSunDisc;", "uniform float showSunDisc; uniform float brillo;").replace("gl_FragColor = vec4( texColor, 1.0 );", "gl_FragColor = vec4( texColor * brillo, 1.0 );");
     u.turbidity.value = H.turb; u.rayleigh.value = H.ray; u.mieCoefficient.value = H.mie; u.mieDirectionalG.value = H.mieG;
-    const Sl = H.noche ? new THREE.Vector3(0.3, 0.4, -0.3) : S;
+    const Sl = new THREE.Vector3(...H.cieloSol);
     u.sunPosition.value.set(Sl.x, Sl.z, -Sl.y); sky.rotation.x = Math.PI / 2;          // el cielo trabaja con +Y arriba; nuestro mundo es +Z arriba
-    u.cloudCoverage.value = 0.0; u.showSunDisc.value = 1;
-    if (this.nubesMesh) { this.nubesMesh.material.color.set(H.noche ? 0x24304a : (hora === "atardecer" ? 0xffc9a0 : 0xffffff)); this.nubesMesh.material.opacity = H.noche ? 0.5 : 0.95; }
-    if (this.sierras) this.sierras.forEach((m, i) => m.material.color.set(H.noche ? 0x141a28 : (hora === "atardecer" ? (i ? 0x7a6a7c : 0x8a7a8c) : (i ? 0x74808f : 0x6b7689))));
+    u.cloudCoverage.value = 0.0; u.showSunDisc.value = H.elev > -0.3 ? 1 : 0;
+    if (this.nubesMesh) { const cob = aj.nubes === undefined ? 0.5 : aj.nubes, u = this.nubesMesh.material.userData.u; this.nubesMesh.material.color.set(H.nubesCol); u.uOp.value = H.nubesOp; u.uUmbral.value = 1.0 - 0.95 * cob; u.uVelo.value = 0.9 * Math.max(0, Math.min(1, (cob - 0.72) / 0.28)); this.nubesMesh.visible = cob > 0.02; this.nubesMesh.material.map.offset.set((aj.viento || 0) * 0.02, (aj.viento || 0) * 0.007); }
+    if (this.estrellas) { this.estrellas.material.opacity = Math.max(0, Math.min(1, (H.nocheF - 0.25) / 0.6)) * (1 - 0.7 * (aj.nubes === undefined ? 0.5 : aj.nubes)); this.estrellas.visible = this.estrellas.material.opacity > 0.02; }
+    if (this.sierras) this.sierras.forEach((m, i) => m.material.color.set(H.sierrasCol).lerp(new THREE.Color(H.nieblaCol), i ? 0.42 : 0.62));
     L.add(sky);
     const skyScene = new THREE.Scene(); skyScene.add(sky.clone()); skyScene.children[0].material = sky.material;
     const env = this.pmrem.fromScene(skyScene, 0, 1, 100000); scene.environment = env.texture; scene.environmentIntensity = H.env;
-    if (H.noche) { scene.background = new THREE.Color(0x0a1226); } else scene.background = null;
+    scene.background = null;
     // sol
     const sol = new THREE.DirectionalLight(H.colSol, H.int); const foco = new THREE.Vector3(cam.cx, cam.cy, cam.cz);
     sol.position.copy(foco).addScaledVector(S, 800); sol.target.position.copy(foco); L.add(sol); L.add(sol.target);
@@ -425,13 +492,13 @@ export class Foto3D {
     const hemi = new THREE.HemisphereLight(H.hemi[0], H.hemi[1], H.hemi[2]); hemi.position.set(0, 0, 1); L.add(hemi);
     // luces de la escena (noche y atardecer): las más cercanas a la cámara
     const luces = this.luces.length ? this.luces : this.lamparas.map(l => [l[0], l[1], l[2], 2.6, "#ffd9a0"]);
-    for (const m of scene.children) if (m.isMesh && m.material.transparent && m.material.isMeshPhysicalMaterial) { m.material.emissive = new THREE.Color(0xffd9a0); m.material.emissiveIntensity = H.noche && !this.luces.length ? 0.9 : 0; }
-    if (H.noche || hora === "atardecer") {
+    for (const m of scene.children) if (m.isMesh && m.material.transparent && m.material.isMeshPhysicalMaterial) { m.material.emissive = new THREE.Color(0xffd9a0); m.material.emissiveIntensity = (H.noche && !this.luces.length ? 0.35 : 0) * H.luces; }
+    if (H.luces > 0.05) {
       const cerca = luces.map(l => [Math.hypot(l[0] - cam.cx, l[1] - cam.cy), l]).sort((a, b) => a[0] - b[0]).slice(0, 48);
-      for (const [, l] of cerca) { const pl = new THREE.PointLight(l[4] || 0xffd9a0, H.pl * l[3], l[3] * 12, 2); pl.position.set(l[0], l[1], l[2]); L.add(pl); }
+      for (const [, l] of cerca) { const pl = new THREE.PointLight(l[4] || 0xffd9a0, H.pl * l[3] * H.luces, l[3] * 12, 2); pl.position.set(l[0], l[1], l[2]); L.add(pl); }
     }
-    for (const m of scene.children) if (m.isMesh && m.material.emissive && m.material.emissiveIntensity !== undefined && m.material.userData.luz) m.material.emissiveIntensity = H.emis;
-    scene.fog = new THREE.FogExp2(H.noche ? 0x0a1226 : (hora === "atardecer" ? 0xe8c9a8 : 0xdbe6f0), H.bruma * Math.min(1, 60 / Math.max(1, cam.dist)) * (this.esc.bruma && this.esc.bruma[1] ? 1 : 0.6));
+    for (const m of scene.children) if (m.isMesh && m.material.emissive && m.material.emissiveIntensity !== undefined && m.material.userData.luz) m.material.emissiveIntensity = H.emis * H.luces;
+    scene.fog = new THREE.FogExp2(H.nieblaCol, H.bruma * Math.min(1, 60 / Math.max(1, cam.dist)) * (this.esc.bruma && this.esc.bruma[1] ? 1 : 0.6));
     this.renderer.toneMappingExposure = H.expo; this.H = H;
   }
   /* cámara con los mismos parámetros que render3d.js (az, el, zoom, dist, cx, cy, cz) */
@@ -477,13 +544,14 @@ export class Foto3D {
   }
   /* render a un tamaño dado; devuelve el canvas listo */
   render(o) {
-    const w = o.w || 1920, h = o.h || 1080, cam = Object.assign({}, this.esc.cam, o.cam || {}), hora = o.hora || this.esc.hora || "dia";
+    const w = o.w || 1920, h = o.h || 1080, cam = Object.assign({}, this.esc.cam, o.cam || {}), hora = o.hora !== undefined ? o.hora : (this.esc.hora || "dia");
+    if (o.ajustes) this.ajustes = o.ajustes; if (o.dia) this.dia = o.dia;
     this.briznas(cam); this.follaje(cam);
-    this.iluminar(hora, cam); const camera = this.camara(cam, w, h);
+    this.iluminar(hora, cam, o.dia, o.ajustes); const camera = this.camara(cam, w, h);
     this.renderer.setPixelRatio(1); this.renderer.setSize(w, h, false);
     const comp = new EffectComposer(this.renderer); comp.setSize(w, h);
     comp.addPass(new RenderPass(this.scene, camera));
-    if (this.opciones.ao) {
+    if (this.opciones.ao && !(o.ajustes && o.ajustes.ao === false)) {
       const ao = new GTAOPass(this.scene, camera, w, h); ao.output = GTAOPass.OUTPUT.Default; ao.blendIntensity = 0.9;
       ao.updateGtaoMaterial({ radius: Math.min(3, Math.max(0.4, cam.dist / 30)), distanceExponent: 1, thickness: 1, scale: 1, samples: 16, distanceFallOff: 1, screenSpaceRadius: false });
       ao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, rings: 2, samples: 8 }); comp.addPass(ao);
@@ -499,7 +567,7 @@ export class Foto3D {
   imagen(o) { this.render(o); return this.cv.toDataURL(o.tipo || "image/jpeg", o.calidad || 0.92); }
   /* cuadro en tiempo real para el modo caminar: sin posproceso; `ligero` baja la resolución mientras hay movimiento */
   rapido(cam, w, h, ligero) {
-    if (!this.H) this.iluminar(this.esc.hora || "dia", cam);
+    if (!this.H) this.iluminar(this.horaNum !== undefined ? this.horaNum : (this.esc.hora || "dia"), cam);
     const camera = this.camara(cam, w, h); this.renderer.setPixelRatio(1); this.renderer.setSize(w, h, false);
     this.renderer.shadowMap.autoUpdate = !ligero || (this._sombraCada = ((this._sombraCada || 0) + 1) % 6) === 0;
     this.renderer.render(this.scene, camera); this.renderer.shadowMap.autoUpdate = true;

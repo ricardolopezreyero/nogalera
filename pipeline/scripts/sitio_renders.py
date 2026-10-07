@@ -31,6 +31,7 @@ def renders():
 <figcaption><span class="n">{i + 1:02d}</span> <b>{e_(e["titulo"])}</b> <span class="hora">{HORAS_TXT[e["hora"]]}</span><p>{e_(e["porque"])}</p><p class="nota"><a href="/renders/?escena={k}#crear">Abrir en el creador</a> · {e["prismas"]:,} piezas</p></figcaption></figure>''')
     extras = [e for e in ESC.INDICE if e["id"] not in RENDERS_10]
     cuerpo = f"""
+<p class="frase" style="font-size:1.1rem"><b>🎬 Creador de renders fotorrealistas:</b> <a class="boton" href="/renders/foto/?escena=completo">abrir el creador</a> <span class="nota">cielo, nubes y sol de Torreón calculados por hora y fecha (amanecer, mediodía, atardecer, crepúsculo y noche con las luces encendidas), bruma, exposición, cámara con órbita, capas, calidad hasta 4K y mapas para IA. Arrastra para girar; la imagen se afina sola al soltar.</span></p>
 <p class="frase" style="font-size:1.1rem"><b>🚶 Camina dentro del modelo 3D.</b> <a class="boton" href="/renders/foto/?escena=completo&amp;caminar=1">Caminar por el fraccionamiento completo</a> <a class="boton" href="/renders/foto/?escena=fachadas&amp;caminar=1">Caminar por la cuadra de las nueve fachadas</a> <a class="boton" href="/renders/foto/?escena=parque&amp;caminar=1">Caminar por el parque</a><br><span class="nota">Flechas para avanzar y girar, ratón o dedo para mirar, altura de la vista a pie, a 2 m, desde un balcón o a 10 m, y «Foto de aquí» para guardar el encuadre. El modelo completo pesa 47 MB: en computadora va bien; en celular usa la cuadra o el parque.</span></p>
 <h2 id="concurso">Renders de concurso: la fachada y el fraccionamiento de lejos</h2>
 <p>Hechos con el motor fotorrealista (WebGL: materiales físicos, follaje de hojas, cielo con sol, sombras y oclusión ambiental) a 2560 × 1440. Cada uno trae sus mapas de profundidad, normales y líneas para llevarlo a fotografía con FLUX + ControlNet en una máquina con GPU (<code>pipeline/comfy/README.md</code>), o con gpt-image-2 desde el Worker (<code>renders_worker.py</code>).</p>
@@ -43,8 +44,8 @@ def renders():
 <div class="renders">{"".join(figs)}</div>
 <p class="nota">Estilo de maqueta: volúmenes, sombra de sol, cristales, bruma y contornos. Sirven para la presentación al dueño y al inversionista, y como guía exacta (encuadre, luz, qué se ve) para un render fotorrealista por computadora cuando se necesite. Más escenas en el creador: {", ".join(e_(e["titulo"]) for e in extras)}.</p>
 
-<h2 id="crear">Creador de renders</h2>
-<p>Elige la escena y la hora, gira con el ratón o el dedo (rueda para acercar), usa las vistas guardadas o los controles, y descarga el JPG en la resolución que quieras: pantalla, redes o impresión. «Copiar ajustes» guarda el encuadre exacto para repetirlo.</p>
+<h2 id="crear">Creador rápido (maqueta)</h2>
+<p>Versión ligera, sin WebGL, para el teléfono o para encuadrar rápido: elige la escena y la hora, gira con el ratón o el dedo (rueda para acercar), usa las vistas guardadas o los controles y descarga el JPG. «Copiar ajustes» guarda el encuadre exacto; el mismo encuadre se abre en el <a href="/renders/foto/">creador fotorrealista</a>.</p>
 <div class="creador">
   <div class="cr-lienzo"><canvas id="cr-canvas" aria-label="Render"></canvas><p id="cr-estado" class="nota">Cargando…</p></div>
   <div class="cr-controles">
@@ -83,5 +84,5 @@ def renders():
 <p class="nota">Las escenas están en <code>public/datos/escenas/</code> y las arma <code>pipeline/scripts/n6_escenas.py</code> (casas con sus nueve fachadas, calles, nogales, autos y gente). Para agregar una escena nueva se escribe ahí, con las mismas piezas. Los diez renders de arriba se generan con <code>pipeline/scripts/renders.js</code>.</p>
 """
     pagina("renders", "Renders", "08 · Renders", "Los diez renders que más venden La Nogalera, hechos con la geometría real del proyecto, y el creador para hacer todos los demás.", cuerpo,
-           [("concurso", "Renders de concurso"), ("diez", "Los diez de maqueta"), ("crear", "Creador de renders"), ("foto", "Render fotorrealista (WebGL)"), ("ia", "Render fotorrealista con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
+           [("concurso", "Renders de concurso"), ("diez", "Los diez de maqueta"), ("crear", "Creador rápido (maqueta)"), ("foto", "Creador fotorrealista"), ("ia", "Render con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
            descripcion="Renders de La Nogalera: la calle bajo los nogales, la casa, el acceso, el bulevar, el parque, la pista, el interior y el jardín; y el creador de renders.")

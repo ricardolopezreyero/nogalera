@@ -2,105 +2,256 @@
 <html lang="es-MX">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Render fotorrealista · La Nogalera</title>
+<title>Creador de renders · La Nogalera</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/estilo.css">
 <script type="importmap">{ "imports": { "three": "/vendor/three/three.module.js", "three/addons/": "/vendor/three/addons/" } }</script>
 <style>
-  body { padding: 1rem var(--gutter); } .foto-ui { display: grid; gap: 0.75rem; max-width: 72rem; }
-  #foto-canvas { width: 100%; height: auto; background: #223; display: block; border: 1px solid var(--linea); }
-  .foto-ctl { display: flex; gap: 0.5rem 1rem; flex-wrap: wrap; align-items: end; } .foto-ctl label { display: grid; gap: 0.2rem; font-size: 0.8125rem; }
+  body { padding: 0 var(--gutter) 2rem; }
+  .cr2 { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr) 16.5rem; gap: 0.9rem; align-items: start; max-width: 100rem; margin: 0 auto; }
+  @media (max-width: 70rem) { .cr2 { grid-template-columns: 1fr; } .cr2 .centro { order: -1; } }
+  .cab2 { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; padding: 0.9rem 0 0.6rem; max-width: 100rem; margin: 0 auto; }
+  .cab2 h1 { font-size: 1.35rem; margin: 0; } .cab2 .nota { margin: 0; }
+  .panel2 { border: 1px solid var(--linea); padding: 0.65rem 0.8rem 0.8rem; margin-bottom: 0.9rem; background: var(--papel); }
+  .panel2 h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gris); margin: 0 0 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+  .panel2 h3 small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .panel2 label { display: grid; grid-template-columns: 1fr auto; gap: 0.15rem 0.5rem; font-size: 0.8125rem; margin: 0.35rem 0; align-items: center; }
+  .panel2 label > span:first-child { grid-column: 1; } .panel2 label > .val { color: var(--gris); font-variant-numeric: tabular-nums; font-size: 0.75rem; }
+  .panel2 label > input[type=range], .panel2 label > select, .panel2 label > input[type=number] { grid-column: 1 / -1; width: 100%; }
+  .panel2 label.fila { grid-template-columns: auto 1fr; } .panel2 label.fila input[type=checkbox] { grid-column: 1; width: 1rem; height: 1rem; margin: 0; }
+  .panel2 .botones { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .panel2 .botones button { font-size: 0.8125rem; padding: 0.3rem 0.55rem; min-height: 2rem; }
+  .panel2 .botones button.on { background: var(--tinta); color: var(--papel); }
+  .centro { display: grid; gap: 0.6rem; }
+  .lienzo2 { position: relative; background: #1a2230; border: 1px solid var(--linea); aspect-ratio: 16 / 9; overflow: hidden; }
+  .lienzo2 canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+  .lienzo2 .estado2 { position: absolute; left: 0.6rem; bottom: 0.5rem; font-size: 0.75rem; color: #fff; background: rgba(0,0,0,0.55); padding: 0.2rem 0.5rem; }
+  .lienzo2 .ocupado { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; background: rgba(0,0,0,0.35); font-size: 0.9rem; }
+  .lienzo2 .ocupado[hidden] { display: none; }
+  .sol { border: 1px solid var(--linea); padding: 0.6rem 0.8rem; }
+  .sol .reloj { display: grid; grid-template-columns: auto 1fr auto; gap: 0.6rem; align-items: center; }
+  .sol .hora { font-family: ui-monospace, Menlo, monospace; font-size: 1.5rem; font-weight: 700; min-width: 4.6rem; }
+  .sol input[type=range] { width: 100%; }
+  .sol .marcas { position: relative; height: 1rem; font-size: 0.6875rem; color: var(--gris); }
+  .sol .marcas span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+  .sol .fila2 { display: flex; gap: 0.5rem 1rem; flex-wrap: wrap; align-items: center; margin-top: 0.4rem; font-size: 0.8125rem; }
+  .sol .fila2 .nota { margin: 0; }
+  .sol .anim.on { background: var(--tinta); color: var(--papel); }
+  .ajustes2 { font-family: ui-monospace, Menlo, monospace; font-size: 0.7rem; width: 100%; box-sizing: border-box; }
+  .mini { font-size: 0.75rem; color: var(--gris); }
+  #f-paseo { border: 1px solid var(--tinta); padding: 0.6rem 0.8rem; display: grid; gap: 0.4rem; }
+  #f-paseo .foto-ctl { display: flex; gap: 0.5rem 1rem; flex-wrap: wrap; align-items: end; } #f-paseo .foto-ctl label { display: grid; gap: 0.2rem; font-size: 0.8125rem; }
+  .sel { min-width: 0; }
 </style>
 </head>
 <body>
-<div class="foto-ui">
-<p><a href="/renders/">← Renders</a> · <b>Render fotorrealista</b> (WebGL). Elige escena, vista y hora; tarda unos segundos por imagen.</p>
-<div class="foto-ctl">
-  <label>Escena <select id="f-escena" class="sel"></select></label>
-  <label>Vista <select id="f-vista" class="sel"></select></label>
-  <label>Hora <select id="f-hora" class="sel"><option value="dia">Mediodía</option><option value="tarde">Tarde</option><option value="atardecer">Atardecer</option><option value="noche">Noche</option></select></label>
-  <label>Tamaño <select id="f-res" class="sel"><option value="1280x720">1280 × 720</option><option value="1920x1080" selected>1920 × 1080</option><option value="2560x1440">2560 × 1440</option><option value="3840x2160">3840 × 2160</option></select></label>
-  <label><input type="checkbox" id="f-autos"> autos</label><label><input type="checkbox" id="f-gente"> gente</label>
-  <button type="button" id="f-caminar" class="boton" style="background:#1f6f43;color:#fff;border-color:#1f6f43">🚶 Caminar en el modelo</button><button type="button" id="f-render" class="boton">Renderizar</button><button type="button" id="f-descargar">Descargar JPG</button><button type="button" data-pase="depth">Profundidad</button><button type="button" data-pase="normal">Normales</button><button type="button" data-pase="lineart">Líneas</button>
+<div class="cab2">
+  <div><h1>Creador de renders fotorrealistas</h1><p class="nota">Geometría real del proyecto · cielo, nubes y sol de Torreón calculados por hora y fecha · arrastra para girar, rueda para acercar. <a href="/renders/">← Renders</a> · <a href="/renders/#crear">creador rápido de maqueta</a></p></div>
+  <div class="botones" style="display:flex;gap:.4rem;flex-wrap:wrap"><button type="button" id="f-caminar" class="boton" style="background:#1f6f43;color:#fff;border-color:#1f6f43">🚶 Caminar en el modelo</button><button type="button" id="f-render" class="boton">Renderizar en alta</button><button type="button" id="f-descargar">Descargar JPG</button></div>
 </div>
-<p id="f-estado" class="nota">Cargando…</p>
-<div id="f-paseo" hidden style="border:1px solid var(--linea);padding:.5rem .75rem;margin:.5rem 0;display:grid;gap:.4rem;max-width:72rem">
-  <b>Modo caminar</b> <span class="nota">Flechas o WASD para avanzar y girar · arrastra el ratón (o toca y arrastra) para mirar · Shift corre · Q/E sube y baja la vista · Esc sale. Un clic en el lienzo captura el ratón.</span>
-  <div class="foto-ctl">
-    <label>Altura de la vista <select id="p-alt" class="sel"><option value="1.65">A pie (1.65 m)</option><option value="2">2 m</option><option value="4">Desde un balcón (4 m)</option><option value="10">10 m</option><option value="25">Vuelo bajo (25 m)</option></select></label>
-    <label>Velocidad <select id="p-vel" class="sel"><option value="1.4">Caminando (1.4 m/s)</option><option value="4">Trote</option><option value="12">Auto (12 m/s)</option><option value="40">Rápido</option></select></label>
-    <label>Ir a <select id="p-ir" class="sel"></select></label>
-    <label>Calidad al moverse <select id="p-cal" class="sel"><option value="0.5">Ligera</option><option value="0.75" selected>Media</option><option value="1">Completa</option></select></label>
-    <button type="button" id="p-foto">Foto de aquí (JPG)</button><button type="button" id="p-salir">Salir del modo caminar</button>
-  </div>
-  <p class="nota" id="p-pos"></p>
+
+<div class="cr2">
+  <aside class="izq">
+    <div class="panel2"><h3>Escena</h3>
+      <label><span>Escena</span><select id="f-escena" class="sel"></select></label>
+      <label><span>Vista guardada</span><select id="f-vista" class="sel"></select></label>
+      <div class="botones" id="f-vistas"></div>
+      <p class="mini" id="f-info"></p>
+    </div>
+    <div class="panel2"><h3>Cámara <small>metros</small></h3>
+      <label><span>Giro (rumbo)</span><span class="val" id="v-az"></span><input type="range" id="c-az" min="-3.1416" max="6.2832" step="0.005"></label>
+      <label><span>Inclinación</span><span class="val" id="v-el"></span><input type="range" id="c-el" min="-1.2" max="1.5" step="0.005"></label>
+      <label><span>Lente</span><span class="val" id="v-zoom"></span><input type="range" id="c-zoom" min="-30" max="16" step="0.25"></label>
+      <label><span>Distancia al centro</span><span class="val" id="v-dist"></span><input type="range" id="c-dist" min="2" max="2000" step="0.5"></label>
+      <label><span>Altura del centro</span><span class="val" id="v-cz"></span><input type="range" id="c-cz" min="-2" max="60" step="0.1"></label>
+      <div class="botones"><button type="button" data-mover="izq">←</button><button type="button" data-mover="adelante">↑</button><button type="button" data-mover="atras">↓</button><button type="button" data-mover="der">→</button><button type="button" data-mover="sube">▲ sube</button><button type="button" data-mover="baja">▼ baja</button></div>
+      <p class="mini">Ratón: arrastrar gira · rueda acerca · Shift + arrastrar desplaza.</p>
+    </div>
+    <div class="panel2"><h3>Capas</h3>
+      <label class="fila"><input type="checkbox" id="k-autos" checked><span>Autos</span></label>
+      <label class="fila"><input type="checkbox" id="k-gente" checked><span>Gente y perros</span></label>
+      <label class="fila"><input type="checkbox" id="k-pasto" checked><span>Briznas de pasto</span></label>
+      <label class="fila"><input type="checkbox" id="k-nueces" checked><span>Nueces en los nogales</span></label>
+    </div>
+  </aside>
+
+  <section class="centro">
+    <div class="lienzo2"><canvas id="foto-canvas" width="1920" height="1080"></canvas><div class="estado2" id="f-estado">Cargando…</div><div class="ocupado" id="f-ocupado" hidden>Renderizando…</div></div>
+    <div class="sol">
+      <div class="reloj"><span class="hora" id="s-hora">13:00</span><input type="range" id="s-h" min="0" max="24" step="0.05" value="13"><button type="button" id="s-anim" class="anim" title="Mueve el sol a lo largo del día">▶ día completo</button></div>
+      <div class="marcas" id="s-marcas"></div>
+      <div class="fila2">
+        <span>Presets:</span><button type="button" data-preset="amanecer">Amanecer</button><button type="button" data-preset="manana">Mañana</button><button type="button" data-preset="dia">Mediodía</button><button type="button" data-preset="tarde">Tarde</button><button type="button" data-preset="atardecer">Atardecer</button><button type="button" data-preset="crepusculo">Crepúsculo</button><button type="button" data-preset="noche">Noche</button>
+        <label>Fecha <select id="s-dia" class="sel"><option value="80">21 de marzo</option><option value="172">21 de junio</option><option value="285" selected="">12 de octubre</option><option value="355">21 de diciembre</option></select></label>
+        <span class="nota" id="s-sol"></span>
+      </div>
+    </div>
+    <div id="f-paseo" hidden>
+      <b>Modo caminar</b> <span class="nota">Flechas o WASD avanzan y giran · arrastra el ratón (o toca y arrastra) para mirar · Shift corre · Q/E sube y baja · Esc sale. Un clic en el lienzo captura el ratón.</span>
+      <div class="foto-ctl">
+        <label>Altura de la vista <select id="p-alt" class="sel"><option value="1.65">A pie (1.65 m)</option><option value="2">2 m</option><option value="4">Desde un balcón (4 m)</option><option value="10">10 m</option><option value="25">Vuelo bajo (25 m)</option></select></label>
+        <label>Velocidad <select id="p-vel" class="sel"><option value="1.4">Caminando (1.4 m/s)</option><option value="4">Trote</option><option value="12">Auto (12 m/s)</option><option value="40">Rápido</option></select></label>
+        <label>Ir a <select id="p-ir" class="sel"></select></label>
+        <label>Calidad al moverse <select id="p-cal" class="sel"><option value="0.5">Ligera</option><option value="0.75" selected>Media</option><option value="1">Completa</option></select></label>
+        <button type="button" id="p-foto">Foto de aquí (JPG)</button><button type="button" id="p-salir">Salir del modo caminar</button>
+      </div>
+      <p class="nota" id="p-pos"></p>
+    </div>
+    <textarea id="cr-ajustes" class="ajustes2" rows="2" readonly aria-label="Ajustes del encuadre"></textarea>
+  </section>
+
+  <aside class="der">
+    <div class="panel2"><h3>Cielo</h3>
+      <label><span>Nubes (cobertura)</span><span class="val" id="v-nubes"></span><input type="range" id="a-nubes" min="0" max="1" step="0.02" value="0.5"></label>
+      <label><span>Viento (desplaza las nubes)</span><span class="val" id="v-viento"></span><input type="range" id="a-viento" min="0" max="10" step="0.1" value="0"></label>
+      <label><span>Bruma</span><span class="val" id="v-bruma"></span><input type="range" id="a-bruma" min="0" max="3" step="0.05" value="1"></label>
+    </div>
+    <div class="panel2"><h3>Luz</h3>
+      <label><span>Fuerza del sol</span><span class="val" id="v-sol"></span><input type="range" id="a-sol" min="0.3" max="1.8" step="0.05" value="1"></label>
+      <label><span>Exposición de la cámara</span><span class="val" id="v-expo"></span><input type="range" id="a-expo" min="0.5" max="1.8" step="0.05" value="1"></label>
+      <label><span>Luces del fraccionamiento</span><select id="a-luces" class="sel"><option value="auto">Automático (se encienden al caer el sol)</option><option value="1">Siempre encendidas</option><option value="0">Apagadas</option></select></label>
+      <label class="fila"><input type="checkbox" id="a-ao" checked><span>Oclusión ambiental (sombras en rincones)</span></label>
+    </div>
+    <div class="panel2"><h3>Calidad y salida</h3>
+      <label><span>Tamaño</span><select id="f-res" class="sel"><option value="1280x720">1280 × 720 (vista previa)</option><option value="1920x1080" selected>1920 × 1080</option><option value="2560x1440">2560 × 1440</option><option value="3840x2160">3840 × 2160 (4K)</option><option value="1080x1080">1080 × 1080 (Instagram)</option><option value="1080x1920">1080 × 1920 (historia)</option></select></label>
+      <label><span>Sombras</span><select id="a-sombras" class="sel"><option value="2048">Normales</option><option value="4096" selected>Finas</option><option value="8192">Muy finas (lento)</option></select></label>
+      <div class="botones"><button type="button" id="f-png">Descargar PNG</button><button type="button" id="cr-copiar">Copiar ajustes</button></div>
+      <h3 style="margin-top:.7rem">Mapas para IA (ControlNet)</h3>
+      <div class="botones"><button type="button" data-pase="depth">Profundidad</button><button type="button" data-pase="normal">Normales</button><button type="button" data-pase="lineart">Líneas</button></div>
+      <p class="mini">Se descargan como PNG del tamaño elegido. Con ellos, FLUX + ControlNet (pipeline/comfy) convierte el encuadre en fotografía respetando la geometría.</p>
+    </div>
+  </aside>
 </div>
-<canvas id="foto-canvas" width="1920" height="1080"></canvas>
-</div>
+
 <script type="module">
-import Foto3D from "/render/foto3d.js";
-const $ = id => document.getElementById(id), cv = $("foto-canvas"), estado = $("f-estado");
-let F = null, indice = [], escena = null, ultimo = null;
+import Foto3D, { sol, horaPreset } from "/render/foto3d.js";
+const $ = id => document.getElementById(id), cv = $("foto-canvas"), estado = $("f-estado"), ocupado = $("f-ocupado");
+let F = null, indice = [], escena = null, ultimo = null, cam = null, pendiente = 0, interactuando = false;
 const API = window.FOTO = { listo: null, motor: () => F };
 function q(k) { return new URLSearchParams(location.search).get(k); }
-async function cargarEscena(id) {
-  escena = indice.find(e => e.id === id) || indice[0]; estado.textContent = "Cargando " + escena.titulo + "…";
+const ajustes = () => ({ nubes: +$("a-nubes").value, viento: +$("a-viento").value, bruma: +$("a-bruma").value, sol: +$("a-sol").value, expo: +$("a-expo").value, luces: $("a-luces").value === "auto" ? undefined : +$("a-luces").value, ao: $("a-ao").checked });
+const horaNum = () => +$("s-h").value, diaNum = () => +$("s-dia").value;
+function fmtHora(h) { const hh = Math.floor(h), mm = Math.round((h - hh) * 60); return (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm; }
+function pintaSol() {
+  const h = horaNum(), p = sol(h, diaNum()); $("s-hora").textContent = fmtHora(h);
+  $("s-sol").textContent = "Sol: elevación " + p.elev.toFixed(1) + "° · rumbo " + Math.round(p.az) + "° " + (p.elev > 0 ? "(de día)" : p.elev > -6 ? "(crepúsculo)" : "(de noche: luces encendidas)");
+  // marcas de amanecer y atardecer para la fecha
+  let am = null, at = null; for (let t = 0; t <= 24; t += 0.05) { const e = sol(t, diaNum()).elev; if (am === null && e > -0.8 && t < 12) am = t; if (t > 12 && e < -0.8 && at === null) at = t; }
+  $("s-marcas").innerHTML = [[0, "0 h"], [am, "☀ " + fmtHora(am || 0)], [12, "12"], [at, "🌇 " + fmtHora(at || 0)], [24, "24 h"]].map(([t, tx]) => `<span style="left:${(t / 24 * 100).toFixed(1)}%">${tx}</span>`).join("");
+}
+function leerCam() { if (!cam) return; cam.az = +$("c-az").value; cam.el = +$("c-el").value; cam.zoom = +$("c-zoom").value; cam.dist = +$("c-dist").value; cam.cz = +$("c-cz").value; pintaCam(); }
+function pintaCam() {
+  if (!cam) return; $("c-az").value = cam.az; $("c-el").value = cam.el; $("c-zoom").value = cam.zoom; $("c-dist").value = cam.dist; $("c-cz").value = cam.cz;
+  $("v-az").textContent = Math.round((cam.az * 180 / Math.PI % 360 + 360) % 360) + "°"; $("v-el").textContent = Math.round(-cam.el * 180 / Math.PI) + "°"; $("v-zoom").textContent = cam.zoom > 2 ? "tele" : cam.zoom < -4 ? "gran angular" : "normal";
+  $("v-dist").textContent = cam.dist.toFixed(1) + " m"; $("v-cz").textContent = cam.cz.toFixed(1) + " m";
+  $("cr-ajustes").value = JSON.stringify(Object.assign({ escena: escena && escena.id, hora: +horaNum().toFixed(2), dia: diaNum() }, { az: +cam.az.toFixed(3), el: +cam.el.toFixed(3), zoom: cam.zoom, dist: +cam.dist.toFixed(1), cx: +cam.cx.toFixed(1), cy: +cam.cy.toFixed(1), cz: +cam.cz.toFixed(1) }, ajustes()));
+}
+function pintaAjustes() { $("v-nubes").textContent = Math.round($("a-nubes").value * 100) + " %"; $("v-viento").textContent = $("a-viento").value; $("v-bruma").textContent = "×" + (+$("a-bruma").value).toFixed(2); $("v-sol").textContent = "×" + (+$("a-sol").value).toFixed(2); $("v-expo").textContent = "×" + (+$("a-expo").value).toFixed(2); }
+async function cargarEscena(id, vista) {
+  escena = indice.find(e => e.id === id) || indice[0]; estado.textContent = "Cargando " + escena.titulo + "…"; ocupado.hidden = false;
   const d = await (await fetch("/datos/escenas/" + escena.id + ".json")).json(); d.id = escena.id;
-  F = new Foto3D(cv); F.opciones.autos = $("f-autos").checked; F.opciones.gente = $("f-gente").checked; await F.cargar(d);
-  $("f-vista").innerHTML = '<option value="">(principal)</option>' + Object.keys(d.vistas || {}).map(k => `<option value="${k}">${k}</option>`).join("");
-  $("f-hora").value = d.hora || "dia"; estado.textContent = escena.titulo + " · " + d.prismas.length.toLocaleString("es-MX") + " piezas · " + (F.nRamas || 0).toLocaleString("es-MX") + " ramas · " + (F.clusters || []).length.toLocaleString("es-MX") + " racimos de hojas. Listo para renderizar.";
-  return d;
+  F = new Foto3D(cv); F.opciones.autos = $("k-autos").checked; F.opciones.gente = $("k-gente").checked; F.opciones.pasto = $("k-pasto").checked; F.opciones.nueces = $("k-nueces").checked; F.opciones.sombras = +$("a-sombras").value;
+  await F.cargar(d);
+  const vs = Object.keys(d.vistas || {}); $("f-vista").innerHTML = '<option value="">(principal)</option>' + vs.map(k => `<option value="${k}">${k}</option>`).join("");
+  $("f-vistas").innerHTML = vs.map(k => `<button type="button" data-vista="${k}">${k}</button>`).join("");
+  $("f-vistas").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { $("f-vista").value = b.dataset.vista; cam = Object.assign({}, d.vistas[b.dataset.vista]); pintaCam(); previsualizar(); }));
+  cam = Object.assign({}, (vista && d.vistas[vista]) || d.cam); $("f-vista").value = vista && d.vistas[vista] ? vista : "";
+  if (!q("hora") && d.hora && !cargarEscena.horaFijada) { $("s-h").value = horaPreset(d.hora, diaNum()); }
+  $("f-info").textContent = d.prismas.length.toLocaleString("es-MX") + " piezas · " + (F.nRamas || 0).toLocaleString("es-MX") + " ramas · " + (F.clusters || []).length.toLocaleString("es-MX") + " racimos de hojas · " + (d.luces || []).length + " luces";
+  pintaSol(); pintaCam(); pintaAjustes(); ocupado.hidden = true; estado.textContent = escena.titulo; previsualizar(true); return d;
+}
+/* vista previa: cuadro rápido mientras se mueve, render completo cuando se suelta */
+let tPrev = null;
+function previsualizar(completo) {
+  if (!F || paseo.activo()) return; clearTimeout(tPrev);
+  const w = Math.min(1280, cv.clientWidth || 960), h = Math.round(w * 9 / 16);
+  if (!completo) { F.iluminar(horaNum(), cam, diaNum(), ajustes()); F.rapido(cam, w, h, true); estado.textContent = escena.titulo + " · vista previa"; }
+  tPrev = setTimeout(() => { if (paseo.activo()) return; ocupado.hidden = false; ocupado.textContent = "Afinando…"; setTimeout(() => { F.render({ cam, hora: horaNum(), dia: diaNum(), ajustes: ajustes(), w, h }); ocupado.hidden = true; estado.textContent = escena.titulo + " · " + w + " × " + h; }, 20); }, completo ? 10 : 500);
 }
 API.render = async function (o) {
-  // o: { escena, vista, hora, cam (parcial), w, h, autos, gente } → dataURL JPEG
-  if (o.autos !== undefined) $("f-autos").checked = o.autos; if (o.gente !== undefined) $("f-gente").checked = o.gente;
-  if (!F || F.esc.id !== o.escena || o.autos !== undefined || o.gente !== undefined) await cargarEscena(o.escena);
-  const cam = Object.assign({}, (o.vista && F.esc.vistas && F.esc.vistas[o.vista]) || F.esc.cam, o.cam || {});
-  const t0 = performance.now(); const url = F.imagen({ cam, hora: o.hora, w: o.w, h: o.h, calidad: o.calidad || 0.92 });
+  if (o.autos !== undefined) $("k-autos").checked = o.autos; if (o.gente !== undefined) $("k-gente").checked = o.gente;
+  if (!F || F.esc.id !== o.escena || o.autos !== undefined || o.gente !== undefined) await cargarEscena(o.escena, o.vista);
+  const c = Object.assign({}, (o.vista && F.esc.vistas && F.esc.vistas[o.vista]) || F.esc.cam, o.cam || {});
+  const t0 = performance.now(); const url = F.imagen({ cam: c, hora: o.hora, dia: o.dia, ajustes: o.ajustes, w: o.w, h: o.h, calidad: o.calidad || 0.92 });
   ultimo = url; estado.textContent = "Listo en " + Math.round((performance.now() - t0) / 100) / 10 + " s"; return url;
 };
 API.control = async function (o) {
-  // o: { escena, vista, cam, w, h, tipo: "depth" | "normal" | "lineart" } → dataURL PNG (mapas para ControlNet)
-  if (!F || F.esc.id !== o.escena) await cargarEscena(o.escena);
-  const cam = Object.assign({}, (o.vista && F.esc.vistas && F.esc.vistas[o.vista]) || F.esc.cam, o.cam || {});
-  return F.control({ cam, w: o.w, h: o.h }, o.tipo);
+  if (!F || F.esc.id !== o.escena) await cargarEscena(o.escena, o.vista);
+  const c = Object.assign({}, (o.vista && F.esc.vistas && F.esc.vistas[o.vista]) || F.esc.cam, o.cam || {}); return F.control({ cam: c, w: o.w, h: o.h }, o.tipo);
 };
 API.listo = (async () => {
   indice = await (await fetch("/datos/escenas/index.json")).json();
   $("f-escena").innerHTML = indice.map(e => `<option value="${e.id}">${e.titulo}</option>`).join("");
-  $("f-escena").value = q("escena") || indice[0].id; await cargarEscena($("f-escena").value);
-  if (q("vista")) $("f-vista").value = q("vista"); if (q("hora")) $("f-hora").value = q("hora");
-  return true;
+  $("f-escena").value = q("escena") || indice[0].id;
+  if (q("hora")) { $("s-h").value = isNaN(+q("hora")) ? horaPreset(q("hora"), diaNum()) : +q("hora"); cargarEscena.horaFijada = true; }
+  await cargarEscena($("f-escena").value, q("vista")); return true;
 })();
-$("f-escena").addEventListener("change", () => { paseo.parar(); cargarEscena($("f-escena").value); });
-/* ---------- modo caminar: cámara en primera persona, en tiempo real ---------- */
+/* ---------- eventos ---------- */
+$("f-escena").addEventListener("change", () => { paseo.parar(); cargarEscena($("f-escena").value); history.replaceState(null, "", "?escena=" + $("f-escena").value); });
+$("f-vista").addEventListener("change", () => { const v = F.esc.vistas && F.esc.vistas[$("f-vista").value]; cam = Object.assign({}, v || F.esc.cam); pintaCam(); previsualizar(); });
+["c-az", "c-el", "c-zoom", "c-dist", "c-cz"].forEach(id => $(id).addEventListener("input", () => { leerCam(); previsualizar(); }));
+["a-nubes", "a-viento", "a-bruma", "a-sol", "a-expo"].forEach(id => $(id).addEventListener("input", () => { pintaAjustes(); pintaCam(); previsualizar(); }));
+["a-luces", "a-ao", "s-dia"].forEach(id => $(id).addEventListener("change", () => { pintaSol(); pintaCam(); previsualizar(); }));
+["k-autos", "k-gente", "k-pasto", "k-nueces", "a-sombras"].forEach(id => $(id).addEventListener("change", () => cargarEscena($("f-escena").value, $("f-vista").value)));
+$("s-h").addEventListener("input", () => { pintaSol(); pintaCam(); previsualizar(); });
+document.querySelectorAll("[data-preset]").forEach(b => b.addEventListener("click", () => { $("s-h").value = horaPreset(b.dataset.preset, diaNum()); pintaSol(); pintaCam(); previsualizar(); }));
+let anim = null; $("s-anim").addEventListener("click", () => {
+  if (anim) { clearInterval(anim); anim = null; $("s-anim").classList.remove("on"); previsualizar(); return; }
+  $("s-anim").classList.add("on"); anim = setInterval(() => { let h = horaNum() + 0.25; if (h > 24) h = 0; $("s-h").value = h; pintaSol(); if (F) { F.iluminar(h, cam, diaNum(), ajustes()); F.rapido(cam, Math.min(1280, cv.clientWidth || 960), Math.round(Math.min(1280, cv.clientWidth || 960) * 9 / 16), true); } }, 350);
+});
+document.querySelectorAll("[data-mover]").forEach(b => b.addEventListener("click", () => {
+  if (!cam) return; const m = b.dataset.mover, paso = Math.max(0.5, cam.dist / 20), ca = Math.cos(cam.az), sa = Math.sin(cam.az);
+  if (m === "adelante") { cam.cx += sa * paso; cam.cy += ca * paso; } else if (m === "atras") { cam.cx -= sa * paso; cam.cy -= ca * paso; }
+  else if (m === "izq") { cam.cx -= ca * paso; cam.cy += sa * paso; } else if (m === "der") { cam.cx += ca * paso; cam.cy -= sa * paso; }
+  else if (m === "sube") cam.cz += Math.max(0.5, paso / 4); else if (m === "baja") cam.cz = Math.max(-2, cam.cz - Math.max(0.5, paso / 4));
+  pintaCam(); previsualizar();
+}));
+/* órbita con el ratón: arrastrar gira, rueda acerca, Shift + arrastrar desplaza */
+let arr = null;
+cv.addEventListener("pointerdown", e => { if (paseo.activo()) return; arr = [e.clientX, e.clientY, cam.az, cam.el, cam.cx, cam.cy, e.shiftKey]; cv.setPointerCapture(e.pointerId); interactuando = true; });
+cv.addEventListener("pointermove", e => {
+  if (!arr || paseo.activo()) return; const dx = e.clientX - arr[0], dy = e.clientY - arr[1];
+  if (arr[6]) { const k = cam.dist / 600, ca = Math.cos(cam.az), sa = Math.sin(cam.az); cam.cx = arr[4] - (dx * ca) * k; cam.cy = arr[5] + (dx * sa) * k; cam.cz = Math.max(-2, cam.cz + dy * k * 0.5 * 0); }
+  else { cam.az = arr[2] + dx * 0.005; cam.el = Math.max(-1.2, Math.min(1.5, arr[3] + dy * 0.005)); }
+  pintaCam(); previsualizar();
+});
+cv.addEventListener("pointerup", () => { arr = null; interactuando = false; }); cv.addEventListener("pointercancel", () => { arr = null; });
+cv.addEventListener("wheel", e => { if (paseo.activo()) return; e.preventDefault(); cam.dist = Math.max(2, Math.min(3000, cam.dist * (e.deltaY > 0 ? 1.12 : 0.89))); pintaCam(); previsualizar(); }, { passive: false });
+$("f-render").addEventListener("click", async () => {
+  const [w, h] = $("f-res").value.split("x").map(Number); ocupado.hidden = false; ocupado.textContent = "Renderizando " + w + " × " + h + "…"; await new Promise(r => setTimeout(r, 30));
+  ultimo = F.imagen({ cam, hora: horaNum(), dia: diaNum(), ajustes: ajustes(), w, h }); ocupado.hidden = true; estado.textContent = escena.titulo + " · " + w + " × " + h + " listo (descárgalo o sigue ajustando)";
+});
+$("f-descargar").addEventListener("click", () => { if (!ultimo) { $("f-render").click(); setTimeout(() => $("f-descargar").click(), 100); return; } const a = document.createElement("a"); a.href = ultimo; a.download = "nogalera-" + escena.id + "-" + fmtHora(horaNum()).replace(":", "") + ".jpg"; a.click(); });
+$("f-png").addEventListener("click", () => { const [w, h] = $("f-res").value.split("x").map(Number); const url = F.imagen({ cam, hora: horaNum(), dia: diaNum(), ajustes: ajustes(), w, h, tipo: "image/png" }); const a = document.createElement("a"); a.href = url; a.download = "nogalera-" + escena.id + ".png"; a.click(); });
+$("cr-copiar").addEventListener("click", () => { $("cr-ajustes").select(); document.execCommand("copy"); });
+document.querySelectorAll("[data-pase]").forEach(b => b.addEventListener("click", async () => {
+  const [w, h] = $("f-res").value.split("x").map(Number); ocupado.hidden = false; ocupado.textContent = "Pase " + b.dataset.pase + "…"; await new Promise(r => setTimeout(r, 30));
+  const url = F.control({ cam, w, h }, b.dataset.pase); const a = document.createElement("a"); a.href = url; a.download = "nogalera-" + escena.id + "-" + b.dataset.pase + ".png"; a.click(); ocupado.hidden = true; previsualizar(true);
+}));
+window.addEventListener("resize", () => previsualizar(true));
+/* ---------- modo caminar ---------- */
 const paseo = (() => {
   const P = { activo: false, az: 0, el: 0, x: 0, y: 0, z: 1.65, teclas: {}, ult: 0, raf: 0, arr: null };
   const caja = $("f-paseo"), pos = $("p-pos");
-  function entrar() {
-    if (!F) return; const c = F.esc.cam, sa = Math.sin(c.az), ca = Math.cos(c.az), ce = Math.cos(c.el), se = Math.sin(c.el);
-    P.x = c.cx - sa * ce * c.dist; P.y = c.cy - ca * ce * c.dist; P.az = c.az; P.el = 0; P.z = +$("p-alt").value;
-    const v = $("p-ir"); v.innerHTML = '<option value="">(vista actual)</option>' + Object.keys(F.esc.vistas || {}).map(k => `<option value="${k}">${k}</option>`).join("");
-    P.activo = true; caja.hidden = false; F.iluminar($("f-hora").value, { cx: P.x, cy: P.y, cz: P.z, dist: 60 }); F.follaje({ az: P.az, el: 0, dist: 0.01, cx: P.x, cy: P.y, cz: P.z }); F.briznas({ az: P.az, el: 0, dist: 0.01, cx: P.x, cy: P.y, cz: P.z });
-    P.ult = performance.now(); cuadro(); cv.focus(); estado.textContent = "Modo caminar: usa las flechas. Clic en la imagen para mirar con el ratón.";
-  }
-  function parar() { if (!P.activo) return; P.activo = false; caja.hidden = true; cancelAnimationFrame(P.raf); if (document.pointerLockElement === cv) document.exitPointerLock(); }
   function camAhora() { return { az: P.az, el: P.el, zoom: 0, fov: 52, dist: 0.01, cx: P.x + Math.sin(P.az) * Math.cos(P.el) * 0.01, cy: P.y + Math.cos(P.az) * Math.cos(P.el) * 0.01, cz: P.z - Math.sin(P.el) * 0.01 }; }
-  let contRefrescar = 0;
+  function entrar() {
+    if (!F) return; const c = cam, sa = Math.sin(c.az), ca = Math.cos(c.az), ce = Math.cos(c.el), se = Math.sin(c.el);
+    P.x = c.cx - sa * ce * c.dist; P.y = c.cy - ca * ce * c.dist; P.az = c.az; P.el = 0; P.z = +$("p-alt").value;
+    $("p-ir").innerHTML = '<option value="">(desde la cámara actual)</option>' + Object.keys(F.esc.vistas || {}).map(k => `<option value="${k}">${k}</option>`).join("");
+    P.activo = true; caja.hidden = false; F.iluminar(horaNum(), { cx: P.x, cy: P.y, cz: P.z, dist: 60 }, diaNum(), ajustes()); F.follaje(camAhora()); F.briznas(camAhora());
+    P.ult = performance.now(); cuadro(); cv.focus(); estado.textContent = "Modo caminar · flechas para avanzar, clic en la imagen para mirar con el ratón";
+  }
+  function parar() { if (!P.activo) return; P.activo = false; caja.hidden = true; cancelAnimationFrame(P.raf); if (document.pointerLockElement === cv) document.exitPointerLock(); cam = Object.assign({}, cam, { cx: P.x + Math.sin(P.az) * 10, cy: P.y + Math.cos(P.az) * 10, cz: P.z, az: P.az, el: P.el, dist: 10, zoom: 0 }); pintaCam(); previsualizar(true); }
+  let cont = 0;
   function cuadro() {
     if (!P.activo) return; const t = performance.now(), dt = Math.min(0.5, (t - P.ult) / 1000); P.ult = t;
     const vel = +$("p-vel").value * (P.teclas["Shift"] ? 3 : 1), k = P.teclas; let mv = 0, lat = 0;
-    if (k["ArrowUp"] || k["w"] || k["W"]) mv += 1; if (k["ArrowDown"] || k["s"] || k["S"]) mv -= 1;
-    if (k["a"] || k["A"]) lat -= 1; if (k["d"] || k["D"]) lat += 1;
-    if (k["ArrowLeft"]) P.az -= 1.2 * dt; if (k["ArrowRight"]) P.az += 1.2 * dt;
-    if (k["q"] || k["Q"]) P.z = Math.max(0.5, P.z - 3 * dt); if (k["e"] || k["E"]) P.z += 3 * dt;
-    const sa = Math.sin(P.az), ca = Math.cos(P.az);
-    P.x += (sa * mv + ca * lat) * vel * dt; P.y += (ca * mv - sa * lat) * vel * dt;
-    const movio = mv || lat || k["ArrowLeft"] || k["ArrowRight"] || P.arr;
-    if (movio && ++contRefrescar % 90 === 0) { F.follaje(camAhora()); F.briznas(camAhora()); }
-    const esc = movio ? +$("p-cal").value : 1; const w = Math.round(cv.clientWidth * esc) || 960, h = Math.round(w * 9 / 16);
-    F.rapido(camAhora(), w, h, movio && esc < 1);
-    pos.textContent = "x " + P.x.toFixed(1) + " · y " + P.y.toFixed(1) + " · altura " + P.z.toFixed(2) + " m · rumbo " + Math.round((P.az * 180 / Math.PI) % 360) + "°";
+    if (k["ArrowUp"] || k["w"] || k["W"]) mv += 1; if (k["ArrowDown"] || k["s"] || k["S"]) mv -= 1; if (k["a"] || k["A"]) lat -= 1; if (k["d"] || k["D"]) lat += 1;
+    if (k["ArrowLeft"]) P.az -= 1.2 * dt; if (k["ArrowRight"]) P.az += 1.2 * dt; if (k["q"] || k["Q"]) P.z = Math.max(0.5, P.z - 3 * dt); if (k["e"] || k["E"]) P.z += 3 * dt;
+    const sa = Math.sin(P.az), ca = Math.cos(P.az); P.x += (sa * mv + ca * lat) * vel * dt; P.y += (ca * mv - sa * lat) * vel * dt;
+    const movio = mv || lat || k["ArrowLeft"] || k["ArrowRight"] || P.arr; if (movio && ++cont % 90 === 0) { F.follaje(camAhora()); F.briznas(camAhora()); }
+    const esc = movio ? +$("p-cal").value : 1, w = Math.round((cv.clientWidth || 960) * esc), h = Math.round(w * 9 / 16); F.rapido(camAhora(), w, h, movio && esc < 1);
+    pos.textContent = "x " + P.x.toFixed(1) + " · y " + P.y.toFixed(1) + " · altura " + P.z.toFixed(2) + " m · rumbo " + Math.round((P.az * 180 / Math.PI % 360 + 360) % 360) + "° · " + fmtHora(horaNum());
     P.raf = requestAnimationFrame(cuadro);
   }
   document.addEventListener("keydown", e => { if (!P.activo) return; if (e.key === "Escape") return parar(); P.teclas[e.key] = true; if (e.key.startsWith("Arrow") || e.key === " ") e.preventDefault(); });
@@ -111,24 +262,13 @@ const paseo = (() => {
   cv.addEventListener("touchmove", e => { if (!P.activo || !t0) return; P.az = t0[2] + (e.touches[0].clientX - t0[0]) * 0.006; P.el = Math.max(-1.2, Math.min(1.2, t0[3] + (e.touches[0].clientY - t0[1]) * 0.006)); P.arr = true; }, { passive: true });
   cv.addEventListener("touchend", () => { P.arr = false; });
   $("p-alt").addEventListener("change", () => { P.z = +$("p-alt").value; });
-  $("p-ir").addEventListener("change", () => { const v = F.esc.vistas[$("p-ir").value]; if (!v) return; const sa = Math.sin(v.az), ca = Math.cos(v.az), ce = Math.cos(v.el), se = Math.sin(v.el); P.x = v.cx - sa * ce * v.dist; P.y = v.cy - ca * ce * v.dist; P.z = Math.max(0.5, v.cz + se * v.dist); P.az = v.az; P.el = v.el; $("p-alt").value = ""; F.follaje(camAhora()); F.briznas(camAhora()); });
-  $("p-foto").addEventListener("click", () => { const [w, h] = $("f-res").value.split("x").map(Number); const url = F.imagen({ cam: camAhora(), hora: $("f-hora").value, w, h }); ultimo = url; const a = document.createElement("a"); a.href = url; a.download = "nogalera-paseo-" + escena.id + ".jpg"; a.click(); });
+  $("p-ir").addEventListener("change", () => { const v = F.esc.vistas[$("p-ir").value]; if (!v) return; const sa = Math.sin(v.az), ca = Math.cos(v.az), ce = Math.cos(v.el), se = Math.sin(v.el); P.x = v.cx - sa * ce * v.dist; P.y = v.cy - ca * ce * v.dist; P.z = Math.max(0.5, v.cz + se * v.dist); P.az = v.az; P.el = v.el; F.follaje(camAhora()); F.briznas(camAhora()); });
+  $("p-foto").addEventListener("click", () => { const [w, h] = $("f-res").value.split("x").map(Number); const url = F.imagen({ cam: camAhora(), hora: horaNum(), dia: diaNum(), ajustes: ajustes(), w, h }); ultimo = url; const a = document.createElement("a"); a.href = url; a.download = "nogalera-paseo-" + escena.id + ".jpg"; a.click(); });
   $("p-salir").addEventListener("click", parar); $("f-caminar").addEventListener("click", entrar);
-  return { parar, entrar };
+  $("s-h").addEventListener("input", () => { if (P.activo) F.iluminar(horaNum(), { cx: P.x, cy: P.y, cz: P.z, dist: 60 }, diaNum(), ajustes()); });
+  return { parar, entrar, activo: () => P.activo };
 })();
 if (q("caminar")) API.listo.then(() => setTimeout(paseo.entrar, 300));
-$("f-render").addEventListener("click", async () => {
-  const [w, h] = $("f-res").value.split("x").map(Number); estado.textContent = "Renderizando " + w + " × " + h + "…";
-  await new Promise(r => setTimeout(r, 30));
-  await API.render({ escena: $("f-escena").value, vista: $("f-vista").value, hora: $("f-hora").value, w, h, autos: $("f-autos").checked, gente: $("f-gente").checked });
-});
-document.querySelectorAll("[data-pase]").forEach(b => b.addEventListener("click", async () => {
-  const [w, h] = $("f-res").value.split("x").map(Number); estado.textContent = "Pase " + b.dataset.pase + "…"; await new Promise(r => setTimeout(r, 30));
-  const url = await API.control({ escena: $("f-escena").value, vista: $("f-vista").value, w, h, tipo: b.dataset.pase });
-  if (b.dataset.pase === "lineart") { const im = new Image(); im.onload = () => { cv.getContext("2d") || 0; }; }
-  ultimo = url; estado.textContent = "Pase " + b.dataset.pase + " listo (descárgalo con el botón)."; if (b.dataset.pase === "lineart") { const im = new Image(); im.src = url; im.style.maxWidth = "100%"; cv.insertAdjacentElement("afterend", im); }
-}));
-$("f-descargar").addEventListener("click", () => { if (!ultimo) return; const a = document.createElement("a"); a.href = ultimo; a.download = "nogalera-foto-" + escena.id + "-" + $("f-hora").value + ".jpg"; a.click(); });
 </script>
 </body>
 </html>
