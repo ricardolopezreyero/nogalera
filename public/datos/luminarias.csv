@@ -1,0 +1,1014 @@
+﻿id,tipo,luminaria,dónde,longitud,latitud,u_m,v_m,altura_m,watts,horas_por_noche
+C-001,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Alondra · esquina noroeste,-103.368221,25.558494,-614.5,-34.8,6.0,40,11.5
+C-002,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Alondra · esquina noroeste,-103.368938,25.559576,-614.5,105.1,6.0,40,11.5
+C-003,calle,"Arbotante de calle · 6 m, LED 40 W",Alondra · acera poniente,-103.368745,25.559371,-609.6,75.6,6.0,40,11.5
+C-004,calle,"Arbotante de calle · 6 m, LED 40 W",Alondra · acera poniente,-103.368985,25.559734,-609.6,122.4,6.0,40,11.5
+C-005,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 0 · acera norte,-103.369198,25.560104,-606.8,168.7,6.0,40,11.5
+C-006,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Alondra · esquina sureste,-103.368771,25.55957,-600.5,95.9,6.0,40,11.5
+C-007,calle,"Arbotante de calle · 6 m, LED 40 W",Alondra · acera oriente,-103.367975,25.558369,-600.4,-59.4,6.0,40,11.5
+C-008,calle,"Arbotante de calle · 6 m, LED 40 W",Alondra · acera oriente,-103.368276,25.558824,-600.4,-0.6,6.0,40,11.5
+C-009,calle,"Arbotante de calle · 6 m, LED 40 W",Alondra · acera oriente,-103.369016,25.559942,-600.4,143.8,6.0,40,11.5
+C-010,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Alondra · esquina sureste,-103.368012,25.558511,-595.5,-44.0,6.0,40,11.5
+C-011,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Alondra · esquina sureste,-103.369054,25.560086,-595.5,159.5,6.0,40,11.5
+C-012,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 1 · acera norte,-103.369335,25.560699,-584.7,232.3,6.0,40,11.5
+C-013,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 1 · acera sur,-103.368934,25.560151,-581.4,159.5,6.0,40,11.5
+C-014,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 1 · acera sur,-103.36914,25.560709,-567.3,223.1,6.0,40,11.5
+C-015,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 1 · acera norte,-103.367798,25.558725,-564.9,-34.8,6.0,40,11.5
+C-016,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 1 · acera norte,-103.368509,25.55981,-564.2,105.1,6.0,40,11.5
+C-017,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 1 · acera norte,-103.368765,25.56034,-556.0,168.7,6.0,40,11.5
+C-018,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 1 · acera sur,-103.36753,25.558774,-539.0,-44.0,6.0,40,11.5
+C-019,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 1 · acera sur,-103.368245,25.559857,-538.8,95.9,6.0,40,11.5
+C-020,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 1 · acera norte,-103.368902,25.560935,-533.9,232.3,6.0,40,11.5
+C-021,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 1 · acera norte,-103.367161,25.558413,-527.9,-97.4,6.0,40,11.5
+C-022,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 1 · acera sur,-103.368471,25.560403,-527.1,159.5,6.0,40,11.5
+C-023,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 1 · acera norte,-103.368092,25.560037,-515.4,105.1,6.0,40,11.5
+C-024,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 1 · acera norte,-103.367356,25.558966,-513.1,-34.8,6.0,40,11.5
+C-025,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 1 · acera sur,-103.368672,25.560964,-512.5,223.1,6.0,40,11.5
+C-026,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 1 · acera norte,-103.368332,25.560576,-505.2,168.7,6.0,40,11.5
+C-027,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 1 · acera sur,-103.366897,25.55846,-502.5,-106.6,6.0,40,11.5
+C-028,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 1 · acera sur,-103.367862,25.560065,-494.0,95.9,6.0,40,11.5
+C-029,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 1 · acera norte,-103.368537,25.561134,-491.1,232.3,6.0,40,11.5
+C-030,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 1 · acera sur,-103.367092,25.559013,-487.7,-44.0,6.0,40,11.5
+C-031,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 1 · acera norte,-103.366736,25.558644,-478.1,-97.4,6.0,40,11.5
+C-032,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 1 · acera sur,-103.368025,25.560646,-474.8,159.5,6.0,40,11.5
+C-033,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 1 · acera norte,-103.367676,25.560264,-466.6,105.1,6.0,40,11.5
+C-034,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 1 · acera norte,-103.366927,25.5592,-462.8,-34.8,6.0,40,11.5
+C-035,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 1 · acera sur,-103.366532,25.558659,-459.7,-106.6,6.0,40,11.5
+C-036,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 1 · acera sur,-103.368205,25.561218,-457.7,223.1,6.0,40,11.5
+C-037,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Canario · esquina noroeste,-103.367547,25.560334,-451.5,105.1,6.0,40,11.5
+C-038,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Canario · esquina noroeste,-103.367852,25.560838,-449.0,168.7,6.0,40,11.5
+C-039,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Canario · esquina noroeste,-103.368161,25.561339,-447.0,232.3,6.0,40,11.5
+C-040,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera poniente,-103.366329,25.55858,-446.6,-124.5,6.0,40,11.5
+C-041,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera poniente,-103.366548,25.558911,-446.6,-81.7,6.0,40,11.5
+C-042,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera poniente,-103.36737,25.560153,-446.6,78.7,6.0,40,11.5
+C-043,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera poniente,-103.367615,25.560523,-446.6,126.5,6.0,40,11.5
+C-044,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Canario · esquina noroeste,-103.366467,25.558791,-446.5,-97.4,6.0,40,11.5
+C-045,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Canario · esquina noroeste,-103.366788,25.559275,-446.5,-34.8,6.0,40,11.5
+C-046,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Canario · esquina sureste,-103.366343,25.558761,-437.5,-106.6,6.0,40,11.5
+C-047,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Canario · esquina sureste,-103.366664,25.559246,-437.5,-44.0,6.0,40,11.5
+C-048,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera oriente,-103.36612,25.558426,-437.4,-149.9,6.0,40,11.5
+C-049,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera oriente,-103.3666,25.559151,-437.4,-56.3,6.0,40,11.5
+C-050,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera oriente,-103.366901,25.559606,-437.4,2.5,6.0,40,11.5
+C-051,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera oriente,-103.367144,25.559972,-437.4,49.8,6.0,40,11.5
+C-052,calle,"Arbotante de calle · 6 m, LED 40 W",Canario · acera oriente,-103.367943,25.561178,-437.4,205.7,6.0,40,11.5
+C-053,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Canario · esquina sureste,-103.367363,25.560337,-435.5,95.9,6.0,40,11.5
+C-054,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Canario · esquina sureste,-103.367664,25.560843,-432.5,159.5,6.0,40,11.5
+C-055,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Canario · esquina sureste,-103.36799,25.561335,-432.5,223.1,6.0,40,11.5
+C-056,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 2 · acera norte,-103.366294,25.558885,-426.3,-97.4,6.0,40,11.5
+C-057,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 2 · acera norte,-103.365972,25.55841,-425.6,-159.2,6.0,40,11.5
+C-058,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 2 · acera norte,-103.367255,25.560493,-417.3,105.1,6.0,40,11.5
+C-059,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 2 · acera norte,-103.366527,25.559417,-416.0,-34.8,6.0,40,11.5
+C-060,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 2 · acera sur,-103.365776,25.558419,-408.2,-168.4,6.0,40,11.5
+C-061,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 2 · acera sur,-103.367771,25.561455,-406.9,223.1,6.0,40,11.5
+C-062,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 2 · acera norte,-103.367465,25.561049,-403.6,168.7,6.0,40,11.5
+C-063,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 2 · acera sur,-103.366031,25.558932,-400.9,-106.6,6.0,40,11.5
+C-064,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 2 · acera sur,-103.366996,25.560538,-392.4,95.9,6.0,40,11.5
+C-065,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 2 · acera norte,-103.36767,25.561607,-389.5,232.3,6.0,40,11.5
+C-066,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 2 · acera sur,-103.366242,25.559476,-388.1,-44.0,6.0,40,11.5
+C-067,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 2 · acera norte,-103.365572,25.558627,-378.8,-159.2,6.0,40,11.5
+C-068,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 2 · acera sur,-103.367201,25.561096,-378.2,159.5,6.0,40,11.5
+C-069,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 2 · acera norte,-103.365861,25.559121,-375.5,-97.4,6.0,40,11.5
+C-070,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 2 · acera norte,-103.366115,25.559642,-367.7,-34.8,6.0,40,11.5
+C-071,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 2 · acera sur,-103.367406,25.561653,-364.1,223.1,6.0,40,11.5
+C-072,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 2 · acera norte,-103.366792,25.560745,-363.0,105.1,6.0,40,11.5
+C-073,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 2 · acera sur,-103.365334,25.55866,-356.4,-168.4,6.0,40,11.5
+C-074,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 2 · acera norte,-103.367019,25.561292,-351.3,168.7,6.0,40,11.5
+C-075,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 2 · acera sur,-103.365597,25.559168,-350.1,-106.6,6.0,40,11.5
+C-076,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 2 · acera sur,-103.365817,25.559707,-338.3,-44.0,6.0,40,11.5
+C-077,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 2 · acera sur,-103.366524,25.560795,-337.1,95.9,6.0,40,11.5
+C-078,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 2 · acera norte,-103.367177,25.561875,-331.7,232.3,6.0,40,11.5
+C-079,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 2 · acera norte,-103.364826,25.558369,-329.2,-222.3,6.0,40,11.5
+C-080,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 2 · acera norte,-103.365139,25.558863,-328.0,-159.2,6.0,40,11.5
+C-081,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 2 · acera sur,-103.366768,25.561332,-327.4,159.5,6.0,40,11.5
+C-082,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 2 · acera norte,-103.365428,25.559357,-324.7,-97.4,6.0,40,11.5
+C-083,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 2 · acera norte,-103.365631,25.559906,-310.9,-34.8,6.0,40,11.5
+C-084,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 2 · acera norte,-103.366333,25.560996,-309.2,105.1,6.0,40,11.5
+C-085,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 2 · acera sur,-103.366922,25.561918,-307.3,223.1,6.0,40,11.5
+C-086,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 2 · acera sur,-103.364909,25.558892,-306.6,-168.4,6.0,40,11.5
+C-087,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 2 · acera sur,-103.365198,25.559386,-303.3,-106.6,6.0,40,11.5
+C-088,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 2 · acera sur,-103.364528,25.558435,-299.8,-231.5,6.0,40,11.5
+C-089,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 2 · acera norte,-103.366551,25.561547,-296.5,168.7,6.0,40,11.5
+C-090,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Garza · esquina noroeste,-103.365094,25.559539,-285.5,-97.4,6.0,40,11.5
+C-091,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Garza · esquina noroeste,-103.365414,25.560024,-285.5,-34.8,6.0,40,11.5
+C-092,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Garza · esquina noroeste,-103.366131,25.561106,-285.5,105.1,6.0,40,11.5
+C-093,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Garza · esquina noroeste,-103.366757,25.562104,-282.5,232.3,6.0,40,11.5
+C-094,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera poniente,-103.364974,25.559445,-280.6,-112.5,6.0,40,11.5
+C-095,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera poniente,-103.365193,25.559776,-280.6,-69.7,6.0,40,11.5
+C-096,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera poniente,-103.365482,25.560212,-280.6,-13.4,6.0,40,11.5
+C-097,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera poniente,-103.365974,25.560955,-280.6,82.7,6.0,40,11.5
+C-098,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera poniente,-103.366276,25.56141,-280.6,141.5,6.0,40,11.5
+C-099,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera poniente,-103.366516,25.561772,-280.6,188.3,6.0,40,11.5
+C-100,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Garza · esquina noroeste,-103.364734,25.559084,-280.5,-159.2,6.0,40,11.5
+C-101,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Garza · esquina noroeste,-103.366414,25.561621,-280.5,168.7,6.0,40,11.5
+C-102,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 2 · acera norte,-103.364393,25.558605,-278.4,-222.3,6.0,40,11.5
+C-103,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Garza · esquina sureste,-103.36461,25.559055,-271.5,-168.4,6.0,40,11.5
+C-104,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Garza · esquina sureste,-103.365964,25.5611,-271.5,95.9,6.0,40,11.5
+C-105,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera oriente,-103.364724,25.559229,-271.4,-145.9,6.0,40,11.5
+C-106,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera oriente,-103.365026,25.559684,-271.4,-87.1,6.0,40,11.5
+C-107,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera oriente,-103.365521,25.560432,-271.4,9.5,6.0,40,11.5
+C-108,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera oriente,-103.365807,25.560863,-271.4,65.3,6.0,40,11.5
+C-109,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera oriente,-103.366067,25.561257,-271.4,116.1,6.0,40,11.5
+C-110,calle,"Arbotante de calle · 6 m, LED 40 W",Garza · acera oriente,-103.366547,25.561981,-271.4,209.7,6.0,40,11.5
+C-111,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Garza · esquina sureste,-103.364914,25.55954,-270.0,-106.6,6.0,40,11.5
+C-112,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Garza · esquina sureste,-103.365226,25.560029,-269.0,-44.0,6.0,40,11.5
+C-113,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Garza · esquina sureste,-103.366248,25.561615,-266.5,159.5,6.0,40,11.5
+C-114,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Garza · esquina sureste,-103.366574,25.562107,-266.5,223.1,6.0,40,11.5
+C-115,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 3 · acera norte,-103.365938,25.561211,-262.9,105.1,6.0,40,11.5
+C-116,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 3 · acera norte,-103.365206,25.560137,-261.1,-34.8,6.0,40,11.5
+C-117,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 3 · acera sur,-103.364463,25.559135,-254.3,-168.4,6.0,40,11.5
+C-118,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 3 · acera norte,-103.366165,25.561757,-251.2,168.7,6.0,40,11.5
+C-119,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 3 · acera sur,-103.364739,25.559636,-249.5,-106.6,6.0,40,11.5
+C-120,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 3 · acera sur,-103.364069,25.558685,-246.0,-231.5,6.0,40,11.5
+C-121,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 3 · acera sur,-103.364993,25.560156,-241.7,-44.0,6.0,40,11.5
+C-122,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 3 · acera norte,-103.36637,25.562315,-237.1,232.3,6.0,40,11.5
+C-123,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 3 · acera sur,-103.365666,25.561262,-236.5,95.9,6.0,40,11.5
+C-124,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 3 · acera norte,-103.363959,25.558842,-227.6,-222.3,6.0,40,11.5
+C-125,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 3 · acera sur,-103.365901,25.561804,-225.8,159.5,6.0,40,11.5
+C-126,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 3 · acera norte,-103.364569,25.559825,-224.1,-97.4,6.0,40,11.5
+C-127,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 3 · acera norte,-103.364247,25.55935,-223.4,-159.2,6.0,40,11.5
+C-128,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 3 · acera sur,-103.366106,25.562362,-211.7,223.1,6.0,40,11.5
+C-129,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 3 · acera norte,-103.364755,25.560383,-208.3,-34.8,6.0,40,11.5
+C-130,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 3 · acera norte,-103.365471,25.561466,-208.1,105.1,6.0,40,11.5
+C-131,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 3 · acera sur,-103.364042,25.559364,-205.0,-168.4,6.0,40,11.5
+C-132,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 3 · acera sur,-103.363687,25.558893,-201.2,-231.5,6.0,40,11.5
+C-133,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 3 · acera sur,-103.364297,25.559876,-197.7,-106.6,6.0,40,11.5
+C-134,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 3 · acera norte,-103.365697,25.562012,-196.4,168.7,6.0,40,11.5
+C-135,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 3 · acera sur,-103.365262,25.561482,-189.2,95.9,6.0,40,11.5
+C-136,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 3 · acera sur,-103.364517,25.560416,-185.9,-44.0,6.0,40,11.5
+C-137,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 3 · acera norte,-103.364196,25.560029,-180.3,-97.4,6.0,40,11.5
+C-138,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 3 · acera norte,-103.363873,25.559553,-179.6,-159.2,6.0,40,11.5
+C-139,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 3 · acera norte,-103.365868,25.562588,-178.3,232.3,6.0,40,11.5
+C-140,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 3 · acera sur,-103.365463,25.562043,-174.5,159.5,6.0,40,11.5
+C-141,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 3 · acera norte,-103.363492,25.559096,-172.8,-222.3,6.0,40,11.5
+C-142,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 3 · acera norte,-103.364373,25.560591,-163.5,-34.8,6.0,40,11.5
+C-143,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 3 · acera sur,-103.365673,25.562598,-160.9,223.1,6.0,40,11.5
+C-144,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 3 · acera norte,-103.365024,25.561709,-155.8,105.1,6.0,40,11.5
+C-145,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 3 · acera sur,-103.363262,25.559125,-151.4,-231.5,6.0,40,11.5
+C-146,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 3 · acera sur,-103.363898,25.560094,-150.9,-106.6,6.0,40,11.5
+C-147,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 3 · acera sur,-103.363541,25.559637,-146.2,-168.4,6.0,40,11.5
+C-148,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 3 · acera norte,-103.36523,25.562267,-141.6,168.7,6.0,40,11.5
+C-149,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 3 · acera sur,-103.364829,25.561718,-138.4,95.9,6.0,40,11.5
+C-150,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 3 · acera sur,-103.364105,25.56064,-137.6,-44.0,6.0,40,11.5
+C-151,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Grulla · esquina noroeste,-103.363746,25.560274,-127.5,-97.4,6.0,40,11.5
+C-152,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Grulla · esquina noroeste,-103.364066,25.560758,-127.5,-34.8,6.0,40,11.5
+C-153,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Grulla · esquina noroeste,-103.364783,25.56184,-127.5,105.1,6.0,40,11.5
+C-154,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Grulla · esquina noroeste,-103.363407,25.559807,-125.0,-159.2,6.0,40,11.5
+C-155,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Grulla · esquina noroeste,-103.365071,25.562353,-123.0,168.7,6.0,40,11.5
+C-156,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera poniente,-103.363616,25.560163,-122.6,-114.6,6.0,40,11.5
+C-157,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera poniente,-103.363876,25.560556,-122.6,-63.8,6.0,40,11.5
+C-158,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera poniente,-103.364103,25.560899,-122.6,-19.5,6.0,40,11.5
+C-159,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera poniente,-103.364619,25.561678,-122.6,81.1,6.0,40,11.5
+C-160,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera poniente,-103.364917,25.562129,-122.6,139.4,6.0,40,11.5
+C-161,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera poniente,-103.365165,25.562503,-122.6,187.7,6.0,40,11.5
+C-162,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Grulla · esquina noroeste,-103.363063,25.55933,-122.5,-222.3,6.0,40,11.5
+C-163,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Grulla · esquina noroeste,-103.365392,25.562848,-122.5,232.3,6.0,40,11.5
+C-164,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Grulla · esquina sureste,-103.362939,25.559301,-113.5,-231.5,6.0,40,11.5
+C-165,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Grulla · esquina sureste,-103.363579,25.560268,-113.5,-106.6,6.0,40,11.5
+C-166,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Grulla · esquina sureste,-103.365268,25.562818,-113.5,223.1,6.0,40,11.5
+C-167,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera oriente,-103.363106,25.559555,-113.4,-198.8,6.0,40,11.5
+C-168,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera oriente,-103.363366,25.559948,-113.4,-148.0,6.0,40,11.5
+C-169,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera oriente,-103.363667,25.560403,-113.4,-89.2,6.0,40,11.5
+C-170,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera oriente,-103.364188,25.561189,-113.4,12.4,6.0,40,11.5
+C-171,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera oriente,-103.364441,25.56157,-113.4,61.7,6.0,40,11.5
+C-172,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera oriente,-103.364709,25.561975,-113.4,114.0,6.0,40,11.5
+C-173,calle,"Arbotante de calle · 6 m, LED 40 W",Grulla · acera oriente,-103.365188,25.562699,-113.4,207.6,6.0,40,11.5
+C-174,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Grulla · esquina sureste,-103.363254,25.559794,-112.5,-168.4,6.0,40,11.5
+C-175,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Grulla · esquina sureste,-103.364921,25.562338,-111.0,159.5,6.0,40,11.5
+C-176,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Grulla · esquina sureste,-103.363857,25.560775,-108.5,-44.0,6.0,40,11.5
+C-177,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Grulla · esquina sureste,-103.364574,25.561857,-108.5,95.9,6.0,40,11.5
+C-178,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 4 · acera sur,-103.362829,25.559361,-100.6,-231.5,6.0,40,11.5
+C-179,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 4 · acera norte,-103.364864,25.562466,-98.8,168.7,6.0,40,11.5
+C-180,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 4 · acera sur,-103.364357,25.561975,-83.1,95.9,6.0,40,11.5
+C-181,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 4 · acera sur,-103.363625,25.560902,-81.3,-44.0,6.0,40,11.5
+C-182,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 4 · acera norte,-103.365036,25.563042,-80.7,232.3,6.0,40,11.5
+C-183,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 4 · acera norte,-103.363329,25.560501,-78.7,-97.4,6.0,40,11.5
+C-184,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 4 · acera sur,-103.364601,25.562512,-73.4,159.5,6.0,40,11.5
+C-185,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 4 · acera norte,-103.362951,25.560056,-71.5,-159.2,6.0,40,11.5
+C-186,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 4 · acera norte,-103.362595,25.559585,-67.7,-222.3,6.0,40,11.5
+C-187,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 4 · acera norte,-103.363472,25.561082,-57.9,-34.8,6.0,40,11.5
+C-188,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 4 · acera sur,-103.364767,25.563091,-54.8,223.1,6.0,40,11.5
+C-189,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 4 · acera norte,-103.364158,25.562181,-54.2,105.1,6.0,40,11.5
+C-190,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 4 · acera sur,-103.363022,25.560571,-48.3,-106.6,6.0,40,11.5
+C-191,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 4 · acera norte,-103.364431,25.562702,-48.0,168.7,6.0,40,11.5
+C-192,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 4 · acera sur,-103.3627,25.560096,-47.6,-168.4,6.0,40,11.5
+C-193,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 4 · acera sur,-103.362327,25.559634,-41.8,-231.5,6.0,40,11.5
+C-194,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 4 · acera norte,-103.364636,25.56326,-33.9,232.3,6.0,40,11.5
+C-195,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 4 · acera sur,-103.363191,25.561138,-30.5,-44.0,6.0,40,11.5
+C-196,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 4 · acera sur,-103.363894,25.562228,-28.8,95.9,6.0,40,11.5
+C-197,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 4 · acera norte,-103.362896,25.560737,-27.9,-97.4,6.0,40,11.5
+C-198,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 4 · acera norte,-103.362564,25.560266,-26.2,-159.2,6.0,40,11.5
+C-199,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 4 · acera norte,-103.362226,25.559786,-24.4,-222.3,6.0,40,11.5
+C-200,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 4 · acera sur,-103.364137,25.562765,-19.1,159.5,6.0,40,11.5
+C-201,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 4 · acera norte,-103.363775,25.562389,-9.4,105.1,6.0,40,11.5
+C-202,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 4 · acera norte,-103.363056,25.561309,-9.1,-34.8,6.0,40,11.5
+C-203,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 4 · acera sur,-103.364372,25.563307,-8.5,223.1,6.0,40,11.5
+C-204,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 4 · acera sur,-103.362632,25.560784,-2.5,-106.6,6.0,40,11.5
+C-205,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 4 · acera sur,-103.362309,25.560308,-1.8,-168.4,6.0,40,11.5
+C-206,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 4 · acera sur,-103.361949,25.55984,2.5,-231.5,6.0,40,11.5
+C-207,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 4 · acera norte,-103.363964,25.562957,6.8,168.7,6.0,40,11.5
+C-208,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 4 · acera sur,-103.363524,25.562429,14.5,95.9,6.0,40,11.5
+C-209,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 4 · acera sur,-103.362762,25.561372,19.8,-44.0,6.0,40,11.5
+C-210,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Mirlo · esquina noroeste,-103.363744,25.563076,32.5,168.7,6.0,40,11.5
+C-211,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Mirlo · esquina noroeste,-103.36407,25.563568,32.5,232.3,6.0,40,11.5
+C-212,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Mirlo · esquina noroeste,-103.363397,25.562596,35.0,105.1,6.0,40,11.5
+C-213,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Mirlo · esquina noroeste,-103.362025,25.56056,37.0,-159.2,6.0,40,11.5
+C-214,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera poniente,-103.361941,25.56044,37.4,-174.9,6.0,40,11.5
+C-215,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera poniente,-103.36224,25.560891,37.4,-116.6,6.0,40,11.5
+C-216,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera poniente,-103.3625,25.561284,37.4,-65.8,6.0,40,11.5
+C-217,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera poniente,-103.362761,25.561677,37.4,-15.0,6.0,40,11.5
+C-218,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera poniente,-103.363251,25.562417,37.4,80.6,6.0,40,11.5
+C-219,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera poniente,-103.363542,25.562857,37.4,137.4,6.0,40,11.5
+C-220,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera poniente,-103.363797,25.563242,37.4,187.2,6.0,40,11.5
+C-221,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Mirlo · esquina noroeste,-103.361698,25.560074,37.5,-222.3,6.0,40,11.5
+C-222,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Mirlo · esquina noroeste,-103.362338,25.561041,37.5,-97.4,6.0,40,11.5
+C-223,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Mirlo · esquina noroeste,-103.362659,25.561525,37.5,-34.8,6.0,40,11.5
+C-224,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Mirlo · esquina sureste,-103.363251,25.562578,46.5,95.9,6.0,40,11.5
+C-225,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera oriente,-103.361475,25.559897,46.6,-250.6,6.0,40,11.5
+C-226,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera oriente,-103.361771,25.560344,46.6,-192.8,6.0,40,11.5
+C-227,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera oriente,-103.36199,25.560675,46.6,-150.0,6.0,40,11.5
+C-228,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera oriente,-103.362787,25.561878,46.6,5.4,6.0,40,11.5
+C-229,calle,"Arbotante de calle · 6 m, LED 40 W",Mirlo · acera oriente,-103.36307,25.562306,46.6,60.7,6.0,40,11.5
+C-230,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Mirlo · esquina sureste,-103.363556,25.563082,49.0,159.5,6.0,40,11.5
+C-231,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Mirlo · esquina sureste,-103.361863,25.560551,50.5,-168.4,6.0,40,11.5
+C-232,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Mirlo · esquina sureste,-103.361531,25.560068,51.5,-231.5,6.0,40,11.5
+C-233,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Mirlo · esquina sureste,-103.362171,25.561035,51.5,-106.6,6.0,40,11.5
+C-234,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Mirlo · esquina sureste,-103.362492,25.561519,51.5,-44.0,6.0,40,11.5
+C-235,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Mirlo · esquina sureste,-103.363861,25.563585,51.5,223.1,6.0,40,11.5
+C-236,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 5 · acera sur,-103.36238,25.56158,64.6,-44.0,6.0,40,11.5
+C-237,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 5 · acera norte,-103.363765,25.563734,68.2,232.3,6.0,40,11.5
+C-238,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 5 · acera sur,-103.363053,25.562686,69.8,95.9,6.0,40,11.5
+C-239,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 5 · acera norte,-103.361672,25.560752,78.4,-159.2,6.0,40,11.5
+C-240,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 5 · acera norte,-103.361982,25.561235,79.2,-97.4,6.0,40,11.5
+C-241,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 5 · acera sur,-103.363271,25.563237,82.5,159.5,6.0,40,11.5
+C-242,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 5 · acera norte,-103.361291,25.560296,85.2,-222.3,6.0,40,11.5
+C-243,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 5 · acera norte,-103.362155,25.5618,96.5,-34.8,6.0,40,11.5
+C-244,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 5 · acera sur,-103.363472,25.563797,97.1,223.1,6.0,40,11.5
+C-245,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 5 · acera norte,-103.362857,25.562889,98.2,105.1,6.0,40,11.5
+C-246,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 5 · acera sur,-103.361714,25.561284,105.1,-106.6,6.0,40,11.5
+C-247,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 5 · acera sur,-103.361061,25.560324,106.6,-231.5,6.0,40,11.5
+C-248,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 5 · acera sur,-103.361382,25.560813,106.8,-168.4,6.0,40,11.5
+C-249,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 5 · acera norte,-103.363101,25.563426,107.9,168.7,6.0,40,11.5
+C-250,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 5 · acera sur,-103.36193,25.561826,117.4,-44.0,6.0,40,11.5
+C-251,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 5 · acera sur,-103.362641,25.562911,118.1,95.9,6.0,40,11.5
+C-252,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 5 · acera norte,-103.363336,25.563968,118.5,232.3,6.0,40,11.5
+C-253,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 5 · acera norte,-103.361595,25.561445,124.5,-97.4,6.0,40,11.5
+C-254,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 5 · acera norte,-103.361273,25.56097,125.2,-159.2,6.0,40,11.5
+C-255,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 5 · acera norte,-103.360926,25.560495,128.0,-222.3,6.0,40,11.5
+C-256,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 5 · acera sur,-103.362799,25.563494,137.8,159.5,6.0,40,11.5
+C-257,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 5 · acera sur,-103.363059,25.564022,145.4,223.1,6.0,40,11.5
+C-258,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 5 · acera norte,-103.362441,25.563116,147.0,105.1,6.0,40,11.5
+C-259,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 5 · acera norte,-103.361722,25.562036,147.3,-34.8,6.0,40,11.5
+C-260,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 5 · acera sur,-103.361009,25.561017,150.6,-168.4,6.0,40,11.5
+C-261,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 5 · acera sur,-103.360662,25.560541,153.4,-231.5,6.0,40,11.5
+C-262,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 5 · acera sur,-103.361297,25.561511,153.9,-106.6,6.0,40,11.5
+C-263,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 5 · acera norte,-103.362629,25.563684,163.2,168.7,6.0,40,11.5
+C-264,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 5 · acera sur,-103.361471,25.562076,171.2,-44.0,6.0,40,11.5
+C-265,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 5 · acera norte,-103.362877,25.564218,172.3,232.3,6.0,40,11.5
+C-266,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 5 · acera sur,-103.36216,25.563172,174.4,95.9,6.0,40,11.5
+C-267,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 5 · acera norte,-103.361158,25.561684,175.8,-97.4,6.0,40,11.5
+C-268,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Paloma · esquina noroeste,-103.361396,25.562213,185.5,-34.8,6.0,40,11.5
+C-269,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Paloma · esquina noroeste,-103.362113,25.563295,185.5,105.1,6.0,40,11.5
+C-270,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera poniente,-103.360631,25.561144,190.4,-175.9,6.0,40,11.5
+C-271,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera poniente,-103.360904,25.561556,190.4,-122.6,6.0,40,11.5
+C-272,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera poniente,-103.361185,25.56198,190.4,-67.8,6.0,40,11.5
+C-273,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera poniente,-103.361425,25.562342,190.4,-21.0,6.0,40,11.5
+C-274,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera poniente,-103.361963,25.563156,190.4,84.1,6.0,40,11.5
+C-275,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera poniente,-103.362224,25.563549,190.4,134.9,6.0,40,11.5
+C-276,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera poniente,-103.362466,25.563915,190.4,182.2,6.0,40,11.5
+C-277,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Paloma · esquina noroeste,-103.360392,25.560785,190.5,-222.3,6.0,40,11.5
+C-278,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Paloma · esquina noroeste,-103.360716,25.561273,190.5,-159.2,6.0,40,11.5
+C-279,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Paloma · esquina noroeste,-103.361033,25.561752,190.5,-97.4,6.0,40,11.5
+C-280,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Paloma · esquina noroeste,-103.362396,25.563811,190.5,168.7,6.0,40,11.5
+C-281,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Paloma · esquina noroeste,-103.362722,25.564303,190.5,232.3,6.0,40,11.5
+C-282,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Paloma · esquina sureste,-103.36123,25.562207,199.5,-44.0,6.0,40,11.5
+C-283,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Paloma · esquina sureste,-103.361946,25.563289,199.5,95.9,6.0,40,11.5
+C-284,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Paloma · esquina sureste,-103.362272,25.563781,199.5,159.5,6.0,40,11.5
+C-285,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Paloma · esquina sureste,-103.362598,25.564273,199.5,223.1,6.0,40,11.5
+C-286,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera oriente,-103.360159,25.560593,199.6,-252.6,6.0,40,11.5
+C-287,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera oriente,-103.36043,25.561001,199.6,-199.8,6.0,40,11.5
+C-288,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera oriente,-103.360708,25.561422,199.6,-145.5,6.0,40,11.5
+C-289,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera oriente,-103.361471,25.562574,199.6,3.4,6.0,40,11.5
+C-290,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera oriente,-103.361752,25.562998,199.6,58.2,6.0,40,11.5
+C-291,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera oriente,-103.362018,25.563399,199.6,110.0,6.0,40,11.5
+C-292,calle,"Arbotante de calle · 6 m, LED 40 W",Paloma · acera oriente,-103.362523,25.564162,199.6,208.6,6.0,40,11.5
+C-293,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Paloma · esquina sureste,-103.36026,25.56076,200.5,-231.5,6.0,40,11.5
+C-294,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Paloma · esquina sureste,-103.360549,25.561267,204.5,-168.4,6.0,40,11.5
+C-295,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Paloma · esquina sureste,-103.360866,25.561746,204.5,-106.6,6.0,40,11.5
+C-296,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 6 · acera norte,-103.362251,25.563889,207.5,168.7,6.0,40,11.5
+C-297,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 6 · acera norte,-103.362452,25.56445,222.1,232.3,6.0,40,11.5
+C-298,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 6 · acera sur,-103.361025,25.562319,223.5,-44.0,6.0,40,11.5
+C-299,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 6 · acera sur,-103.361727,25.563409,225.2,95.9,6.0,40,11.5
+C-300,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 6 · acera norte,-103.360038,25.560978,232.1,-222.3,6.0,40,11.5
+C-301,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 6 · acera norte,-103.36066,25.561955,234.1,-97.4,6.0,40,11.5
+C-302,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 6 · acera norte,-103.360337,25.561479,234.8,-159.2,6.0,40,11.5
+C-303,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 6 · acera sur,-103.361932,25.563967,239.4,159.5,6.0,40,11.5
+C-304,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 6 · acera norte,-103.360855,25.562508,248.9,-34.8,6.0,40,11.5
+C-305,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 6 · acera sur,-103.362171,25.564506,249.5,223.1,6.0,40,11.5
+C-306,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 6 · acera norte,-103.361557,25.563598,250.6,105.1,6.0,40,11.5
+C-307,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 6 · acera sur,-103.360108,25.561508,256.2,-168.4,6.0,40,11.5
+C-308,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 6 · acera sur,-103.359761,25.561032,259.0,-231.5,6.0,40,11.5
+C-309,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 6 · acera sur,-103.360397,25.562002,259.5,-106.6,6.0,40,11.5
+C-310,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 6 · acera norte,-103.361762,25.564156,264.8,168.7,6.0,40,11.5
+C-311,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 6 · acera sur,-103.360634,25.562532,269.3,-44.0,6.0,40,11.5
+C-312,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 6 · acera sur,-103.36131,25.563635,274.0,95.9,6.0,40,11.5
+C-313,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 6 · acera norte,-103.361968,25.564714,278.9,232.3,6.0,40,11.5
+C-314,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 6 · acera norte,-103.360278,25.562163,278.9,-97.4,6.0,40,11.5
+C-315,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 6 · acera norte,-103.359938,25.561697,281.6,-159.2,6.0,40,11.5
+C-316,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 6 · acera sur,-103.361567,25.564166,282.2,159.5,6.0,40,11.5
+C-317,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 6 · acera norte,-103.359587,25.561224,284.9,-222.3,6.0,40,11.5
+C-318,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 6 · acera sur,-103.361772,25.564723,296.3,223.1,6.0,40,11.5
+C-319,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 6 · acera norte,-103.360439,25.562735,297.7,-34.8,6.0,40,11.5
+C-320,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 6 · acera norte,-103.361124,25.563834,301.4,105.1,6.0,40,11.5
+C-321,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 6 · acera sur,-103.359353,25.561254,306.8,-231.5,6.0,40,11.5
+C-322,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 6 · acera norte,-103.36138,25.564364,309.6,168.7,6.0,40,11.5
+C-323,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 6 · acera sur,-103.359963,25.562238,310.3,-106.6,6.0,40,11.5
+C-324,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 6 · acera sur,-103.35964,25.561762,311.0,-168.4,6.0,40,11.5
+C-325,calle,"Arbotante de calle · 6 m, LED 40 W",Roble · cuadra 6 · acera norte,-103.361603,25.564913,321.7,232.3,6.0,40,11.5
+C-326,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 6 · acera sur,-103.360158,25.562791,325.1,-44.0,6.0,40,11.5
+C-327,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 6 · acera sur,-103.36086,25.563881,326.8,95.9,6.0,40,11.5
+C-328,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Perico · esquina noroeste,-103.360082,25.562929,339.5,-34.8,6.0,40,11.5
+C-329,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Perico · esquina noroeste,-103.361125,25.564503,339.5,168.7,6.0,40,11.5
+C-330,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Perico · esquina noroeste,-103.35974,25.562456,342.0,-97.4,6.0,40,11.5
+C-331,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Perico · esquina noroeste,-103.359083,25.561499,344.0,-222.3,6.0,40,11.5
+C-332,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera poniente,-103.3596,25.562287,344.4,-120.6,6.0,40,11.5
+C-333,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera poniente,-103.359825,25.562626,344.4,-76.8,6.0,40,11.5
+C-334,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera poniente,-103.360101,25.563043,344.4,-23.0,6.0,40,11.5
+C-335,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera poniente,-103.360642,25.56386,344.4,82.6,6.0,40,11.5
+C-336,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera poniente,-103.360902,25.564253,344.4,133.4,6.0,40,11.5
+C-337,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera poniente,-103.361155,25.564634,344.4,182.7,6.0,40,11.5
+C-338,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Perico · esquina noroeste,-103.359402,25.561989,344.5,-159.2,6.0,40,11.5
+C-339,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Perico · esquina noroeste,-103.360756,25.564034,344.5,105.1,6.0,40,11.5
+C-340,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Perico · esquina noroeste,-103.361408,25.565019,344.5,232.3,6.0,40,11.5
+C-341,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Perico · esquina sureste,-103.358955,25.561472,353.5,-231.5,6.0,40,11.5
+C-342,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Perico · esquina sureste,-103.359278,25.56196,353.5,-168.4,6.0,40,11.5
+C-343,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Perico · esquina sureste,-103.359595,25.562439,353.5,-106.6,6.0,40,11.5
+C-344,calle,"Arbotante de calle · 6 m, LED 40 W",Roble esquina Perico · esquina sureste,-103.361284,25.564989,353.5,223.1,6.0,40,11.5
+C-345,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera oriente,-103.35883,25.561285,353.6,-255.6,6.0,40,11.5
+C-346,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera oriente,-103.359129,25.561737,353.6,-197.3,6.0,40,11.5
+C-347,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera oriente,-103.359382,25.562118,353.6,-148.0,6.0,40,11.5
+C-348,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera oriente,-103.360132,25.563251,353.6,-1.6,6.0,40,11.5
+C-349,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera oriente,-103.360433,25.563706,353.6,57.2,6.0,40,11.5
+C-350,calle,"Arbotante de calle · 6 m, LED 40 W",Perico · acera oriente,-103.361194,25.564854,353.6,205.6,6.0,40,11.5
+C-351,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Perico · esquina sureste,-103.360628,25.564007,354.0,95.9,6.0,40,11.5
+C-352,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Perico · esquina sureste,-103.360937,25.564509,356.0,159.5,6.0,40,11.5
+C-353,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Perico · esquina sureste,-103.359873,25.562946,358.5,-44.0,6.0,40,11.5
+C-354,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 7 · acera norte,-103.360896,25.564628,366.4,168.7,6.0,40,11.5
+C-355,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 7 · acera sur,-103.35975,25.563013,372.9,-44.0,6.0,40,11.5
+C-356,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 7 · acera sur,-103.360435,25.564112,376.6,95.9,6.0,40,11.5
+C-357,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 7 · acera norte,-103.359063,25.562174,384.2,-159.2,6.0,40,11.5
+C-358,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 7 · acera norte,-103.358737,25.561687,384.5,-222.3,6.0,40,11.5
+C-359,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 7 · acera norte,-103.35936,25.562663,386.5,-97.4,6.0,40,11.5
+C-360,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 7 · acera sur,-103.360632,25.564675,391.8,159.5,6.0,40,11.5
+C-361,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 7 · acera norte,-103.360325,25.564269,395.0,105.1,6.0,40,11.5
+C-362,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 7 · acera norte,-103.359576,25.563205,398.8,-34.8,6.0,40,11.5
+C-363,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 7 · acera sur,-103.358799,25.562221,409.6,-168.4,6.0,40,11.5
+C-364,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 7 · acera sur,-103.358473,25.561734,409.9,-231.5,6.0,40,11.5
+C-365,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 7 · acera sur,-103.359096,25.56271,411.9,-106.6,6.0,40,11.5
+C-366,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 7 · acera norte,-103.360471,25.56486,416.2,168.7,6.0,40,11.5
+C-367,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 7 · acera sur,-103.359312,25.563252,424.2,-44.0,6.0,40,11.5
+C-368,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 7 · acera sur,-103.359993,25.564353,428.4,95.9,6.0,40,11.5
+C-369,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 7 · acera norte,-103.358304,25.561923,435.3,-222.3,6.0,40,11.5
+C-370,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 7 · acera norte,-103.358927,25.562899,437.3,-97.4,6.0,40,11.5
+C-371,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 7 · acera norte,-103.358608,25.562422,437.5,-159.2,6.0,40,11.5
+C-372,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 7 · acera sur,-103.360198,25.564911,442.6,159.5,6.0,40,11.5
+C-373,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 7 · acera norte,-103.359138,25.563443,450.1,-34.8,6.0,40,11.5
+C-374,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 7 · acera norte,-103.359845,25.564531,451.3,105.1,6.0,40,11.5
+C-375,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 7 · acera sur,-103.358688,25.562932,459.7,-106.6,6.0,40,11.5
+C-376,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 7 · acera sur,-103.358044,25.561968,460.2,-231.5,6.0,40,11.5
+C-377,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 7 · acera sur,-103.358349,25.562466,462.4,-168.4,6.0,40,11.5
+C-378,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 7 · acera norte,-103.36005,25.565089,465.5,168.7,6.0,40,11.5
+C-379,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 7 · acera sur,-103.359615,25.564559,472.7,95.9,6.0,40,11.5
+C-380,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 7 · acera sur,-103.358858,25.5635,477.5,-44.0,6.0,40,11.5
+C-381,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 7 · acera norte,-103.358557,25.563101,480.6,-97.4,6.0,40,11.5
+C-382,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 7 · acera norte,-103.358239,25.562623,480.8,-159.2,6.0,40,11.5
+C-383,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 7 · acera sur,-103.359829,25.565112,485.9,159.5,6.0,40,11.5
+C-384,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro · cuadra 7 · acera norte,-103.357871,25.562159,486.1,-222.3,6.0,40,11.5
+C-385,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Tordo · esquina noroeste,-103.359374,25.564787,506.5,105.1,6.0,40,11.5
+C-386,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Tordo · esquina noroeste,-103.358636,25.563717,509.0,-34.8,6.0,40,11.5
+C-387,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Tordo · esquina noroeste,-103.359662,25.5653,511.0,168.7,6.0,40,11.5
+C-388,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera poniente,-103.357858,25.562584,511.4,-182.6,6.0,40,11.5
+C-389,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera poniente,-103.358082,25.562923,511.4,-138.8,6.0,40,11.5
+C-390,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera poniente,-103.358363,25.563347,511.4,-84.0,6.0,40,11.5
+C-391,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera poniente,-103.359124,25.564495,511.4,64.4,6.0,40,11.5
+C-392,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera poniente,-103.359425,25.56495,511.4,123.2,6.0,40,11.5
+C-393,calle,"Arbotante de calle · 6 m, LED 40 W",Cedro esquina Tordo · esquina noroeste,-103.357654,25.562277,511.5,-222.3,6.0,40,11.5
+C-394,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Tordo · esquina noroeste,-103.357977,25.562766,511.5,-159.2,6.0,40,11.5
+C-395,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Tordo · esquina noroeste,-103.358294,25.563244,511.5,-97.4,6.0,40,11.5
+C-396,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno esquina Tordo · esquina sureste,-103.35817,25.563215,520.5,-106.6,6.0,40,11.5
+C-397,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera oriente,-103.357649,25.56243,520.6,-208.0,6.0,40,11.5
+C-398,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera oriente,-103.358685,25.563995,520.6,-5.8,6.0,40,11.5
+C-399,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera oriente,-103.359461,25.565166,520.6,145.6,6.0,40,11.5
+C-400,calle,"Arbotante de calle · 6 m, LED 40 W",Tordo · acera oriente,-103.359696,25.565521,520.6,191.4,6.0,40,11.5
+C-401,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel esquina Tordo · esquina sureste,-103.358478,25.563706,522.0,-44.0,6.0,40,11.5
+C-402,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Tordo · esquina sureste,-103.359182,25.564795,523.5,95.9,6.0,40,11.5
+C-403,calle,"Arbotante de calle · 6 m, LED 40 W",Encino esquina Tordo · esquina sureste,-103.357811,25.562759,525.5,-168.4,6.0,40,11.5
+C-404,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Tordo · esquina sureste,-103.359491,25.565297,525.5,159.5,6.0,40,11.5
+C-405,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 8 · acera norte,-103.35809,25.563355,535.4,-97.4,6.0,40,11.5
+C-406,calle,"Arbotante de calle · 6 m, LED 40 W",Encino · cuadra 8 · acera norte,-103.357771,25.562878,535.6,-159.2,6.0,40,11.5
+C-407,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 8 · acera sur,-103.359332,25.565383,544.2,159.5,6.0,40,11.5
+C-408,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 8 · acera norte,-103.358991,25.564996,551.4,105.1,6.0,40,11.5
+C-409,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 8 · acera norte,-103.358259,25.563923,553.2,-34.8,6.0,40,11.5
+C-410,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 8 · acera sur,-103.35783,25.5634,560.3,-106.6,6.0,40,11.5
+C-411,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 8 · acera norte,-103.359196,25.565554,565.6,168.7,6.0,40,11.5
+C-412,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 8 · acera sur,-103.357991,25.563972,579.1,-44.0,6.0,40,11.5
+C-413,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 8 · acera sur,-103.358693,25.565062,580.8,95.9,6.0,40,11.5
+C-414,calle,"Arbotante de calle · 6 m, LED 40 W",Fresno · cuadra 8 · acera norte,-103.357695,25.563571,581.7,-97.4,6.0,40,11.5
+C-415,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 8 · acera sur,-103.358937,25.565599,590.5,159.5,6.0,40,11.5
+C-416,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 8 · acera norte,-103.358592,25.565214,598.2,105.1,6.0,40,11.5
+C-417,calle,"Arbotante de calle · 6 m, LED 40 W",Laurel · cuadra 8 · acera norte,-103.357838,25.564152,602.5,-34.8,6.0,40,11.5
+C-418,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 8 · acera norte,-103.358737,25.565804,619.4,168.7,6.0,40,11.5
+C-419,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo · cuadra 8 · acera sur,-103.358264,25.565295,631.1,95.9,6.0,40,11.5
+C-420,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 8 · acera sur,-103.358486,25.565844,643.3,159.5,6.0,40,11.5
+C-421,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Zorzal · esquina noroeste,-103.358069,25.565499,659.5,105.1,6.0,40,11.5
+C-422,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Zorzal · esquina noroeste,-103.358373,25.566002,662.0,168.7,6.0,40,11.5
+C-423,calle,"Arbotante de calle · 6 m, LED 40 W",Zorzal · acera poniente,-103.357859,25.565267,664.4,72.2,6.0,40,11.5
+C-424,calle,"Arbotante de calle · 6 m, LED 40 W",Olmo esquina Zorzal · esquina sureste,-103.357902,25.565492,673.5,95.9,6.0,40,11.5
+C-425,calle,"Arbotante de calle · 6 m, LED 40 W",Zorzal · acera oriente,-103.358171,25.5659,673.6,148.4,6.0,40,11.5
+C-426,calle,"Arbotante de calle · 6 m, LED 40 W",Pino esquina Zorzal · esquina sureste,-103.358185,25.566008,678.5,159.5,6.0,40,11.5
+C-427,calle,"Arbotante de calle · 6 m, LED 40 W",Pino · cuadra 9 · acera sur,-103.358083,25.566064,690.6,159.5,6.0,40,11.5
+B-001,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 0,-103.368697,25.558936,-630.3,31.8,8.0,100,11.5
+B-002,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 1,-103.368441,25.559075,-600.3,31.8,8.0,100,11.5
+B-003,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 1,-103.368185,25.559215,-570.3,31.8,8.0,100,11.5
+B-004,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 1,-103.367929,25.559354,-540.3,31.8,8.0,100,11.5
+B-005,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 1,-103.367673,25.559494,-510.3,31.8,8.0,100,11.5
+B-006,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 1,-103.367417,25.559633,-480.3,31.8,8.0,100,11.5
+B-007,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 1,-103.367161,25.559773,-450.3,31.8,8.0,100,11.5
+B-008,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 2,-103.366905,25.559912,-420.3,31.8,8.0,100,11.5
+B-009,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 2,-103.366649,25.560052,-390.3,31.8,8.0,100,11.5
+B-010,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 2,-103.366393,25.560191,-360.3,31.8,8.0,100,11.5
+B-011,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 2,-103.366137,25.560331,-330.3,31.8,8.0,100,11.5
+B-012,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 2,-103.365881,25.56047,-300.3,31.8,8.0,100,11.5
+B-013,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 3,-103.365626,25.56061,-270.3,31.8,8.0,100,11.5
+B-014,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 3,-103.36537,25.560749,-240.3,31.8,8.0,100,11.5
+B-015,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 3,-103.365114,25.560889,-210.3,31.8,8.0,100,11.5
+B-016,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 3,-103.364858,25.561028,-180.3,31.8,8.0,100,11.5
+B-017,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 3,-103.364602,25.561167,-150.3,31.8,8.0,100,11.5
+B-018,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 3,-103.364346,25.561307,-120.3,31.8,8.0,100,11.5
+B-019,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 4,-103.36409,25.561446,-90.3,31.8,8.0,100,11.5
+B-020,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 4,-103.363834,25.561586,-60.3,31.8,8.0,100,11.5
+B-021,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 4,-103.363578,25.561725,-30.3,31.8,8.0,100,11.5
+B-022,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 4,-103.363322,25.561865,-0.3,31.8,8.0,100,11.5
+B-023,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 4,-103.363066,25.562004,29.7,31.8,8.0,100,11.5
+B-024,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 5,-103.36281,25.562144,59.7,31.8,8.0,100,11.5
+B-025,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 5,-103.362554,25.562283,89.7,31.8,8.0,100,11.5
+B-026,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 5,-103.362298,25.562423,119.7,31.8,8.0,100,11.5
+B-027,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 5,-103.362042,25.562562,149.7,31.8,8.0,100,11.5
+B-028,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 5,-103.361786,25.562701,179.7,31.8,8.0,100,11.5
+B-029,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 6,-103.361531,25.562841,209.7,31.8,8.0,100,11.5
+B-030,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 6,-103.361275,25.56298,239.7,31.8,8.0,100,11.5
+B-031,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 6,-103.361019,25.56312,269.7,31.8,8.0,100,11.5
+B-032,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 6,-103.360763,25.563259,299.7,31.8,8.0,100,11.5
+B-033,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 6,-103.360507,25.563399,329.7,31.8,8.0,100,11.5
+B-034,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 7,-103.360251,25.563538,359.7,31.8,8.0,100,11.5
+B-035,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 7,-103.359995,25.563678,389.7,31.8,8.0,100,11.5
+B-036,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 7,-103.359739,25.563817,419.7,31.8,8.0,100,11.5
+B-037,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 7,-103.359483,25.563957,449.7,31.8,8.0,100,11.5
+B-038,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 7,-103.359227,25.564096,479.7,31.8,8.0,100,11.5
+B-039,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 7,-103.358971,25.564235,509.7,31.8,8.0,100,11.5
+B-040,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 8,-103.358715,25.564375,539.7,31.8,8.0,100,11.5
+B-041,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 8,-103.358459,25.564514,569.7,31.8,8.0,100,11.5
+B-042,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 8,-103.358203,25.564654,599.7,31.8,8.0,100,11.5
+B-043,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 8,-103.357947,25.564793,629.7,31.8,8.0,100,11.5
+B-044,bulevar,"Arbotante doble del bulevar · 8 m, 2 × 50 W",Bulevar Nogal · camellón · cuadra 8,-103.357691,25.564933,659.7,31.8,8.0,100,11.5
+A-001,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla poniente · 4 m de la calzada,-103.364357,25.558328,-291.2,-250.5,9.0,80,11.5
+A-002,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla poniente · 18 m de la calzada,-103.364429,25.558436,-291.2,-236.5,9.0,80,11.5
+A-003,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla poniente · 32 m de la calzada,-103.364501,25.558544,-291.2,-222.5,9.0,80,11.5
+A-004,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla poniente · 46 m de la calzada,-103.364573,25.558653,-291.2,-208.5,9.0,80,11.5
+A-005,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla poniente · 60 m de la calzada,-103.364644,25.558761,-291.2,-194.5,9.0,80,11.5
+A-006,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla poniente · 74 m de la calzada,-103.364716,25.558869,-291.2,-180.5,9.0,80,11.5
+A-007,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · isla y caseta de salida · 14 m de la calzada,-103.364326,25.55845,-281.5,-240.5,9.0,80,11.5
+A-008,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · isla y caseta de salida · 23 m de la calzada,-103.364372,25.55852,-281.5,-231.5,9.0,80,11.5
+A-009,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · isla y caseta de salida · 44 m de la calzada,-103.36448,25.558682,-281.5,-210.5,9.0,80,11.5
+A-010,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · isla y caseta de salida · 52 m de la calzada,-103.364521,25.558744,-281.5,-202.5,9.0,80,11.5
+A-011,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · isla y caseta de visitas · 14 m de la calzada,-103.364248,25.558492,-272.4,-240.5,9.0,80,11.5
+A-012,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · isla y caseta de visitas · 23 m de la calzada,-103.364294,25.558562,-272.4,-231.5,9.0,80,11.5
+A-013,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · isla y caseta de visitas · 44 m de la calzada,-103.364402,25.558724,-272.4,-210.5,9.0,80,11.5
+A-014,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · isla y caseta de visitas · 52 m de la calzada,-103.364443,25.558786,-272.4,-202.5,9.0,80,11.5
+A-015,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla oriente · 4 m de la calzada,-103.364112,25.558461,-262.5,-250.5,9.0,80,11.5
+A-016,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla oriente · 18 m de la calzada,-103.364184,25.558569,-262.5,-236.5,9.0,80,11.5
+A-017,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla oriente · 32 m de la calzada,-103.364256,25.558678,-262.5,-222.5,9.0,80,11.5
+A-018,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla oriente · 46 m de la calzada,-103.364328,25.558786,-262.5,-208.5,9.0,80,11.5
+A-019,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla oriente · 60 m de la calzada,-103.364399,25.558894,-262.5,-194.5,9.0,80,11.5
+A-020,acceso,"Poste del acceso · 9 m, LED 80 W",Acceso · orilla oriente · 74 m de la calzada,-103.364471,25.559003,-262.5,-180.5,9.0,80,11.5
+P-001,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 0,-103.368577,25.559018,-615.3,33.4,3.5,20,11.5
+P-002,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 1,-103.368321,25.559158,-585.3,33.4,3.5,20,11.5
+P-003,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 1,-103.368065,25.559297,-555.3,33.4,3.5,20,11.5
+P-004,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 1,-103.367809,25.559437,-525.3,33.4,3.5,20,11.5
+P-005,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 1,-103.367553,25.559576,-495.3,33.4,3.5,20,11.5
+P-006,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 1,-103.367297,25.559715,-465.3,33.4,3.5,20,11.5
+P-007,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 1,-103.367041,25.559855,-435.3,33.4,3.5,20,11.5
+P-008,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.36777,25.56096,-435.0,176.1,3.5,20,11.5
+P-009,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.367924,25.561192,-435.0,206.1,3.5,20,11.5
+P-010,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.367675,25.56096,-426.8,171.1,3.5,20,11.5
+P-011,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.367867,25.561377,-419.6,220.7,3.5,20,11.5
+P-012,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 2,-103.366785,25.559994,-405.3,33.4,3.5,20,11.5
+P-013,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.367419,25.561099,-396.8,171.1,3.5,20,11.5
+P-014,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.367612,25.561516,-389.6,220.7,3.5,20,11.5
+P-015,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 2,-103.36653,25.560134,-375.3,33.4,3.5,20,11.5
+P-016,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.367163,25.561239,-366.8,171.1,3.5,20,11.5
+P-017,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Club social · entrada del gimnasio,-103.365487,25.558731,-365.5,-153.7,3.5,20,11.5
+P-018,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.367356,25.561656,-359.6,220.7,3.5,20,11.5
+P-019,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 2,-103.366274,25.560273,-345.3,33.4,3.5,20,11.5
+P-020,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.366907,25.561378,-336.8,171.1,3.5,20,11.5
+P-021,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.3671,25.561795,-329.6,220.7,3.5,20,11.5
+P-022,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Club social · entrada del salón,-103.36518,25.558898,-329.5,-153.7,3.5,20,11.5
+P-023,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Club social · entrada del gimnasio,-103.36518,25.558898,-329.5,-153.7,3.5,20,11.5
+P-024,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 2,-103.366018,25.560413,-315.3,33.4,3.5,20,11.5
+P-025,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.366651,25.561517,-306.8,171.1,3.5,20,11.5
+P-026,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.366844,25.561935,-299.6,220.7,3.5,20,11.5
+P-027,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Acceso · andador del súper,-103.364409,25.558383,-292.5,-242.5,3.5,20,11.5
+P-028,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Acceso · andador del súper,-103.364445,25.558438,-292.5,-235.5,3.5,20,11.5
+P-029,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Acceso · andador del súper,-103.364481,25.558492,-292.5,-228.5,3.5,20,11.5
+P-030,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Club social · entrada del salón,-103.364805,25.559103,-285.5,-153.7,3.5,20,11.5
+P-031,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 2,-103.365762,25.560552,-285.3,33.4,3.5,20,11.5
+P-032,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.36648,25.561676,-283.0,177.3,3.5,20,11.5
+P-033,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Canario · orilla,-103.366633,25.561908,-283.0,207.3,3.5,20,11.5
+P-034,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 3,-103.365506,25.560692,-255.3,33.4,3.5,20,11.5
+P-035,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 3,-103.36525,25.560831,-225.3,33.4,3.5,20,11.5
+P-036,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 3,-103.364994,25.560971,-195.3,33.4,3.5,20,11.5
+P-037,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 3,-103.364738,25.56111,-165.3,33.4,3.5,20,11.5
+P-038,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 3,-103.364482,25.56125,-135.3,33.4,3.5,20,11.5
+P-039,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.363964,25.560892,-111.0,-27.4,3.5,20,11.5
+P-040,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.364117,25.561124,-111.0,2.6,3.5,20,11.5
+P-041,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 3,-103.364226,25.561389,-105.3,33.4,3.5,20,11.5
+P-042,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.364034,25.561303,-93.7,15.3,3.5,20,11.5
+P-043,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.363748,25.560957,-88.7,-32.4,3.5,20,11.5
+P-044,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 4,-103.36397,25.561528,-75.3,33.4,3.5,20,11.5
+P-045,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.363778,25.561442,-63.7,15.3,3.5,20,11.5
+P-046,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.363492,25.561097,-58.7,-32.4,3.5,20,11.5
+P-047,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 4,-103.363714,25.561668,-45.3,33.4,3.5,20,11.5
+P-048,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.363522,25.561582,-33.7,15.3,3.5,20,11.5
+P-049,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.363236,25.561236,-28.7,-32.4,3.5,20,11.5
+P-050,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 4,-103.363458,25.561807,-15.3,33.4,3.5,20,11.5
+P-051,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.363267,25.561721,-3.7,15.3,3.5,20,11.5
+P-052,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.36298,25.561376,1.3,-32.4,3.5,20,11.5
+P-053,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 4,-103.363202,25.561947,14.7,33.4,3.5,20,11.5
+P-054,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.363011,25.561861,26.3,15.3,3.5,20,11.5
+P-055,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.362724,25.561515,31.3,-32.4,3.5,20,11.5
+P-056,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Parque Grulla · orilla,-103.362827,25.561736,35.0,-6.0,3.5,20,11.5
+P-057,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 4,-103.362946,25.562086,44.7,33.4,3.5,20,11.5
+P-058,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 5,-103.36269,25.562226,74.7,33.4,3.5,20,11.5
+P-059,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 5,-103.362435,25.562365,104.7,33.4,3.5,20,11.5
+P-060,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 5,-103.362179,25.562505,134.7,33.4,3.5,20,11.5
+P-061,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 5,-103.361923,25.562644,164.7,33.4,3.5,20,11.5
+P-062,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 5,-103.361667,25.562784,194.7,33.4,3.5,20,11.5
+P-063,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 6,-103.361411,25.562923,224.7,33.4,3.5,20,11.5
+P-064,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 6,-103.361155,25.563063,254.7,33.4,3.5,20,11.5
+P-065,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 6,-103.360899,25.563202,284.7,33.4,3.5,20,11.5
+P-066,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 6,-103.360643,25.563341,314.7,33.4,3.5,20,11.5
+P-067,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 6,-103.360387,25.563481,344.7,33.4,3.5,20,11.5
+P-068,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 7,-103.360131,25.56362,374.7,33.4,3.5,20,11.5
+P-069,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 7,-103.359875,25.56376,404.7,33.4,3.5,20,11.5
+P-070,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 7,-103.359619,25.563899,434.7,33.4,3.5,20,11.5
+P-071,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 7,-103.359363,25.564039,464.7,33.4,3.5,20,11.5
+P-072,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 7,-103.359107,25.564178,494.7,33.4,3.5,20,11.5
+P-073,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 7,-103.358851,25.564318,524.7,33.4,3.5,20,11.5
+P-074,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 8,-103.358595,25.564457,554.7,33.4,3.5,20,11.5
+P-075,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 8,-103.358339,25.564596,584.7,33.4,3.5,20,11.5
+P-076,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 8,-103.358083,25.564736,614.7,33.4,3.5,20,11.5
+P-077,peatonal,"Poste peatonal · 3.5 m, LED 20 W",Bulevar Nogal · sendero · cuadra 8,-103.357827,25.564875,644.7,33.4,3.5,20,11.5
+Z-001,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.46,-103.368677,25.558589,-648.4,-2.1,0.9,8,11.5
+Z-002,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.48,-103.36874,25.558761,-644.0,17.4,0.9,8,11.5
+Z-003,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.44,-103.368532,25.558486,-641.7,-19.5,0.9,8,11.5
+Z-004,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.50,-103.368803,25.558932,-639.7,36.9,0.9,8,11.5
+Z-005,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.52,-103.368866,25.559103,-635.3,56.4,0.9,8,11.5
+Z-006,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.54,-103.368929,25.559274,-631.0,76.0,0.9,8,11.5
+Z-007,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.42,-103.36835,25.558413,-630.2,-35.8,0.9,8,11.5
+Z-008,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.56,-103.368992,25.559446,-626.7,95.5,0.9,8,11.5
+Z-009,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.58,-103.369055,25.559617,-622.3,115.0,0.9,8,11.5
+Z-010,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.40,-103.368168,25.55834,-618.7,-52.2,0.9,8,11.5
+Z-011,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.60,-103.369118,25.559788,-618.0,134.5,0.9,8,11.5
+Z-012,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.62,-103.369181,25.559959,-613.6,154.1,0.9,8,11.5
+Z-013,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.64,-103.369244,25.560131,-609.3,173.6,0.9,8,11.5
+Z-014,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.66,-103.369307,25.560302,-604.9,193.1,0.9,8,11.5
+Z-015,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.38,-103.367976,25.55831,-603.9,-65.0,0.9,8,11.5
+Z-016,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.68,-103.36937,25.560473,-600.6,212.6,0.9,8,11.5
+Z-017,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.70,-103.369433,25.560644,-596.3,232.1,0.9,8,11.5
+Z-018,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.36,-103.367777,25.558309,-586.8,-75.3,0.9,8,11.5
+Z-019,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.72,-103.369338,25.560765,-581.2,238.7,0.9,8,11.5
+Z-020,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.34,-103.367578,25.558309,-569.6,-85.7,0.9,8,11.5
+Z-021,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.74,-103.369171,25.560863,-561.2,239.3,0.9,8,11.5
+Z-022,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.32,-103.367379,25.558308,-552.5,-96.0,0.9,8,11.5
+Z-023,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.76,-103.369003,25.560961,-541.2,239.9,0.9,8,11.5
+Z-024,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.30,-103.36718,25.558308,-535.4,-106.4,0.9,8,11.5
+Z-025,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.78,-103.368836,25.561058,-521.2,240.5,0.9,8,11.5
+Z-026,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.28,-103.366981,25.558307,-518.3,-116.7,0.9,8,11.5
+Z-027,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.26,-103.366781,25.558307,-501.2,-127.0,0.9,8,11.5
+Z-028,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.80,-103.368668,25.561156,-501.2,241.1,0.9,8,11.5
+Z-029,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.24,-103.366582,25.558306,-484.1,-137.4,0.9,8,11.5
+Z-030,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.82,-103.368501,25.561254,-481.2,241.7,0.9,8,11.5
+Z-031,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.22,-103.366383,25.558306,-467.0,-147.7,0.9,8,11.5
+Z-032,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.84,-103.368334,25.561351,-461.2,242.4,0.9,8,11.5
+Z-033,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.20,-103.366184,25.558305,-449.8,-158.1,0.9,8,11.5
+Z-034,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.86,-103.368166,25.561449,-441.2,243.0,0.9,8,11.5
+Z-035,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.18,-103.365985,25.558305,-432.7,-168.4,0.9,8,11.5
+Z-036,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.88,-103.367999,25.561547,-421.2,243.6,0.9,8,11.5
+Z-037,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.16,-103.365786,25.558304,-415.6,-178.8,0.9,8,11.5
+Z-038,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.90,-103.367831,25.561644,-401.2,244.2,0.9,8,11.5
+Z-039,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.14,-103.365587,25.558304,-398.5,-189.1,0.9,8,11.5
+Z-040,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.12,-103.365388,25.558303,-381.4,-199.5,0.9,8,11.5
+Z-041,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.92,-103.367664,25.561742,-381.2,244.8,0.9,8,11.5
+Z-042,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.10,-103.365189,25.558303,-364.3,-209.8,0.9,8,11.5
+Z-043,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.94,-103.367497,25.56184,-361.3,245.4,0.9,8,11.5
+Z-044,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.08,-103.36499,25.558302,-347.2,-220.2,0.9,8,11.5
+Z-045,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.96,-103.367329,25.561938,-341.3,246.1,0.9,8,11.5
+Z-046,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.06,-103.364791,25.558302,-330.0,-230.5,0.9,8,11.5
+Z-047,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.98,-103.367162,25.562035,-321.3,246.7,0.9,8,11.5
+Z-048,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 0.04,-103.364592,25.558301,-312.9,-240.9,0.9,8,11.5
+Z-049,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.00,-103.366995,25.562133,-301.3,247.3,0.9,8,11.5
+Z-050,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.02,-103.366827,25.562231,-281.3,247.9,0.9,8,11.5
+Z-051,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.04,-103.36666,25.562328,-261.3,248.5,0.9,8,11.5
+Z-052,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.24,-103.36393,25.55854,-242.3,-252.5,0.9,8,11.5
+Z-053,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.06,-103.366492,25.562426,-241.3,249.1,0.9,8,11.5
+Z-054,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.22,-103.363758,25.558631,-222.3,-252.7,0.9,8,11.5
+Z-055,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.08,-103.366325,25.562524,-221.3,249.8,0.9,8,11.5
+Z-056,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.20,-103.363586,25.558722,-202.3,-253.0,0.9,8,11.5
+Z-057,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.10,-103.366158,25.562622,-201.3,250.4,0.9,8,11.5
+Z-058,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.18,-103.363414,25.558813,-182.3,-253.2,0.9,8,11.5
+Z-059,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.12,-103.36599,25.562719,-181.3,251.0,0.9,8,11.5
+Z-060,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.16,-103.363242,25.558904,-162.3,-253.5,0.9,8,11.5
+Z-061,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.14,-103.365823,25.562817,-161.4,251.6,0.9,8,11.5
+Z-062,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.14,-103.36307,25.558995,-142.3,-253.8,0.9,8,11.5
+Z-063,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.16,-103.365656,25.562915,-141.4,252.2,0.9,8,11.5
+Z-064,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.12,-103.362898,25.559086,-122.3,-254.0,0.9,8,11.5
+Z-065,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.18,-103.365488,25.563012,-121.4,252.9,0.9,8,11.5
+Z-066,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.10,-103.362726,25.559177,-102.3,-254.3,0.9,8,11.5
+Z-067,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.20,-103.365321,25.56311,-101.4,253.5,0.9,8,11.5
+Z-068,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.08,-103.362554,25.559268,-82.3,-254.5,0.9,8,11.5
+Z-069,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.22,-103.365153,25.563208,-81.4,254.1,0.9,8,11.5
+Z-070,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.06,-103.362382,25.559359,-62.3,-254.8,0.9,8,11.5
+Z-071,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.24,-103.364986,25.563305,-61.4,254.7,0.9,8,11.5
+Z-072,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.04,-103.36221,25.55945,-42.3,-255.1,0.9,8,11.5
+Z-073,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.26,-103.364819,25.563403,-41.4,255.3,0.9,8,11.5
+Z-074,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.02,-103.362039,25.559541,-22.3,-255.3,0.9,8,11.5
+Z-075,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.28,-103.364651,25.563501,-21.4,255.9,0.9,8,11.5
+Z-076,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 3.00,-103.361867,25.559632,-2.3,-255.6,0.9,8,11.5
+Z-077,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.30,-103.364484,25.563599,-1.4,256.6,0.9,8,11.5
+Z-078,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.98,-103.361695,25.559723,17.7,-255.8,0.9,8,11.5
+Z-079,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.32,-103.364316,25.563696,18.6,257.2,0.9,8,11.5
+Z-080,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.96,-103.361523,25.559813,37.7,-256.1,0.9,8,11.5
+Z-081,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.34,-103.364149,25.563794,38.6,257.8,0.9,8,11.5
+Z-082,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.94,-103.361351,25.559904,57.7,-256.3,0.9,8,11.5
+Z-083,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.36,-103.363982,25.563892,58.5,258.4,0.9,8,11.5
+Z-084,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.92,-103.361179,25.559995,77.7,-256.6,0.9,8,11.5
+Z-085,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.38,-103.363814,25.563989,78.5,259.0,0.9,8,11.5
+Z-086,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.90,-103.361007,25.560086,97.7,-256.9,0.9,8,11.5
+Z-087,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.40,-103.363647,25.564087,98.5,259.6,0.9,8,11.5
+Z-088,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.88,-103.360835,25.560177,117.7,-257.1,0.9,8,11.5
+Z-089,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.42,-103.363468,25.564166,118.4,257.8,0.9,8,11.5
+Z-090,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.86,-103.360663,25.560268,137.7,-257.4,0.9,8,11.5
+Z-091,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.44,-103.363288,25.564243,138.3,255.9,0.9,8,11.5
+Z-092,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.84,-103.360491,25.560359,157.7,-257.6,0.9,8,11.5
+Z-093,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.46,-103.363108,25.56432,158.2,253.9,0.9,8,11.5
+Z-094,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.82,-103.360319,25.56045,177.7,-257.9,0.9,8,11.5
+Z-095,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.48,-103.362928,25.564397,178.1,251.9,0.9,8,11.5
+Z-096,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.80,-103.360147,25.560541,197.7,-258.2,0.9,8,11.5
+Z-097,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.50,-103.362748,25.564474,198.0,249.9,0.9,8,11.5
+Z-098,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.78,-103.359975,25.560632,217.7,-258.4,0.9,8,11.5
+Z-099,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.52,-103.362568,25.564551,217.9,247.9,0.9,8,11.5
+Z-100,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.76,-103.359803,25.560723,237.7,-258.7,0.9,8,11.5
+Z-101,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.54,-103.362388,25.564628,237.8,245.9,0.9,8,11.5
+Z-102,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.74,-103.359631,25.560814,257.7,-258.9,0.9,8,11.5
+Z-103,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.56,-103.362208,25.564706,257.7,243.9,0.9,8,11.5
+Z-104,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.58,-103.362028,25.564783,277.6,241.9,0.9,8,11.5
+Z-105,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.72,-103.359459,25.560905,277.7,-259.2,0.9,8,11.5
+Z-106,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.60,-103.361848,25.56486,297.5,239.9,0.9,8,11.5
+Z-107,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.70,-103.359287,25.560996,297.7,-259.5,0.9,8,11.5
+Z-108,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.62,-103.361668,25.564937,317.4,238.0,0.9,8,11.5
+Z-109,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.68,-103.359116,25.561087,317.7,-259.7,0.9,8,11.5
+Z-110,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.64,-103.361488,25.565014,337.3,236.0,0.9,8,11.5
+Z-111,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.66,-103.358944,25.561178,337.7,-260.0,0.9,8,11.5
+Z-112,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.66,-103.361308,25.565091,357.2,234.0,0.9,8,11.5
+Z-113,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.64,-103.358772,25.561269,357.7,-260.2,0.9,8,11.5
+Z-114,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.68,-103.361128,25.565168,377.1,232.0,0.9,8,11.5
+Z-115,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.62,-103.3586,25.56136,377.7,-260.5,0.9,8,11.5
+Z-116,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.70,-103.360948,25.565245,397.0,230.0,0.9,8,11.5
+Z-117,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.60,-103.358428,25.561451,397.7,-260.8,0.9,8,11.5
+Z-118,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.72,-103.360768,25.565322,416.9,228.0,0.9,8,11.5
+Z-119,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.58,-103.358256,25.561542,417.7,-261.0,0.9,8,11.5
+Z-120,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.74,-103.360588,25.5654,436.8,226.0,0.9,8,11.5
+Z-121,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.56,-103.358084,25.561633,437.7,-261.3,0.9,8,11.5
+Z-122,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.76,-103.360408,25.565477,456.7,224.0,0.9,8,11.5
+Z-123,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.54,-103.357912,25.561723,457.7,-261.5,0.9,8,11.5
+Z-124,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.78,-103.360228,25.565554,476.6,222.0,0.9,8,11.5
+Z-125,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.52,-103.35774,25.561814,477.7,-261.8,0.9,8,11.5
+Z-126,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.50,-103.357629,25.561938,494.3,-255.8,0.9,8,11.5
+Z-127,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.80,-103.360048,25.565631,496.5,220.0,0.9,8,11.5
+Z-128,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.48,-103.357624,25.562118,505.0,-239.0,0.9,8,11.5
+Z-129,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.46,-103.357619,25.562299,515.8,-222.1,0.9,8,11.5
+Z-130,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.82,-103.359868,25.565708,516.4,218.1,0.9,8,11.5
+Z-131,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.44,-103.357614,25.562479,526.5,-205.2,0.9,8,11.5
+Z-132,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.84,-103.359688,25.565785,536.4,216.1,0.9,8,11.5
+Z-133,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.42,-103.357609,25.56266,537.2,-188.3,0.9,8,11.5
+Z-134,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.40,-103.357604,25.56284,547.9,-171.4,0.9,8,11.5
+Z-135,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.86,-103.359508,25.565862,556.3,214.1,0.9,8,11.5
+Z-136,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.38,-103.357599,25.563021,558.7,-154.5,0.9,8,11.5
+Z-137,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.36,-103.357594,25.563201,569.4,-137.7,0.9,8,11.5
+Z-138,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.88,-103.359328,25.565939,576.2,212.1,0.9,8,11.5
+Z-139,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.34,-103.357589,25.563382,580.1,-120.8,0.9,8,11.5
+Z-140,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.32,-103.357584,25.563562,590.8,-103.9,0.9,8,11.5
+Z-141,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.90,-103.359148,25.566016,596.1,210.1,0.9,8,11.5
+Z-142,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.30,-103.357579,25.563743,601.6,-87.0,0.9,8,11.5
+Z-143,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.28,-103.357574,25.563923,612.3,-70.1,0.9,8,11.5
+Z-144,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.92,-103.358953,25.566052,614.9,203.4,0.9,8,11.5
+Z-145,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.26,-103.357569,25.564104,623.0,-53.3,0.9,8,11.5
+Z-146,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.94,-103.358758,25.566086,633.7,196.5,0.9,8,11.5
+Z-147,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.24,-103.357564,25.564284,633.7,-36.4,0.9,8,11.5
+Z-148,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.22,-103.357559,25.564465,644.5,-19.5,0.9,8,11.5
+Z-149,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.96,-103.358562,25.56612,652.4,189.6,0.9,8,11.5
+Z-150,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.20,-103.357566,25.564645,654.1,-2.0,0.9,8,11.5
+Z-151,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.18,-103.357589,25.564824,662.4,16.2,0.9,8,11.5
+Z-152,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.16,-103.357612,25.565003,670.6,34.4,0.9,8,11.5
+Z-153,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 1.98,-103.358367,25.566154,671.2,182.8,0.9,8,11.5
+Z-154,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.14,-103.357635,25.565183,678.9,52.6,0.9,8,11.5
+Z-155,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.12,-103.357658,25.565362,687.1,70.8,0.9,8,11.5
+Z-156,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.00,-103.358171,25.566189,690.0,175.9,0.9,8,11.5
+Z-157,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.10,-103.357681,25.565541,695.4,89.0,0.9,8,11.5
+Z-158,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.02,-103.357995,25.566135,702.1,161.7,0.9,8,11.5
+Z-159,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.08,-103.357703,25.565721,703.6,107.3,0.9,8,11.5
+Z-160,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.04,-103.35783,25.566035,710.7,143.6,0.9,8,11.5
+Z-161,baliza,"Baliza de la pista · 90 cm, LED 8 W",Pista · km 2.06,-103.357726,25.5659,711.9,125.5,0.9,8,11.5
+N-001,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.368292,25.558984,-592.6,15.4,0.0,12,5.0
+N-002,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.368077,25.559091,-568.1,14.5,0.0,12,5.0
+N-003,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 1,-103.367938,25.559527,-531.2,48.6,0.0,12,5.0
+N-004,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.367669,25.559343,-518.6,17.3,0.0,12,5.0
+N-005,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.367584,25.559401,-507.9,18.3,0.0,12,5.0
+N-006,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.367466,25.559478,-493.3,19.6,0.0,12,5.0
+N-007,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.367369,25.559536,-481.7,20.1,0.0,12,5.0
+N-008,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 1,-103.367412,25.559749,-473.2,42.5,0.0,12,5.0
+N-009,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.367272,25.559585,-470.6,19.7,0.0,12,5.0
+N-010,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 1,-103.367305,25.559817,-460.1,43.4,0.0,12,5.0
+N-011,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.367144,25.559643,-456.2,18.5,0.0,12,5.0
+N-012,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 1,-103.367197,25.559865,-448.1,42.5,0.0,12,5.0
+N-013,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 1,-103.367069,25.559701,-446.4,20.2,0.0,12,5.0
+N-014,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 2,-103.36709,25.559923,-435.6,42.4,0.0,12,5.0
+N-015,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.366972,25.559749,-435.3,19.8,0.0,12,5.0
+N-016,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367895,25.561143,-435.3,199.9,0.0,12,5.0
+N-017,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.366285,25.558752,-433.1,-110.4,0.0,12,5.0
+N-018,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.366167,25.558578,-432.8,-133.1,0.0,12,5.0
+N-019,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.366221,25.558675,-431.9,-121.1,0.0,12,5.0
+N-020,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367895,25.561365,-422.6,221.0,0.0,12,5.0
+N-021,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367766,25.561172,-422.6,196.0,0.0,12,5.0
+N-022,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 2,-103.366983,25.559991,-422.5,43.3,0.0,12,5.0
+N-023,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367841,25.561288,-422.4,210.9,0.0,12,5.0
+N-024,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367691,25.561075,-421.6,182.9,0.0,12,5.0
+N-025,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.366854,25.559827,-420.7,21.0,0.0,12,5.0
+N-026,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.366039,25.558607,-420.1,-137.0,0.0,12,5.0
+N-027,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.366114,25.558723,-419.9,-122.1,0.0,12,5.0
+N-028,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365985,25.55853,-419.9,-147.1,0.0,12,5.0
+N-029,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.366178,25.55883,-419.4,-108.6,0.0,12,5.0
+N-030,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367798,25.561414,-411.5,220.6,0.0,12,5.0
+N-031,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367734,25.561327,-410.9,209.0,0.0,12,5.0
+N-032,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367594,25.561124,-410.5,182.5,0.0,12,5.0
+N-033,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.366006,25.558781,-407.4,-122.1,0.0,12,5.0
+N-034,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365931,25.558675,-407.0,-136.1,0.0,12,5.0
+N-035,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365813,25.558617,-400.1,-147.7,0.0,12,5.0
+N-036,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 2,-103.3668,25.560117,-399.6,45.8,0.0,12,5.0
+N-037,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367627,25.561385,-398.4,209.0,0.0,12,5.0
+N-038,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367551,25.561288,-397.4,195.9,0.0,12,5.0
+N-039,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367476,25.561191,-396.5,182.8,0.0,12,5.0
+N-040,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.366629,25.559933,-395.3,19.5,0.0,12,5.0
+N-041,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365953,25.558936,-393.9,-110.2,0.0,12,5.0
+N-042,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365888,25.558839,-393.9,-122.7,0.0,12,5.0
+N-043,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365706,25.558675,-387.6,-147.8,0.0,12,5.0
+N-044,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367509,25.561443,-384.9,208.4,0.0,12,5.0
+N-045,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367444,25.561346,-384.9,195.8,0.0,12,5.0
+N-046,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367551,25.561511,-384.7,217.0,0.0,12,5.0
+N-047,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.36738,25.561259,-384.3,184.2,0.0,12,5.0
+N-048,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.366532,25.560001,-383.1,20.9,0.0,12,5.0
+N-049,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365717,25.558791,-381.9,-136.2,0.0,12,5.0
+N-050,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365856,25.559004,-381.7,-108.7,0.0,12,5.0
+N-051,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365792,25.558936,-380.1,-118.5,0.0,12,5.0
+N-052,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367455,25.561578,-372.6,218.5,0.0,12,5.0
+N-053,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.36738,25.561491,-371.1,206.3,0.0,12,5.0
+N-054,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367251,25.561298,-371.0,181.3,0.0,12,5.0
+N-055,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367326,25.561414,-370.9,196.2,0.0,12,5.0
+N-056,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.366414,25.560059,-369.6,20.3,0.0,12,5.0
+N-057,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365695,25.558975,-369.5,-119.8,0.0,12,5.0
+N-058,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365631,25.558878,-369.5,-132.3,0.0,12,5.0
+N-059,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365749,25.559062,-369.2,-108.8,0.0,12,5.0
+N-060,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.366318,25.560098,-359.1,19.0,0.0,12,5.0
+N-061,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367272,25.56154,-359.1,205.3,0.0,12,5.0
+N-062,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 2,-103.366436,25.560281,-358.8,42.6,0.0,12,5.0
+N-063,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367337,25.561646,-358.5,218.8,0.0,12,5.0
+N-064,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367154,25.561375,-358.3,183.6,0.0,12,5.0
+N-065,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367197,25.561453,-357.6,193.2,0.0,12,5.0
+N-066,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365577,25.559023,-356.6,-121.3,0.0,12,5.0
+N-067,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365491,25.558926,-354.7,-135.0,0.0,12,5.0
+N-068,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.365137,25.558462,-350.7,-197.4,0.0,12,5.0
+N-069,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.365062,25.558375,-349.2,-209.6,0.0,12,5.0
+N-070,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.36724,25.561704,-346.9,219.3,0.0,12,5.0
+N-071,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367112,25.561511,-346.9,194.3,0.0,12,5.0
+N-072,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367047,25.561433,-345.7,183.6,0.0,12,5.0
+N-073,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366983,25.561336,-345.7,171.0,0.0,12,5.0
+N-074,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.3662,25.560165,-345.1,19.3,0.0,12,5.0
+N-075,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365395,25.558965,-344.2,-136.3,0.0,12,5.0
+N-076,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365524,25.559168,-343.7,-110.3,0.0,12,5.0
+N-077,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364955,25.558423,-337.2,-210.5,0.0,12,5.0
+N-078,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.365019,25.55853,-336.7,-197.1,0.0,12,5.0
+N-079,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.365073,25.558626,-335.8,-185.1,0.0,12,5.0
+N-080,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367015,25.561569,-335.2,194.8,0.0,12,5.0
+N-081,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367133,25.561762,-334.4,219.3,0.0,12,5.0
+N-082,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367069,25.561666,-334.3,206.7,0.0,12,5.0
+N-083,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.36694,25.561482,-333.7,182.6,0.0,12,5.0
+N-084,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364869,25.558355,-333.7,-221.4,0.0,12,5.0
+N-085,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.366092,25.560243,-331.4,21.1,0.0,12,5.0
+N-086,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365416,25.559246,-330.0,-108.5,0.0,12,5.0
+N-087,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364794,25.558394,-325.0,-221.6,0.0,12,5.0
+N-088,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364976,25.558684,-324.2,-184.6,0.0,12,5.0
+N-089,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366897,25.561617,-322.3,193.3,0.0,12,5.0
+N-090,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 2,-103.366124,25.560456,-322.0,43.0,0.0,12,5.0
+N-091,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366833,25.56153,-321.7,181.7,0.0,12,5.0
+N-092,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.367015,25.56182,-320.9,218.7,0.0,12,5.0
+N-093,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366961,25.561743,-320.7,208.5,0.0,12,5.0
+N-094,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.365985,25.560301,-318.8,21.1,0.0,12,5.0
+N-095,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365309,25.559304,-317.5,-108.6,0.0,12,5.0
+N-096,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365245,25.559217,-316.9,-120.2,0.0,12,5.0
+N-097,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.36473,25.558539,-311.2,-211.1,0.0,12,5.0
+N-098,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364848,25.558723,-310.9,-187.6,0.0,12,5.0
+N-099,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 2,-103.366028,25.560514,-310.4,43.5,0.0,12,5.0
+N-100,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364794,25.558665,-309.6,-195.9,0.0,12,5.0
+N-101,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.3668,25.561695,-309.6,195.6,0.0,12,5.0
+N-102,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.365899,25.56034,-309.2,20.3,0.0,12,5.0
+N-103,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366854,25.561782,-309.2,206.7,0.0,12,5.0
+N-104,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366725,25.561607,-308.1,183.5,0.0,12,5.0
+N-105,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365062,25.559168,-304.0,-134.2,0.0,12,5.0
+N-106,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364698,25.558704,-299.0,-197.2,0.0,12,5.0
+N-107,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 2,-103.36591,25.560572,-296.9,42.9,0.0,12,5.0
+N-108,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.36474,25.55881,-296.7,-184.9,0.0,12,5.0
+N-109,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366811,25.561946,-296.1,220.1,0.0,12,5.0
+N-110,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366682,25.561753,-296.1,195.0,0.0,12,5.0
+N-111,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366607,25.561646,-295.7,181.0,0.0,12,5.0
+N-112,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364408,25.558326,-295.6,-248.0,0.0,12,5.0
+N-113,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366736,25.561849,-295.2,207.0,0.0,12,5.0
+N-114,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.36576,25.560398,-293.9,18.6,0.0,12,5.0
+N-115,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.364966,25.559226,-292.3,-133.7,0.0,12,5.0
+N-116,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.365084,25.55942,-291.5,-109.2,0.0,12,5.0
+N-117,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club social,-103.364837,25.559159,-285.1,-146.8,0.0,12,5.0
+N-118,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366575,25.561811,-283.5,195.0,0.0,12,5.0
+N-119,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 2,-103.365792,25.56063,-283.4,42.3,0.0,12,5.0
+N-120,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Canario,-103.366489,25.561704,-282.2,180.4,0.0,12,5.0
+N-121,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 2,-103.365663,25.560465,-281.7,20.1,0.0,12,5.0
+N-122,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 3,-103.365695,25.560698,-271.3,43.8,0.0,12,5.0
+N-123,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 3,-103.365556,25.560514,-269.7,19.1,0.0,12,5.0
+N-124,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364751,25.559343,-267.2,-133.8,0.0,12,5.0
+N-125,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364805,25.55943,-266.9,-122.7,0.0,12,5.0
+N-126,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.36444,25.559004,-259.8,-182.0,0.0,12,5.0
+N-127,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 3,-103.365588,25.560746,-259.3,42.8,0.0,12,5.0
+N-128,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 3,-103.365427,25.560582,-254.8,18.9,0.0,12,5.0
+N-129,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364773,25.559594,-254.7,-108.7,0.0,12,5.0
+N-130,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364633,25.559401,-253.8,-134.3,0.0,12,5.0
+N-131,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364279,25.558994,-246.4,-191.3,0.0,12,5.0
+N-132,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.363979,25.558549,-246.0,-249.1,0.0,12,5.0
+N-133,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364183,25.558859,-245.9,-209.1,0.0,12,5.0
+N-134,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 3,-103.36547,25.560814,-245.2,43.1,0.0,12,5.0
+N-135,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 3,-103.36532,25.56063,-242.8,17.9,0.0,12,5.0
+N-136,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364537,25.559459,-242.1,-133.8,0.0,12,5.0
+N-137,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364215,25.559091,-235.4,-185.4,0.0,12,5.0
+N-138,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364097,25.558917,-235.1,-208.1,0.0,12,5.0
+N-139,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.36415,25.559014,-234.2,-196.1,0.0,12,5.0
+N-140,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364022,25.55883,-233.7,-220.2,0.0,12,5.0
+N-141,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 3,-103.365352,25.560872,-231.7,42.6,0.0,12,5.0
+N-142,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 3,-103.365213,25.560688,-230.2,17.9,0.0,12,5.0
+N-143,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364558,25.55971,-229.6,-108.8,0.0,12,5.0
+N-144,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.363925,25.558878,-222.6,-220.6,0.0,12,5.0
+N-145,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.363764,25.558655,-221.4,-250.1,0.0,12,5.0
+N-146,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.364032,25.559072,-220.8,-196.7,0.0,12,5.0
+N-147,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.363947,25.558946,-220.6,-213.1,0.0,12,5.0
+N-148,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 3,-103.365095,25.560736,-217.3,16.4,0.0,12,5.0
+N-149,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.363936,25.55912,-209.7,-197.1,0.0,12,5.0
+N-150,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.363646,25.558723,-207.4,-249.8,0.0,12,5.0
+N-151,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364258,25.55972,-203.2,-123.4,0.0,12,5.0
+N-152,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364322,25.559827,-202.7,-110.0,0.0,12,5.0
+N-153,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.36385,25.559207,-197.3,-193.2,0.0,12,5.0
+N-154,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.363947,25.559372,-196.3,-172.6,0.0,12,5.0
+N-155,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Plaza de acceso,-103.363753,25.559081,-196.2,-210.2,0.0,12,5.0
+N-156,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364215,25.559885,-190.1,-110.0,0.0,12,5.0
+N-157,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364161,25.559807,-189.9,-120.2,0.0,12,5.0
+N-158,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 3,-103.364762,25.56093,-177.6,17.5,0.0,12,5.0
+N-159,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.364097,25.559952,-176.1,-109.7,0.0,12,5.0
+N-160,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.363871,25.559817,-164.4,-134.2,0.0,12,5.0
+N-161,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.363914,25.559894,-163.7,-124.7,0.0,12,5.0
+N-162,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.363625,25.55972,-148.7,-156.2,0.0,12,5.0
+N-163,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Club deportivo,-103.363732,25.559894,-148.0,-134.1,0.0,12,5.0
+N-164,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 3,-103.364376,25.561114,-133.8,15.0,0.0,12,5.0
+N-165,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 3,-103.364301,25.561182,-123.5,17.6,0.0,12,5.0
+N-166,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363925,25.561027,-100.0,-16.6,0.0,12,5.0
+N-167,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 4,-103.364086,25.561288,-99.0,16.6,0.0,12,5.0
+N-168,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.364022,25.561191,-98.9,4.0,0.0,12,5.0
+N-169,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363743,25.560969,-87.6,-31.5,0.0,12,5.0
+N-170,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363807,25.561075,-87.1,-18.1,0.0,12,5.0
+N-171,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 4,-103.363979,25.561346,-86.4,16.5,0.0,12,5.0
+N-172,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363904,25.561249,-85.5,3.5,0.0,12,5.0
+N-173,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.36385,25.561172,-85.3,-6.7,0.0,12,5.0
+N-174,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 4,-103.363871,25.561385,-75.0,14.7,0.0,12,5.0
+N-175,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363871,25.561385,-75.0,14.7,0.0,12,5.0
+N-176,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363635,25.561046,-73.9,-29.7,0.0,12,5.0
+N-177,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363743,25.561211,-73.8,-8.6,0.0,12,5.0
+N-178,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363678,25.561133,-72.7,-19.2,0.0,12,5.0
+N-179,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.36371,25.561356,-62.8,3.6,0.0,12,5.0
+N-180,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363657,25.561278,-62.5,-6.6,0.0,12,5.0
+N-181,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363582,25.561172,-62.2,-20.6,0.0,12,5.0
+N-182,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 4,-103.363818,25.561704,-52.1,42.2,0.0,12,5.0
+N-183,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363603,25.561424,-49.6,4.5,0.0,12,5.0
+N-184,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363464,25.56123,-48.7,-21.1,0.0,12,5.0
+N-185,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.36341,25.561162,-47.9,-30.4,0.0,12,5.0
+N-186,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 4,-103.36356,25.561578,-37.1,16.9,0.0,12,5.0
+N-187,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363496,25.561482,-37.1,4.4,0.0,12,5.0
+N-188,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363432,25.561404,-36.0,-6.3,0.0,12,5.0
+N-189,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363399,25.561559,-24.4,6.8,0.0,12,5.0
+N-190,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363335,25.561462,-24.3,-5.7,0.0,12,5.0
+N-191,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 4,-103.363496,25.561898,-13.4,43.9,0.0,12,5.0
+N-192,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.36312,25.561424,-8.1,-20.5,0.0,12,5.0
+N-193,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363185,25.56153,-7.5,-7.1,0.0,12,5.0
+N-194,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 4,-103.36341,25.561966,-2.1,45.9,0.0,12,5.0
+N-195,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 4,-103.363249,25.561743,-0.9,16.5,0.0,12,5.0
+N-196,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.363163,25.561656,1.5,3.7,0.0,12,5.0
+N-197,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 4,-103.363281,25.562004,11.2,42.9,0.0,12,5.0
+N-198,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 4,-103.36312,25.56183,15.1,18.1,0.0,12,5.0
+N-199,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.362917,25.561549,16.7,-19.1,0.0,12,5.0
+N-200,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.36297,25.561636,17.0,-8.1,0.0,12,5.0
+N-201,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.362799,25.561588,29.0,-21.6,0.0,12,5.0
+N-202,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Parque Grulla,-103.362917,25.561782,29.9,2.9,0.0,12,5.0
+N-203,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 4,-103.362992,25.561898,30.1,17.8,0.0,12,5.0
+N-204,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 4,-103.363056,25.56212,37.2,42.3,0.0,12,5.0
+N-205,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.362852,25.561985,47.1,18.9,0.0,12,5.0
+N-206,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 5,-103.362959,25.562178,48.9,42.8,0.0,12,5.0
+N-207,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.362734,25.562043,60.5,18.3,0.0,12,5.0
+N-208,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 5,-103.362831,25.562266,64.9,44.4,0.0,12,5.0
+N-209,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 5,-103.362734,25.562295,74.9,42.2,0.0,12,5.0
+N-210,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.362541,25.562149,83.2,18.4,0.0,12,5.0
+N-211,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.362455,25.562227,95.1,21.3,0.0,12,5.0
+N-212,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.362316,25.562285,110.4,19.6,0.0,12,5.0
+N-213,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 5,-103.362402,25.562479,114.0,42.5,0.0,12,5.0
+N-214,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 5,-103.362294,25.562546,127.1,43.3,0.0,12,5.0
+N-215,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.36209,25.562391,135.9,18.1,0.0,12,5.0
+N-216,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.361962,25.562459,150.8,17.9,0.0,12,5.0
+N-217,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.361844,25.562508,163.7,16.3,0.0,12,5.0
+N-218,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 5,-103.361972,25.56274,165.9,45.1,0.0,12,5.0
+N-219,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.361736,25.562575,176.8,17.2,0.0,12,5.0
+N-220,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 5,-103.361854,25.562798,179.4,44.5,0.0,12,5.0
+N-221,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 5,-103.36164,25.562653,189.6,19.6,0.0,12,5.0
+N-222,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 6,-103.361533,25.562701,201.6,18.6,0.0,12,5.0
+N-223,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 6,-103.361436,25.562779,214.3,21.0,0.0,12,5.0
+N-224,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 6,-103.3612,25.562885,240.7,18.9,0.0,12,5.0
+N-225,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 6,-103.361307,25.563088,243.1,43.7,0.0,12,5.0
+N-226,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 6,-103.3612,25.563137,255.1,42.8,0.0,12,5.0
+N-227,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 6,-103.361093,25.563214,268.7,44.6,0.0,12,5.0
+N-228,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 6,-103.360996,25.563243,278.7,42.3,0.0,12,5.0
+N-229,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 6,-103.36076,25.563117,291.9,18.2,0.0,12,5.0
+N-230,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 6,-103.360631,25.563175,306.3,17.0,0.0,12,5.0
+N-231,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 6,-103.360545,25.563233,317.0,18.1,0.0,12,5.0
+N-232,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 6,-103.36046,25.563301,328.2,20.1,0.0,12,5.0
+N-233,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 6,-103.360342,25.563379,342.8,21.4,0.0,12,5.0
+N-234,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 7,-103.360234,25.563427,354.8,20.4,0.0,12,5.0
+N-235,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 7,-103.360299,25.56363,360.9,43.0,0.0,12,5.0
+N-236,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 7,-103.360116,25.563475,367.7,18.9,0.0,12,5.0
+N-237,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 7,-103.359977,25.563824,399.6,44.8,0.0,12,5.0
+N-238,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 7,-103.359773,25.563921,422.7,43.4,0.0,12,5.0
+N-239,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 7,-103.359591,25.563785,430.7,21.1,0.0,12,5.0
+N-240,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 7,-103.359226,25.564221,486.9,43.6,0.0,12,5.0
+N-241,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 7,-103.359129,25.564288,499.1,45.0,0.0,12,5.0
+N-242,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 7,-103.359022,25.564347,511.7,45.0,0.0,12,5.0
+N-243,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 8,-103.358807,25.564201,521.9,20.1,0.0,12,5.0
+N-244,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 8,-103.3587,25.564269,535.0,21.0,0.0,12,5.0
+N-245,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.358807,25.564443,535.7,43.1,0.0,12,5.0
+N-246,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.3587,25.564521,549.3,44.9,0.0,12,5.0
+N-247,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 8,-103.358496,25.564366,558.1,19.6,0.0,12,5.0
+N-248,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.358475,25.564637,575.4,44.2,0.0,12,5.0
+N-249,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.358389,25.564695,586.1,45.3,0.0,12,5.0
+N-250,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.35826,25.564763,601.0,45.1,0.0,12,5.0
+N-251,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 8,-103.358046,25.564608,610.7,19.3,0.0,12,5.0
+N-252,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.358153,25.564821,613.6,45.1,0.0,12,5.0
+N-253,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.358024,25.564879,628.0,43.9,0.0,12,5.0
+N-254,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 8,-103.357831,25.564714,635.2,18.3,0.0,12,5.0
+N-255,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.357938,25.564927,638.1,44.1,0.0,12,5.0
+N-256,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta sur · cuadra 8,-103.357735,25.564772,646.9,18.8,0.0,12,5.0
+N-257,nogal,"Foco de piso a un nogal · LED 12 W, 2700 K",Bulevar Nogal · banqueta norte · cuadra 8,-103.357842,25.564985,649.8,44.6,0.0,12,5.0
+E-001,estac,"Poste de estacionamiento · 6 m, LED 40 W",Club social · estacionamiento,-103.365455,25.559033,-345.5,-126.7,6.0,40,11.5
+E-002,estac,"Poste de estacionamiento · 6 m, LED 40 W",Club social · estacionamiento,-103.365284,25.559126,-325.5,-126.7,6.0,40,11.5
+E-003,estac,"Poste de estacionamiento · 6 m, LED 40 W",Club social · estacionamiento,-103.365114,25.559219,-305.5,-126.7,6.0,40,11.5
+E-004,estac,"Poste de estacionamiento · 6 m, LED 40 W",Club deportivo · estacionamiento,-103.364713,25.559438,-258.5,-126.7,6.0,40,11.5
+E-005,estac,"Poste de estacionamiento · 6 m, LED 40 W",Acceso · estacionamiento de visitas,-103.364095,25.558618,-252.0,-236.5,6.0,40,11.5
+E-006,estac,"Poste de estacionamiento · 6 m, LED 40 W",Club deportivo · estacionamiento,-103.364542,25.559531,-238.5,-126.7,6.0,40,11.5
+E-007,estac,"Poste de estacionamiento · 6 m, LED 40 W",Acceso · estacionamiento de visitas,-103.363941,25.558702,-234.0,-236.5,6.0,40,11.5
+E-008,estac,"Poste de estacionamiento · 6 m, LED 40 W",Club deportivo · estacionamiento,-103.364372,25.559624,-218.5,-126.7,6.0,40,11.5
+E-009,estac,"Poste de estacionamiento · 6 m, LED 40 W",Acceso · estacionamiento de visitas,-103.363787,25.558785,-216.0,-236.5,6.0,40,11.5
+Q-001,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · tenis,-103.364605,25.559188,-263.5,-156.0,6.0,200,3.0
+Q-002,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · tenis,-103.364712,25.559348,-263.5,-135.3,6.0,200,3.0
+Q-003,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · tenis,-103.364458,25.559268,-246.2,-156.0,6.0,200,3.0
+Q-004,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · tenis,-103.364564,25.559429,-246.2,-135.3,6.0,200,3.0
+Q-005,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · tenis,-103.36431,25.559349,-228.9,-156.0,6.0,200,3.0
+Q-006,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · tenis,-103.364416,25.559509,-228.9,-135.3,6.0,200,3.0
+Q-007,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · pádel 1,-103.36428,25.559409,-222.9,-151.8,6.0,200,3.0
+Q-008,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · pádel 1,-103.364344,25.559505,-222.9,-139.4,6.0,200,3.0
+Q-009,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · pádel 1,-103.364127,25.559492,-204.9,-151.8,6.0,200,3.0
+Q-010,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · pádel 1,-103.36419,25.559588,-204.9,-139.4,6.0,200,3.0
+Q-011,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · pádel 2,-103.364093,25.559511,-200.9,-151.8,6.0,200,3.0
+Q-012,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · pádel 2,-103.364156,25.559607,-200.9,-139.4,6.0,200,3.0
+Q-013,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · pádel 2,-103.363939,25.559595,-182.9,-151.8,6.0,200,3.0
+Q-014,cancha,"Proyector de cancha · 6 m, LED 200 W",Club deportivo · pádel 2,-103.364003,25.559691,-182.9,-139.4,6.0,200,3.0
+K-001,caseta,Luz de caseta y plumas · 6 × 15 W,Acceso · isla y caseta de salida,-103.364562,25.558806,-281.5,-194.5,3.0,90,11.5
+K-002,caseta,Luz de caseta y plumas · 6 × 15 W,Acceso · isla y caseta de visitas,-103.364484,25.558848,-272.4,-194.5,3.0,90,11.5
+L-001,letrero,Letrero de acceso iluminado · 2 × 30 W,Acceso · letrero poniente,-103.364368,25.558311,-293.0,-251.5,0.6,60,11.5
+L-002,letrero,Letrero de acceso iluminado · 2 × 30 W,Acceso · letrero oriente,-103.364086,25.558465,-260.0,-251.5,0.6,60,11.5

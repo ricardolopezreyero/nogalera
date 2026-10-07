@@ -117,7 +117,7 @@
         d.p.forEach(function (q) {
           var k = d.tipos[q[2]], h = HALO[k];
           L.circle([q[1], q[0]], { renderer: lienzoLuz, radius: h[0], stroke: false, fillColor: "#ffc766", fillOpacity: h[1], interactive: false }).addTo(capaLuz);
-          focos.push(L.circleMarker([q[1], q[0]], { renderer: lienzoLuz, radius: 1, chico: k === "nogal" || k === "baliza", stroke: false, fillColor: "#fff3d6", fillOpacity: 1 }).bindPopup(t[k].nombre).addTo(capaLuz));
+          focos.push(L.circleMarker([q[1], q[0]], { renderer: lienzoLuz, radius: 1, chico: k === "nogal" || k === "baliza", stroke: false, fillColor: "#fff3d6", fillOpacity: 1 }).bindPopup("<b>" + (q[3] || "") + "</b> · " + t[k].nombre + (q[4] ? "<br>" + q[4] : "")).addTo(capaLuz));
         });
         if ($("luz")) $("luz").innerHTML =
           "<p><b>" + nf0.format(r.puntos) + " puntos de luz</b> que paga y mantiene el fraccionamiento. Luz cálida y baja; los focos de los nogales se apagan a medianoche.</p><ul>" +

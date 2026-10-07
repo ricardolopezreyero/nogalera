@@ -33,11 +33,11 @@ Agua potable,Tomas domiciliarias,"PEAD Ø 1/2"" con abrazadera, llave de banquet
 Electricidad,Red subterránea por lote,"Media tensión 13.2 kV en anillo, transformadores pedestal monofásicos de 75 kVA (uno cada ≈ 16 casas), baja tensión 240/120 V, ductos y registros, según norma CFE de distribución subterránea",1105,lote,46000,50830000
 Electricidad,Transformadores trifásicos,"Pedestal trifásico para club, acceso y súper, y planta con bombeo",4,pza,420000,1680000
 Electricidad,Aportación y obras de conexión CFE,Por confirmar con la factibilidad de CFE,1,lote,6000000,6000000
-Alumbrado,Arbotantes de calle,Ya contados en la capa de iluminación (los de paisaje y acceso se suman aparte),441,pza,26000,11466000
+Alumbrado,Arbotantes de calle,Ya contados en la capa de iluminación (los de paisaje y acceso se suman aparte),427,pza,26000,11102000
 Telecomunicaciones,Ductería,"3 ductos PAD Ø 2"" (2 para operadores y 1 de reserva) bajo la banqueta norte, registro cada 50 m; red abierta a cualquier operador de fibra",12825.0,m,210,2693251
 Barda y accesos,Barda perimetral,"Block de concreto 15 cm, 2.8 m de alto, castillos cada 3 m, aplanado y pintura; cimentación corrida",3261.7,m,4800,15656045
 Barda y accesos,Salida de emergencia,"Portón de 6 m con cerradura de bomberos, a la calle del norte",1,pza,180000,180000
 Barda y accesos,Acopio de basura y reciclaje,"Cuarto ventilado con 6 contenedores y lavado, junto a la salida y antes de las plumas: el camión no entra",1,pza,650000,650000
-Indirectos,Proyecto ejecutivo y estudios,"Topografía, mecánica de suelos, prueba de infiltración, proyecto ejecutivo de todas las redes y trámites",1,global,10920263,10920263
-Indirectos,Supervisión y laboratorio,"Control de calidad de concretos, compactaciones y pruebas de hermeticidad y presión",1,global,8736210,8736210
-Indirectos,Imprevistos,5 % sobre la obra,1,global,21840526,21840526
+Indirectos,Proyecto ejecutivo y estudios,"Topografía, mecánica de suelos, prueba de infiltración, proyecto ejecutivo de todas las redes y trámites",1,global,10911163,10911163
+Indirectos,Supervisión y laboratorio,"Control de calidad de concretos, compactaciones y pruebas de hermeticidad y presión",1,global,8728930,8728930
+Indirectos,Imprevistos,5 % sobre la obra,1,global,21822326,21822326

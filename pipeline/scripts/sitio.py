@@ -6,7 +6,7 @@ from html import escape as e
 AQUI = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, AQUI)
 RAIZ = os.path.abspath(os.path.join(AQUI, "..", ".."))
 PUB = os.path.join(RAIZ, "public"); DAT = os.path.join(PUB, "datos")
-import n6_casa_planta as CP, n6_casa_dibujos as CD, n6_fachadas as NF, n6_acceso as AC, n6_acceso_calc as ACC, n6_terreno as TE, n6_fideicomiso as FI
+import n6_casa_planta as CP, n6_casa_dibujos as CD, n6_fachadas as NF, n6_acceso as AC, n6_acceso_calc as ACC, n6_terreno as TE, n6_fideicomiso as FI, n6_casa3d as C3D
 
 FC = json.load(open(f"{DAT}/confort.geojson")); R = FC["resumen"]; GROSS = FC["bruto_m2"]
 SV = json.load(open(f"{DAT}/servicios.json")); LZ = json.load(open(f"{DAT}/luces.json"))["resumen"]
@@ -30,7 +30,7 @@ ha = lambda m2: f"{m2/1e4:,.1f} ha"
 SECCIONES = [
     ("", "Resumen", "01"), ("terreno", "El terreno", "02"), ("plan", "Plan maestro", "03"), ("calles", "Calles y direcciones", "04"),
     ("acceso", "Acceso", "05"), ("casa", "Casa Modelo Nogal", "06"), ("fachadas", "Fachadas", "07"), ("servicios", "Servicios", "08"),
-    ("iluminacion", "Iluminación", "09"), ("numeros", "Números y fideicomiso", "10"), ("etapas", "Etapas y siguientes pasos", "11"),
+    ("iluminacion", "Iluminación", "09"), ("pista", "Pista y gimnasio", "10"), ("numeros", "Números y fideicomiso", "11"), ("etapas", "Etapas y siguientes pasos", "12"),
     None, ("nogaleras", "Nogaleras de La Laguna", "A"), ("datos", "Datos para descargar", "B"),
 ]
 def menu(actual, sub):
@@ -223,7 +223,8 @@ def resumen():
             ("casa", "Casa Modelo Nogal", "Plantas amuebladas, azotea, corte, conjunto y fachadas: todos los planos."),
             ("fachadas", "Fachadas", "Nueve fachadas distintas sobre la misma casa, y cómo se reparten en cada cuadra."),
             ("servicios", "Servicios", "Drenaje pluvial y sanitario, planta de tratamiento, agua, luz y fibra, con especificaciones y presupuesto."),
-            ("iluminacion", "Iluminación", f"{f0(LZ['puntos'])} puntos de luz: arbotantes, nogales iluminados, balizas y acceso."),
+            ("iluminacion", "Iluminación", f"{f0(LZ['puntos'])} puntos de luz, cada uno en su lugar y con su clave: arbotantes, nogales iluminados, balizas y acceso."),
+            ("pista", "Pista y gimnasio", "La pista de 3.3 km bajo los nogales, con estaciones y vueltas, y el gimnasio del club social."),
             ("numeros", "Números y fideicomiso", "Cómo opera el fideicomiso, qué recibe cada quien y el flujo de efectivo mes a mes."),
             ("etapas", "Etapas y siguientes pasos", "Cuatro etapas desde el acceso, calendario y lo que hay que confirmar.")]
     cuerpo = f"""
@@ -403,6 +404,18 @@ def casa():
 <p>Un solo modelo para todo el fraccionamiento: un juego de planos, de moldes y de compras. Todos los lotes miden casi lo mismo (el promedio es de {statistics.mean(p['m2'] for p in LOTES):.0f} m²) y la casa mide 9 m de ancho, así que deja 1.5 m o más libres a cada lado en todos. Lo que cambia es la <a href="/fachadas/">fachada</a>: nueve distintas.</p>
 <p><b>Todas las medidas de las plantas son libres, a paño interior de muro</b>: lo que de verdad queda para los muebles. Muros exteriores de 20 cm e interiores de 12 cm. Los muebles están dibujados a escala con medidas comerciales.</p>
 
+<h2 id="3d">La casa en 3D</h2>
+<p>Gírala con el ratón o el dedo, acércala con la rueda, quítale el techo o la planta alta para ver cómo está por dentro. Está amueblada tal como las plantas. Fachada <a href="/fachadas/#f-horizonte">Horizonte</a>.</p>
+<div class="visor3d">
+  <canvas id="c3d" aria-label="Modelo 3D de la casa, con muebles"></canvas>
+  <div class="botones">
+    <button type="button" data-capa="techo" aria-pressed="true">Techo</button><button type="button" data-capa="pa" aria-pressed="true">Planta alta</button><button type="button" data-capa="muebles" aria-pressed="true">Muebles</button><button type="button" data-capa="arboles" aria-pressed="true">Nogales</button>
+    <span class="sep"></span><button type="button" data-vista="esquina">Esquina</button><button type="button" data-vista="frente">Frente</button><button type="button" data-vista="jardin">Jardín</button><button type="button" data-vista="lado">Lado</button><button type="button" data-vista="planta">Desde arriba</button>
+    <span class="sep"></span><button type="button" data-zoom="1" aria-label="Acercar">+</button><button type="button" data-zoom="-1" aria-label="Alejar">−</button>
+  </div>
+</div>
+<p class="nota">Modelo generado desde las mismas plantas: muros de 20 y 12 cm, ventanas, puertas, escalera, muebles a escala, portal, cochera, patio con bodega y los nogales de los linderos.</p>
+
 <h2 id="conjunto">Planta de conjunto</h2>
 <div class="dos">
   <figure>{CD.emplazamiento("norte")}<figcaption><b>Lotes del lado norte de la calle:</b> jardín al NNO. La sala queda fresca todo el año; el sol de la tarde de verano entra de lado al portal, donde van una celosía corrediza y los nogales del fondo.</figcaption></figure>
@@ -462,8 +475,8 @@ def casa():
 <p class="nota">Anteproyecto: falta revisar el reglamento de construcción de Torreón (restricciones, coeficientes) y el cálculo estructural.</p>
 """
     pagina("casa", "Casa Modelo Nogal", "06 · Casa Modelo Nogal", "Una sola casa de 243 m² para todo el fraccionamiento: 4 recámaras, cada una con clóset de paso y baño, y lugar para guardar todo. Todos los planos.", cuerpo,
-           [("conjunto", "Planta de conjunto"), ("plantas", "Planta baja y alta"), ("azotea", "Azotea y corte"), ("alzados", "Alzados"), ("guardado", "Dónde se guarda"), ("torreon", "Para Torreón")],
-           head=CD.DEFS)
+           [("3d", "La casa en 3D"), ("conjunto", "Planta de conjunto"), ("plantas", "Planta baja y alta"), ("azotea", "Azotea y corte"), ("alzados", "Alzados"), ("guardado", "Dónde se guarda"), ("torreon", "Para Torreón")],
+           head=CD.DEFS, script='<script>window.CASA3D=' + json.dumps(C3D.MODELO, separators=(",", ":")) + '</script><script src="/casa/modelo3d.js"></script>')
 
 # ======================= FACHADAS =======================
 def fachadas():
@@ -580,31 +593,8 @@ def servicios():
            head='<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">',
            script='<script>window.PLAN={datos:"/datos/",modo:"servicio",servicio:"pluvial",rueda:false};</script><script src="/vendor/leaflet/leaflet.js"></script><script src="/plan/plan.js"></script>')
 
-# ======================= ILUMINACIÓN =======================
-def iluminacion():
-    t = LZ["tipos"]; orden = ["calle", "bulevar", "nogal", "baliza", "peatonal", "acceso", "caseta", "letrero", "estac", "cancha"]
-    cuerpo = f"""
-{kpis([("Puntos de luz", f0(LZ['puntos']), "que paga y mantiene el fraccionamiento"), ("Nogales iluminados", f0(LZ['nogales_iluminados']), "desde el piso, en bulevar, parques, club y acceso"), ("Inversión", mill(LZ['inversion']), f"{mill(LZ['inversion_calles'])} de calle + {mill(LZ['inversion_paisaje'])} de paisaje"),
-       ("Energía", f"{f0(LZ['kwh_anual'])} kWh/año", f"${f0(LZ['energia_anual'])} al año"), ("Mantenimiento", f"${f0(LZ['mantenimiento_anual'])}", "al año, 4 % de la inversión"), ("Por casa", f"${f0(LZ['cuota_casa_mes'])}", "al mes, dentro de la cuota")])}
-<div class="mapa-chico"><div id="map" role="region" aria-label="Vista de noche del plan maestro"></div></div>
-<p class="nota">Vista de noche: cada punto cálido es una luminaria; el halo es lo que ilumina. Toca un punto para ver qué es.</p>
-<h2 id="idea">La idea</h2>
-<p><b>Luz cálida y baja, y los nogales como protagonistas.</b> Las calles se iluminan con arbotantes de 6 m puestos entre los árboles, a tresbolillo, corridos para no quedar junto a ningún tronco. En el bulevar, los parques, el club y la plaza de acceso, cada nogal tiene un foco de piso que lo ilumina desde abajo: de noche se ve la arboleda. El acceso lleva postes más altos, las casetas y el letrero bien iluminados, y la pista para correr, balizas cada 20 m.</p>
-<ul>
-<li><b>2700 a 3000 K</b> en todo: nada de luz blanca azulosa. Ópticas que alumbran hacia abajo, sin deslumbrar ni iluminar ventanas.</li>
-<li><b>Horarios:</b> arbotantes y balizas toda la noche; los focos de los nogales se apagan a medianoche; las canchas, solo cuando se usan.</li>
-<li><b>Todo subterráneo</b>, en los ductos de la banqueta, con fotocelda y reloj por circuito.</li>
-</ul>
-<h2 id="cuenta">Cuántas y de qué tipo</h2>
-{tabla([(e(t[k]['nombre']), f0(t[k]['n']), f"${f0(t[k]['costo'])}", f"${f0(t[k]['n'] * t[k]['costo'])}", f"{t[k]['watts']} W · {t[k]['horas']:.0f} h") for k in orden], ["Luminaria", "Cuántas", "Costo instalado", "Importe", "Potencia · horas por noche"],
-       "", ("<b>Total</b>", f"<b>{f0(LZ['puntos'])}</b>", "", f"<b>${f0(LZ['inversion'])}</b>", f"{f0(LZ['kwh_anual'])} kWh al año"))}
-<p>Los {f0(t['calle']['n'])} arbotantes de calle ({mill(LZ['inversion_calles'])}) van dentro del presupuesto de urbanización; el resto ({mill(LZ['inversion_paisaje'])}: nogales, bulevar, parques, pista y acceso) se suma aparte como iluminación de paisaje. La energía (a $5/kWh de alumbrado) y el mantenimiento (4 % de la inversión al año) suman ${f0(LZ['cuota_casa_mes'])} por casa al mes, ya incluidos en la <a href="/numeros/#cuota">cuota de mantenimiento</a>.</p>
-<p class="nota">Costos de luminarias de 2026 con su parte de cable y ducto; tarifa de alumbrado aproximada. Un render de la vista nocturna puede salir de la capa de luces (<code>datos/luces.json</code>).</p>
-"""
-    pagina("iluminacion", "Iluminación", "09 · Iluminación", f"{f0(LZ['puntos'])} puntos de luz cálida: arbotantes entre los nogales, nogales iluminados desde el piso, balizas en la pista y el acceso bien iluminado.", cuerpo,
-           [("idea", "La idea"), ("cuenta", "Cuántas y de qué tipo")],
-           head='<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">',
-           script='<script>window.PLAN={datos:"/datos/",modo:"noche",rueda:false};</script><script src="/vendor/leaflet/leaflet.js"></script><script src="/plan/plan.js"></script>')
+# ======================= ILUMINACIÓN, PISTA Y GIMNASIO, 3D (sitio_extra.py) =======================
+exec(open(os.path.join(AQUI, "sitio_extra.py"), encoding="utf-8").read())
 
 # ======================= NÚMEROS Y FIDEICOMISO =======================
 def esquema_fideicomiso():
@@ -746,7 +736,7 @@ def numeros():
 <p>Más el agua: ${f0(FI.CUOTA_AGUA)} por casa al mes, con el pozo, la cisterna y la planta de tratamiento operados por nosotros. Con las {f0(N)} casas habitadas, la operación cobra {mill(MOD['flujo'][-1]['cuotas'], 2)} al mes; la cuota cubre seguridad 24 horas, los nogales regados y podados, la planta, la iluminación, el club y un fondo de reserva.</p>
 <p class="nota">Cuentas en pesos de 2026, antes de impuestos. El fideicomiso de desarrollo lo administra un banco: el dueño aporta el terreno libre de gravámenes, el inversionista pone la obra, nosotros el proyecto, la gestión y las ventas, y el banco le paga a cada quien su parte de cada cobro. Todo sale de <code>pipeline/scripts/n6_fideicomiso.py</code>.</p>
 """
-    pagina("numeros", "Números y fideicomiso", "10 · Números y fideicomiso", f"El dueño aporta el terreno y cobra el {pct(X_DUENO)} de cada venta; el inversionista pone la obra; nosotros cobramos en lotes y operamos el agua y el mantenimiento.", cuerpo,
+    pagina("numeros", "Números y fideicomiso", "11 · Números y fideicomiso", f"El dueño aporta el terreno y cobra el {pct(X_DUENO)} de cada venta; el inversionista pone la obra; nosotros cobramos en lotes y operamos el agua y el mantenimiento.", cuerpo,
            [("esquema", "Cómo opera"), ("reparto", "Qué recibe cada quien"), ("flujo", "Flujo de efectivo"), ("ventas", "Ventas y obra"), ("porque", f"De dónde sale el {pct(X_DUENO)}"), ("cuota", "Mantenimiento y agua")])
 
 # ======================= ETAPAS =======================
@@ -797,7 +787,7 @@ def etapas():
 </ol>
 <p class="nota">El calendario es un supuesto de trabajo con el ritmo de ventas del modelo ({TE.RITMO} lotes al mes). Los plazos de trámites dependen del municipio y de los organismos.</p>
 """
-    pagina("etapas", "Etapas y siguientes pasos", "11 · Etapas y siguientes pasos", "Cuatro etapas que crecen desde el acceso, un calendario de obra y ventas, y la lista de lo que hay que confirmar para arrancar.", cuerpo,
+    pagina("etapas", "Etapas y siguientes pasos", "12 · Etapas y siguientes pasos", "Cuatro etapas que crecen desde el acceso, un calendario de obra y ventas, y la lista de lo que hay que confirmar para arrancar.", cuerpo,
            [("calendario", "Calendario"), ("siguientes", "Siguientes pasos")])
 
 # ======================= NOGALERAS (mapa de La Laguna) =======================
@@ -845,7 +835,7 @@ def nogaleras():
 # ======================= DATOS =======================
 def datos():
     archivos = [("confort.geojson", "Plan maestro: lotes con dirección y fachada, calles, club, parques, planta, con el resumen de cifras del proyecto."), ("arboles_confort.json", "Los 2,305 nogales: longitud, latitud, si se reubica y altura."),
-                ("servicios.geojson", "Redes: drenaje pluvial y sanitario, agua, agua tratada, transformadores, cruces elevados, salida de emergencia."), ("luces.json", "Los 1,027 puntos de luz, por tipo."),
+                ("servicios.geojson", "Redes: drenaje pluvial y sanitario, agua, agua tratada, transformadores, cruces elevados, salida de emergencia."), ("luces.json", "Los puntos de luz, por tipo, con clave y zona."), ("luminarias.csv", "Inventario de luminarias: clave, tipo, dónde está, coordenadas, altura y potencia."),
                 ("servicios.json", "Todos los cálculos de servicios, partidas y cuota."), ("especificaciones.csv", "Hoja de especificaciones y presupuesto de urbanización, partida por partida."), ("etapas.json", "Etapa de construcción de cada lote."),
                 ("nogaleras.geojson", "Todas las nogaleras de La Laguna, con superficie, estado y precio estimado."), ("nogaleras.csv", "Lo mismo en tabla."), ("base.geojson", "Fondo vectorial de La Laguna (OpenStreetMap vía Overture).")]
     filas = []
@@ -867,4 +857,4 @@ def datos():
     pagina("datos", "Datos para descargar", "B · Datos", "Los archivos con los que está hecho el proyecto, para abrirlos en QGIS, Excel o cualquier otro programa.", cuerpo, [("como", "Cómo se hizo")])
 
 if __name__ == "__main__":
-    for fn in (resumen, terreno, plan, calles, acceso, casa, fachadas, servicios, iluminacion, numeros, etapas, nogaleras, datos): fn()
+    for fn in (resumen, terreno, plan, calles, acceso, casa, fachadas, servicios, iluminacion, pista, numeros, etapas, nogaleras, datos): fn()

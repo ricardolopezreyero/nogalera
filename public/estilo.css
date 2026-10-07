@@ -115,7 +115,7 @@ tr.eq td { border-bottom: 2px solid var(--tinta); }
 table.spec td:nth-child(2), table.spec th:nth-child(2) { text-align: left; color: #333; min-width: 18rem; }
 table.cuartos td:nth-child(2), table.cuartos td:nth-child(3) { white-space: nowrap; }
 table.cuartos td:last-child, table.cuartos th:last-child { text-align: left; }
-table.compacta { max-width: 32rem; }
+table.compacta { max-width: 32rem; } table.compacta td { white-space: nowrap; }
 
 /* ---------- Dibujos (SVG) ---------- */
 .dibujo svg, figure svg { width: 100%; height: auto; display: block; color: var(--tinta); }
@@ -323,3 +323,11 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
 .puntos { columns: 2; column-gap: 2rem; max-width: 52rem; padding-left: 0; list-style: none; font-size: 0.9rem; }
 .puntos li { break-inside: avoid; margin: 0.2rem 0; }
 @media (max-width: 40rem) { .puntos { columns: 1; } }
+/* visor 3D */
+.visor3d { position: relative; border: 1px solid var(--linea); height: 36rem; margin: 0.75rem 0; background: #fff; touch-action: none; }
+.visor3d canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+.visor3d .botones { position: absolute; top: 0.5rem; left: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; max-width: calc(100% - 1rem); }
+.visor3d .botones button { font-size: 0.8125rem; padding: 0.25rem 0.55rem; min-height: 1.9rem; }
+.visor3d .botones button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); }
+.visor3d .botones .sep { width: 0.5rem; }
+@media (max-width: 60rem) { .visor3d { height: 24rem; } }
