@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Render fotorrealista · La Nogalera</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/estilo.css">
+<script type="importmap">{ "imports": { "three": "/vendor/three/three.module.js", "three/addons/": "/vendor/three/addons/" } }</script>
+<style>
+  body { padding: 1rem var(--gutter); } .foto-ui { display: grid; gap: 0.75rem; max-width: 72rem; }
+  #foto-canvas { width: 100%; height: auto; background: #223; display: block; border: 1px solid var(--linea); }
+  .foto-ctl { display: flex; gap: 0.5rem 1rem; flex-wrap: wrap; align-items: end; } .foto-ctl label { display: grid; gap: 0.2rem; font-size: 0.8125rem; }
+</style>
+</head>
+<body>
+<div class="foto-ui">
+<p><a href="/renders/">← Renders</a> · <b>Render fotorrealista</b> (WebGL). Elige escena, vista y hora; tarda unos segundos por imagen.</p>
+<div class="foto-ctl">
+  <label>Escena <select id="f-escena" class="sel"></select></label>
+  <label>Vista <select id="f-vista" class="sel"></select></label>
+  <label>Hora <select id="f-hora" class="sel"><option value="dia">Mediodía</option><option value="tarde">Tarde</option><option value="atardecer">Atardecer</option><option value="noche">Noche</option></select></label>
+  <label>Tamaño <select id="f-res" class="sel"><option value="1280x720">1280 × 720</option><option value="1920x1080" selected>1920 × 1080</option><option value="2560x1440">2560 × 1440</option><option value="3840x2160">3840 × 2160</option></select></label>
+  <label><input type="checkbox" id="f-autos"> autos</label><label><input type="checkbox" id="f-gente"> gente</label>
+  <button type="button" id="f-render" class="boton">Renderizar</button><button type="button" id="f-descargar">Descargar JPG</button><button type="button" data-pase="depth">Profundidad</button><button type="button" data-pase="normal">Normales</button><button type="button" data-pase="lineart">Líneas</button>
+</div>
+<p id="f-estado" class="nota">Cargando…</p>
+<canvas id="foto-canvas" width="1920" height="1080"></canvas>
+</div>
+<script type="module">
+import Foto3D from "/render/foto3d.js";
+const $ = id => document.getElementById(id), cv = $("foto-canvas"), estado = $("f-estado");
+let F = null, indice = [], escena = null, ultimo = null;
+const API = window.FOTO = { listo: null };
+function q(k) { return new URLSearchParams(location.search).get(k); }
+async function cargarEscena(id) {
+  escena = indice.find(e => e.id === id) || indice[0]; estado.textContent = "Cargando " + escena.titulo + "…";
+  const d = await (await fetch("/datos/escenas/" + escena.id + ".json")).json(); d.id = escena.id;
+  F = new Foto3D(cv); F.opciones.autos = $("f-autos").checked; F.opciones.gente = $("f-gente").checked; await F.cargar(d);
+  $("f-vista").innerHTML = '<option value="">(principal)</option>' + Object.keys(d.vistas || {}).map(k => `<option value="${k}">${k}</option>`).join("");
+  $("f-hora").value = d.hora || "dia"; estado.textContent = escena.titulo + " · " + d.prismas.length.toLocaleString("es-MX") + " piezas · " + (F.nHojas || 0).toLocaleString("es-MX") + " hojas. Listo para renderizar.";
+  return d;
+}
+API.render = async function (o) {
+  // o: { escena, vista, hora, cam (parcial), w, h, autos, gente } → dataURL JPEG
+  if (o.autos !== undefined) $("f-autos").checked = o.autos; if (o.gente !== undefined) $("f-gente").checked = o.gente;
+  if (!F || F.esc.id !== o.escena || o.autos !== undefined || o.gente !== undefined) await cargarEscena(o.escena);
+  const cam = Object.assign({}, (o.vista && F.esc.vistas && F.esc.vistas[o.vista]) || F.esc.cam, o.cam || {});
+  const t0 = performance.now(); const url = F.imagen({ cam, hora: o.hora, w: o.w, h: o.h, calidad: o.calidad || 0.92 });
+  ultimo = url; estado.textContent = "Listo en " + Math.round((performance.now() - t0) / 100) / 10 + " s"; return url;
+};
+API.control = async function (o) {
+  // o: { escena, vista, cam, w, h, tipo: "depth" | "normal" | "lineart" } → dataURL PNG (mapas para ControlNet)
+  if (!F || F.esc.id !== o.escena) await cargarEscena(o.escena);
+  const cam = Object.assign({}, (o.vista && F.esc.vistas && F.esc.vistas[o.vista]) || F.esc.cam, o.cam || {});
+  return F.control({ cam, w: o.w, h: o.h }, o.tipo);
+};
+API.listo = (async () => {
+  indice = await (await fetch("/datos/escenas/index.json")).json();
+  $("f-escena").innerHTML = indice.map(e => `<option value="${e.id}">${e.titulo}</option>`).join("");
+  $("f-escena").value = q("escena") || indice[0].id; await cargarEscena($("f-escena").value);
+  if (q("vista")) $("f-vista").value = q("vista"); if (q("hora")) $("f-hora").value = q("hora");
+  return true;
+})();
+$("f-escena").addEventListener("change", () => cargarEscena($("f-escena").value));
+$("f-render").addEventListener("click", async () => {
+  const [w, h] = $("f-res").value.split("x").map(Number); estado.textContent = "Renderizando " + w + " × " + h + "…";
+  await new Promise(r => setTimeout(r, 30));
+  await API.render({ escena: $("f-escena").value, vista: $("f-vista").value, hora: $("f-hora").value, w, h, autos: $("f-autos").checked, gente: $("f-gente").checked });
+});
+document.querySelectorAll("[data-pase]").forEach(b => b.addEventListener("click", async () => {
+  const [w, h] = $("f-res").value.split("x").map(Number); estado.textContent = "Pase " + b.dataset.pase + "…"; await new Promise(r => setTimeout(r, 30));
+  const url = await API.control({ escena: $("f-escena").value, vista: $("f-vista").value, w, h, tipo: b.dataset.pase });
+  if (b.dataset.pase === "lineart") { const im = new Image(); im.onload = () => { cv.getContext("2d") || 0; }; }
+  ultimo = url; estado.textContent = "Pase " + b.dataset.pase + " listo (descárgalo con el botón)."; if (b.dataset.pase === "lineart") { const im = new Image(); im.src = url; im.style.maxWidth = "100%"; cv.insertAdjacentElement("afterend", im); }
+}));
+$("f-descargar").addEventListener("click", () => { if (!ultimo) return; const a = document.createElement("a"); a.href = ultimo; a.download = "nogalera-foto-" + escena.id + "-" + $("f-hora").value + ".jpg"; a.click(); });
+</script>
+</body>
+</html>

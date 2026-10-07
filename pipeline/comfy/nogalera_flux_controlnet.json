@@ -1,0 +1,23 @@
+{
+ "1": {"class_type": "UNETLoader", "inputs": {"unet_name": "flux1-dev.safetensors", "weight_dtype": "default"}},
+ "2": {"class_type": "DualCLIPLoader", "inputs": {"clip_name1": "t5xxl_fp16.safetensors", "clip_name2": "clip_l.safetensors", "type": "flux"}},
+ "3": {"class_type": "VAELoader", "inputs": {"vae_name": "ae.safetensors"}},
+ "4": {"class_type": "ControlNetLoader", "inputs": {"control_net_name": "FLUX.1-dev-ControlNet-Union-Pro-2.0.safetensors"}},
+ "5": {"class_type": "CLIPTextEncode", "inputs": {"clip": ["2", 0], "text": "PROMPT"}},
+ "6": {"class_type": "CLIPTextEncode", "inputs": {"clip": ["2", 0], "text": "cartoon, illustration, painting, low quality, blurry, deformed, text, watermark, people with distorted faces, toy, miniature, lowpoly"}},
+ "7": {"class_type": "FluxGuidance", "inputs": {"conditioning": ["5", 0], "guidance": 3.5}},
+ "8": {"class_type": "LoadImage", "inputs": {"image": "DEPTH.png"}},
+ "9": {"class_type": "LoadImage", "inputs": {"image": "LINEART.png"}},
+ "10": {"class_type": "SetUnionControlNetType", "inputs": {"control_net": ["4", 0], "type": "depth"}},
+ "11": {"class_type": "ControlNetApplyAdvanced", "inputs": {"positive": ["7", 0], "negative": ["6", 0], "control_net": ["10", 0], "image": ["8", 0], "vae": ["3", 0], "strength": 0.65, "start_percent": 0.0, "end_percent": 0.8}},
+ "12": {"class_type": "SetUnionControlNetType", "inputs": {"control_net": ["4", 0], "type": "canny/lineart/anime_lineart/mlsd"}},
+ "13": {"class_type": "ImageInvert", "inputs": {"image": ["9", 0]}},
+ "14": {"class_type": "ControlNetApplyAdvanced", "inputs": {"positive": ["11", 0], "negative": ["11", 1], "control_net": ["12", 0], "image": ["13", 0], "vae": ["3", 0], "strength": 0.45, "start_percent": 0.0, "end_percent": 0.6}},
+ "15": {"class_type": "EmptySD3LatentImage", "inputs": {"width": 2048, "height": 1152, "batch_size": 1}},
+ "16": {"class_type": "KSampler", "inputs": {"model": ["1", 0], "positive": ["14", 0], "negative": ["14", 1], "latent_image": ["15", 0], "seed": 20261007, "steps": 28, "cfg": 1.0, "sampler_name": "euler", "scheduler": "simple", "denoise": 1.0}},
+ "17": {"class_type": "VAEDecode", "inputs": {"samples": ["16", 0], "vae": ["3", 0]}},
+ "18": {"class_type": "UpscaleModelLoader", "inputs": {"model_name": "RealESRGAN_x4plus.safetensors"}},
+ "19": {"class_type": "ImageUpscaleWithModel", "inputs": {"upscale_model": ["18", 0], "image": ["17", 0]}},
+ "20": {"class_type": "ImageScaleBy", "inputs": {"image": ["19", 0], "upscale_method": "lanczos", "scale_by": 0.5}},
+ "21": {"class_type": "SaveImage", "inputs": {"images": ["20", 0], "filename_prefix": "nogalera/NOMBRE"}}
+}

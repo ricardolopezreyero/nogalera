@@ -38,6 +38,8 @@ def renders():
     <textarea id="cr-ajustes" rows="3" readonly aria-label="Ajustes del encuadre"></textarea>
   </div>
 </div>
+<h2 id="foto">Render fotorrealista (WebGL) y mapas de control</h2>
+<p>El mismo modelo, renderizado con materiales físicos, follaje de hojas, cielo con sol, sombras suaves y oclusión ambiental: <a href="/renders/foto/">abrir el render fotorrealista</a>. Además saca los mapas de <b>profundidad, normales y líneas</b> de cada encuadre, que son lo que una IA con ControlNet (FLUX) necesita para convertir el modelo en una fotografía respetando la geometría exacta. La tubería completa, con el flujo de ComfyUI para una máquina con GPU, está en <code>pipeline/comfy/README.md</code>; los renders de concurso se generan con <code>node pipeline/scripts/fotos.js --control</code>.</p>
 <h2 id="ia">Render fotorrealista con IA</h2>
 <p>Toma el encuadre que tengas arriba en el creador, lo manda como referencia al modelo de imágenes de OpenAI junto con un prompt muy detallado del proyecto (nogales pecaneros, las nueve fachadas, materiales, luz de Torreón) y devuelve una fotografía. La llave de OpenAI vive en los secretos del Worker de Cloudflare, nunca en el sitio; la clave de abajo es la contraseña que protege el gasto. Cada imagen en alta calidad cuesta centavos de dólar y tarda de 30 a 90 segundos.</p>
 <div class="creador">
@@ -56,5 +58,5 @@ def renders():
 <p class="nota">Las escenas están en <code>public/datos/escenas/</code> y las arma <code>pipeline/scripts/n6_escenas.py</code> (casas con sus nueve fachadas, calles, nogales, autos y gente). Para agregar una escena nueva se escribe ahí, con las mismas piezas. Los diez renders de arriba se generan con <code>pipeline/scripts/renders.js</code>.</p>
 """
     pagina("renders", "Renders", "08 · Renders", "Los diez renders que más venden La Nogalera, hechos con la geometría real del proyecto, y el creador para hacer todos los demás.", cuerpo,
-           [("crear", "Creador de renders"), ("ia", "Render fotorrealista con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
+           [("crear", "Creador de renders"), ("foto", "Render fotorrealista (WebGL)"), ("ia", "Render fotorrealista con IA")], script='<script src="/render/render3d.js"></script><script src="/renders/creador.js"></script>',
            descripcion="Renders de La Nogalera: la calle bajo los nogales, la casa, el acceso, el bulevar, el parque, la pista, el interior y el jardín; y el creador de renders.")

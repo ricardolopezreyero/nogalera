@@ -474,6 +474,27 @@ INDICE.append(guardar(E, dict(titulo="La calle de noche", porque="Los nogales il
     hora="noche", centro=[0, 0, 2.0], dist=40, suelo_z=-0.32, contornos=0.35, bruma=[40, 160], cam=ojo((-34, 0.6, 1.7), (40, 0, 3.0), 58),
     vistas=dict(peaton=ojo((-34, 0.6, 1.7), (40, 0, 3.0), 58), banqueta=ojo((-30, 4.2, 1.7), (30, -2, 3.0), 60), alta=ojo((-50, -30, 22), (10, 2, 2), 55)))))
 
+# ---------- 12 · Las nueve fachadas, una por lote, para los renders de concurso ----------
+E = Escena("fachadas"); E.suelo(-120, -80, 120, 80, -0.5, COL["tierra"])
+E.calle(-57.15, 57.15, 0.0, lotes=False, arbotantes=False, gente=0, arboles=False)
+VF = {}
+for i, f in enumerate(SEQ):
+    xa = -57.15 + i * LOTE_W
+    E.lote(f, xa, 5.5, 0.0, auto=False)
+    E.nogal(xa, 6.4, 0.9 + 0.1 * (i % 2), alza=1.4)                    # el nogal en la esquina del lote, con la copa alzada para despejar la fachada
+    cx = xa + LOTE_W / 2
+    VF["f%d_%s" % (i + 1, f.lower().replace("í", "i"))] = ojo((cx + 13, -9.5, 1.6), (cx - 0.5, 5.5 + 5.0, 3.4), 40)
+    VF["frente_%d" % (i + 1)] = ojo((cx, -16, 1.7), (cx, 5.5 + 6, 3.4), 36)
+E.nogal(57.15, 6.4, 1.0, alza=1.4)
+for i in range(9): E.lote(SEQ[(i + 4) % 9], -57.15 + (i + 1) * LOTE_W, -5.5, math.pi, auto=False); E.nogal(-57.15 + i * LOTE_W, -6.4, 1.0)
+E.nogal(57.15, -6.4, 1.0)
+for xx in (-45, -20, 5, 30, 55): E.arbotante(xx, -4.6, 6.0, 1.3, 1)
+VF["lejos"] = ojo((-110, -22, 2.2), (10, 8, 4.0), 24)                  # la cuadra de lejos, con lente larga
+VF["cuadra"] = ojo((-70, -30, 12), (0, 8, 3.0), 34)
+VF["alta"] = ojo((-60, -55, 38), (0, 10, 2.0), 40)
+INDICE.append(guardar(E, dict(titulo="Las nueve fachadas", porque="Una cuadra con las nueve fachadas seguidas, de frente y en escorzo, de cerca y de lejos: la imagen de concurso de cada una.",
+    hora="tarde", centro=[0, 8, 3], dist=40, suelo_z=-0.32, contornos=0.5, bruma=[60, 180], cam=VF["f9_horizonte"], vistas=VF)))
+
 json.dump(INDICE, open(os.path.join(OUT, "index.json"), "w"), ensure_ascii=False, indent=1)
 if __name__ == "__main__":
     for e in INDICE: print(e["id"], e["prismas"], "prismas")

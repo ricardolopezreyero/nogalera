@@ -1,7 +1,7 @@
 [
  {
   "id": "calle",
-  "prismas": 1856,
+  "prismas": 1919,
   "titulo": "La calle bajo los nogales",
   "porque": "Es lo que nadie más puede ofrecer en Torreón: una calle de casas nuevas ya sombreada por nogales de 10 m. Vende el lugar antes que la casa.",
   "hora": "dia",
@@ -67,7 +67,7 @@
  },
  {
   "id": "casa",
-  "prismas": 1608,
+  "prismas": 1615,
   "titulo": "Modelo Nogal · fachada Horizonte",
   "porque": "La casa que se vende: 4 recámaras con baño, 243 m², y la fachada que la hace distinta de la de al lado. Con la vecina de ladrillo y la de duela se ve que no hay dos iguales.",
   "hora": "tarde",
@@ -133,7 +133,7 @@
  },
  {
   "id": "aerea",
-  "prismas": 21077,
+  "prismas": 21032,
   "titulo": "La Nogalera desde el aire",
   "porque": "Las 1,105 casas entre 1,943 nogales, el bulevar, el club, los parques y la pista alrededor: el comprador entiende el tamaño y el orden del lugar en una sola imagen.",
   "hora": "tarde",
@@ -265,7 +265,7 @@
  },
  {
   "id": "bulevar",
-  "prismas": 2153,
+  "prismas": 2151,
   "titulo": "Bulevar Nogal",
   "porque": "La calle principal con camellón que es jardín de lluvia y sendero: el paseo del fraccionamiento, donde se camina, se corre y se saluda. Da la escala de un lugar con vida de barrio.",
   "hora": "dia",
@@ -322,7 +322,7 @@
  },
  {
   "id": "parque",
-  "prismas": 2204,
+  "prismas": 2206,
   "titulo": "Parque Garza, bajo la huerta",
   "porque": "Un parque que ya tiene árboles grandes el día que se inaugura: pérgola, juegos, bancas, un sendero circular y la pista cruzándolo, con las casas enfrente. Vende familia: niños, sombra y seguridad a la vista.",
   "hora": "dia",
@@ -643,7 +643,7 @@
  },
  {
   "id": "noche",
-  "prismas": 1907,
+  "prismas": 1834,
   "titulo": "La calle de noche",
   "porque": "Los nogales iluminados desde abajo, los arbotantes y las ventanas encendidas: la seguridad y el cuidado se ven. Nadie en Torreón vende una calle así de noche.",
   "hora": "noche",
@@ -695,6 +695,225 @@
     "cx": 10,
     "cy": 2,
     "cz": 2
+   }
+  }
+ },
+ {
+  "id": "fachadas",
+  "prismas": 1658,
+  "titulo": "Las nueve fachadas",
+  "porque": "Una cuadra con las nueve fachadas seguidas, de frente y en escorzo, de cerca y de lejos: la imagen de concurso de cada una.",
+  "hora": "tarde",
+  "centro": [
+   0,
+   8,
+   3
+  ],
+  "dist": 40,
+  "suelo_z": -0.32,
+  "contornos": 0.5,
+  "bruma": [
+   60,
+   180
+  ],
+  "cam": {
+   "az": -0.5937,
+   "el": -0.0745,
+   "zoom": 8.39,
+   "dist": 24.2,
+   "cx": 50.3,
+   "cy": 10.5,
+   "cz": 3.4
+  },
+  "vistas": {
+   "f1_cantera": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": -51.3,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_1": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": -50.8,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "f2_ladrillo": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": -38.6,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_2": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": -38.1,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "f3_lamas": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": -25.9,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_3": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": -25.4,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "f4_marco": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": -13.200000000000005,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_4": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": -12.700000000000005,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "f5_hacienda": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": -0.5000000000000018,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_5": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": -1.7763568394002505e-15,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "f6_concreto": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": 12.200000000000001,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_6": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": 12.700000000000001,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "f7_celosia": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": 24.89999999999999,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_7": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": 25.39999999999999,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "f8_duela": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": 37.599999999999994,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_8": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": 38.099999999999994,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "f9_horizonte": {
+    "az": -0.5937,
+    "el": -0.0745,
+    "zoom": 8.39,
+    "dist": 24.2,
+    "cx": 50.3,
+    "cy": 10.5,
+    "cz": 3.4
+   },
+   "frente_9": {
+    "az": 0.0,
+    "el": -0.0617,
+    "zoom": 8.27,
+    "dist": 27.55,
+    "cx": 50.8,
+    "cy": 11.5,
+    "cz": 3.4
+   },
+   "lejos": {
+    "az": 1.3258,
+    "el": -0.0146,
+    "zoom": 0.56,
+    "dist": 123.71,
+    "cx": 10,
+    "cy": 8,
+    "cz": 4.0
+   },
+   "cuadra": {
+    "az": 1.0735,
+    "el": 0.1125,
+    "zoom": 1.07,
+    "dist": 80.16,
+    "cx": 0,
+    "cy": 8,
+    "cz": 3.0
+   },
+   "alta": {
+    "az": 0.7454,
+    "el": 0.3865,
+    "zoom": -1.43,
+    "dist": 95.5,
+    "cx": 0,
+    "cy": 10,
+    "cz": 2.0
    }
   }
  }
