@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Datos para descargar · La Nogalera</title>
+<meta name="description" content="Los archivos con los que está hecho el proyecto, para abrirlos en QGIS, Excel o cualquier otro programa.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+<aside class="lateral" id="lateral">
+  <div class="cabl"><a class="marca" href="/"><b>La Nogalera</b><span>Fraccionamiento en N6 · La Paz, Torreón</span></a><button type="button" id="menu-btn" aria-expanded="false" aria-controls="menu-nav">Menú</button></div>
+  <p class="estado">Versión 2 · 7 de octubre de 2026</p>
+  <nav id="menu-nav" aria-label="Secciones del proyecto"><ul class="menu"><li><a href="/"><span class="num">01</span><span>Resumen</span></a></li><li><a href="/terreno/"><span class="num">02</span><span>El terreno</span></a></li><li><a href="/plan/"><span class="num">03</span><span>Plan maestro</span></a></li><li><a href="/calles/"><span class="num">04</span><span>Calles y direcciones</span></a></li><li><a href="/acceso/"><span class="num">05</span><span>Acceso</span></a></li><li><a href="/casa/"><span class="num">06</span><span>Casa Modelo Nogal</span></a></li><li><a href="/fachadas/"><span class="num">07</span><span>Fachadas</span></a></li><li><a href="/servicios/"><span class="num">08</span><span>Servicios</span></a></li><li><a href="/iluminacion/"><span class="num">09</span><span>Iluminación</span></a></li><li><a href="/numeros/"><span class="num">10</span><span>Números</span></a></li><li><a href="/etapas/"><span class="num">11</span><span>Etapas y siguientes pasos</span></a></li><li class="sep" aria-hidden="true"></li><li><a href="/nogaleras/"><span class="num">A</span><span>Nogaleras de La Laguna</span></a></li><li><a href="/datos/" aria-current="page"><span class="num">B</span><span>Datos para descargar</span></a><ul class="sub"><li><a href="#como">Cómo se hizo</a></li></ul></li></ul></nav>
+  <p class="pie">Anteproyecto. Lindero por confirmar con catastro. Mapas: © colaboradores de <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>.</p>
+</aside>
+<main class="contenido"><div class="doc"><header class="cab"><p class="ojo">B · Datos</p><h1>Datos para descargar</h1><p class=lede>Los archivos con los que está hecho el proyecto, para abrirlos en QGIS, Excel o cualquier otro programa.</p></header>
+<p>Todo lo que muestra el sitio sale de estos archivos, y estos salen del código en <code>pipeline/</code> del repositorio. Coordenadas en WGS 84 (longitud, latitud). Cifras en pesos de 2026 sin IVA.</p>
+<div class="scroll"><table class="spec"><tr><th class=izq>Archivo</th><th>Qué tiene</th><th>Tamaño</th></tr><tr><td><a href="/datos/confort.geojson" download>confort.geojson</a></td><td>Plan maestro: lotes con dirección y fachada, calles, club, parques, planta, con el resumen de cifras del proyecto.</td><td>388 KB</td></tr><tr><td><a href="/datos/arboles_confort.json" download>arboles_confort.json</a></td><td>Los 2,305 nogales: longitud, latitud, si se reubica y altura.</td><td>67 KB</td></tr><tr><td><a href="/datos/servicios.geojson" download>servicios.geojson</a></td><td>Redes: drenaje pluvial y sanitario, agua, agua tratada, transformadores, cruces elevados, salida de emergencia.</td><td>109 KB</td></tr><tr><td><a href="/datos/luces.json" download>luces.json</a></td><td>Los 1,027 puntos de luz, por tipo.</td><td>27 KB</td></tr><tr><td><a href="/datos/servicios.json" download>servicios.json</a></td><td>Todos los cálculos de servicios, partidas y cuota.</td><td>34 KB</td></tr><tr><td><a href="/datos/especificaciones.csv" download>especificaciones.csv</a></td><td>Hoja de especificaciones y presupuesto de urbanización, partida por partida.</td><td>6 KB</td></tr><tr><td><a href="/datos/etapas.json" download>etapas.json</a></td><td>Etapa de construcción de cada lote.</td><td>9 KB</td></tr><tr><td><a href="/datos/nogaleras.geojson" download>nogaleras.geojson</a></td><td>Todas las nogaleras de La Laguna, con superficie, estado y precio estimado.</td><td>891 KB</td></tr><tr><td><a href="/datos/nogaleras.csv" download>nogaleras.csv</a></td><td>Lo mismo en tabla.</td><td>68 KB</td></tr><tr><td><a href="/datos/base.geojson" download>base.geojson</a></td><td>Fondo vectorial de La Laguna (OpenStreetMap vía Overture).</td><td>516 KB</td></tr></table></div>
+<h2 id="como">Cómo se hizo</h2>
+<ul>
+<li><b>Nogaleras:</b> detección desde satélite (altura de árboles de Meta y WRI a 1 m, serie de Sentinel-2 2025–2026) con revisión a ojo. Mapa en <a href="/nogaleras/">Nogaleras de La Laguna</a>.</li>
+<li><b>Nogales de N6:</b> cada árbol se ubica en el mapa de altura a 1 m; de ahí sale la cuadrícula (hileras cada 12.6 m, rumbo 59°) que ordena el diseño.</li>
+<li><b>Diseño:</b> calles sobre los pasillos entre hileras, linderos sobre las columnas de árboles, bulevar y club sobre las dos hileras que ya faltaban. Todo está programado: si cambia un dato, se vuelve a generar todo.</li>
+<li><b>Servicios:</b> cantidades medidas sobre el plano; pendientes del modelo de elevación Copernicus de 30 m.</li>
+<li><b>Fondo de los mapas:</b> © colaboradores de OpenStreetMap.</li>
+</ul>
+<p class="nota pie-doc">La Nogalera · Versión 2 · 7 de octubre de 2026. Anteproyecto: cifras de referencia, no cotizaciones ni avalúos. Todo se genera desde <code>pipeline/</code>.</p></div></main>
+<script>(function(){var b=document.getElementById("menu-btn"),l=document.getElementById("lateral");b.addEventListener("click",function(){var o=l.classList.toggle("abierto");b.setAttribute("aria-expanded",o);b.textContent=o?"Cerrar":"Menú";});})();</script>
+
+</body>
+</html>

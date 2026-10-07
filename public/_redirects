@@ -1,0 +1,17 @@
+# Direcciones de la versión 1 → versión 2
+/n6              /plan/        301
+/n6/             /plan/        301
+/n6/index.html   /plan/        301
+/n6/base.html    /plan/        301
+/n6/tamanos.html /plan/        301
+/n6/casa.html    /casa/        301
+/n6/acceso.html  /acceso/      301
+/n6/servicios.html /servicios/ 301
+/n6/terreno.html /numeros/     301
+/nogaleras.geojson /datos/nogaleras.geojson 301
+/nogaleras.csv   /datos/nogaleras.csv 301
+/base.geojson    /datos/base.geojson 301
+/n6/confort.geojson /datos/confort.geojson 301
+/n6/especificaciones.csv /datos/especificaciones.csv 301
+/n6/luces.json   /datos/luces.json 301
+/n6/servicios.geojson /datos/servicios.geojson 301

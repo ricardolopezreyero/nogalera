@@ -1,7 +1,7 @@
 """Cálculo de la entrada de N6 en hora pico (modelo de colas M/M/1 por carril, conservador)."""
 import math, json, sys, os
 try:                                # casas del diseño vigente (las escribe n6_servicios.py en confort.geojson)
-    CASAS = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../public/n6/confort.geojson")))["resumen"]["lotes"]
+    CASAS = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../public/datos/confort.geojson")))["resumen"]["lotes"]
 except Exception:
     CASAS = 1105
 PHF = 0.85                          # factor de hora pico: los 15 minutos más cargados

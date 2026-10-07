@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nogaleras de La Laguna · La Nogalera</title>
+<meta name="description" content="Mapa de todas las nogaleras de Torreón, Gómez Palacio, Lerdo y alrededores, con superficie y precio estimado.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css"><link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+<aside class="lateral" id="lateral">
+  <div class="cabl"><a class="marca" href="/"><b>La Nogalera</b><span>Fraccionamiento en N6 · La Paz, Torreón</span></a><button type="button" id="menu-btn" aria-expanded="false" aria-controls="menu-nav">Menú</button></div>
+  <p class="estado">Versión 2 · 7 de octubre de 2026</p>
+  <nav id="menu-nav" aria-label="Secciones del proyecto"><ul class="menu"><li><a href="/"><span class="num">01</span><span>Resumen</span></a></li><li><a href="/terreno/"><span class="num">02</span><span>El terreno</span></a></li><li><a href="/plan/"><span class="num">03</span><span>Plan maestro</span></a></li><li><a href="/calles/"><span class="num">04</span><span>Calles y direcciones</span></a></li><li><a href="/acceso/"><span class="num">05</span><span>Acceso</span></a></li><li><a href="/casa/"><span class="num">06</span><span>Casa Modelo Nogal</span></a></li><li><a href="/fachadas/"><span class="num">07</span><span>Fachadas</span></a></li><li><a href="/servicios/"><span class="num">08</span><span>Servicios</span></a></li><li><a href="/iluminacion/"><span class="num">09</span><span>Iluminación</span></a></li><li><a href="/numeros/"><span class="num">10</span><span>Números</span></a></li><li><a href="/etapas/"><span class="num">11</span><span>Etapas y siguientes pasos</span></a></li><li class="sep" aria-hidden="true"></li><li><a href="/nogaleras/" aria-current="page"><span class="num">A</span><span>Nogaleras de La Laguna</span></a></li><li><a href="/datos/"><span class="num">B</span><span>Datos para descargar</span></a></li></ul></nav>
+  <p class="pie">Anteproyecto. Lindero por confirmar con catastro. Mapas: © colaboradores de <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>.</p>
+</aside>
+<main class="contenido mapa">
+<div id="map" role="region" aria-label="Mapa de nogaleras de La Laguna"></div>
+<section class="panel" id="panel" aria-labelledby="titulo">
+  <h1 id="titulo">Nogaleras de La Laguna <span>Torreón, Gómez Palacio, Lerdo y alrededores: de aquí salió N6</span></h1>
+  <p class="stats" id="stats">Cargando…</p>
+  <ul class="legend" aria-label="Qué se muestra">
+    <li><label><input type="checkbox" data-estado="activa" checked> <i class="sw sw-activa" aria-hidden="true"></i> Nogalera <b id="n-activa"></b></label></li>
+    <li><label><input type="checkbox" data-estado="desmontada" checked> <i class="sw sw-desmontada" aria-hidden="true"></i> Ya sin nogales <b id="n-desmontada"></b></label></li>
+    <li><label><input type="checkbox" data-estado="urbanizada" checked> <i class="sw sw-urbanizada" aria-hidden="true"></i> Urbanizada <b id="n-urbanizada"></b></label></li>
+  </ul>
+  <div class="actions">
+    <button type="button" id="btn-lista" aria-expanded="false" aria-controls="lista">Lista</button>
+    <button type="button" id="btn-ubicacion">Mi ubicación</button>
+    <button type="button" id="btn-info" aria-haspopup="dialog">Cómo se hizo</button>
+  </div>
+  <div class="seleccion" aria-labelledby="sel-titulo">
+    <h2 id="sel-titulo"><label><input type="checkbox" id="chk-seleccion" checked> Las 5 aptas para urbanizar</label></h2>
+    <ol id="sel-items"></ol>
+    <p class="sel-nota">Pegadas a la mancha urbana, de 20 a 58 ha y con confianza alta. N6 es la elegida: <a href="/terreno/">El terreno</a>.</p>
+  </div>
+</section>
+<aside class="lista" id="lista" hidden aria-labelledby="lista-titulo">
+  <div class="lista-head"><h2 id="lista-titulo">Cerca de <span id="ref-nombre">Real del Nogalar</span></h2><button type="button" class="cerrar" id="cerrar-lista" aria-label="Cerrar lista">×</button></div>
+  <div class="lista-orden"><label for="orden">Ordenar por</label><select id="orden"><option value="dist">Distancia</option><option value="area">Tamaño</option><option value="precio">Precio por m²</option><option value="valor">Valor</option></select></div>
+  <ol id="items"></ol>
+</aside>
+<dialog id="info" aria-labelledby="info-titulo">
+  <div class="info-head"><h2 id="info-titulo">Cómo se hizo este mapa</h2><button type="button" class="cerrar" id="cerrar-info" aria-label="Cerrar">×</button></div>
+  <div class="info-body">
+    <p><b>Qué hay:</b> todas las huertas de nogal que se pudieron detectar en la Comarca Lagunera, de Nazas y Lerdo a San Pedro y de Tlahualilo a Viesca. Cada polígono es una huerta o un bloque de huerta.</p>
+    <p><b>Cómo se encontraron:</b> en OpenStreetMap solo había 6 nogaleras dibujadas, así que se sacaron de imágenes de satélite: el mapa de altura de árboles a 1&nbsp;m de Meta y el WRI (2018–2020) y la serie de Sentinel-2 de diciembre de 2025 a septiembre de 2026. Una nogalera se reconoce por su cuadrícula de árboles altos, que tiran la hoja en invierno y están verdes de abril a septiembre. Se revisaron a ojo cerca de 800 casos. Acierta en unos 9 de cada 10.</p>
+    <p><b>Medidas:</b> la superficie es la de la arboleda vista desde el satélite (cuadros de 10&nbsp;m), no la de la escritura: ±5 a 10&nbsp;%.</p>
+    <p><b>Precio, a ojo de buen cubero:</b> una nogalera en producción lejos de la ciudad vale unos $90/m². Sube conforme se acerca a la mancha urbana: hasta $800/m² pegada a Torreón, $600 a Gómez o Lerdo y $300 a los pueblos. Calibrado con anuncios de 2025 y 2026. <b>No es un avalúo.</b></p>
+    <p><b>Fuentes:</b> Meta y WRI; Sentinel-2 (Copernicus, ESA); ESA WorldCover; Copernicus DEM; OpenStreetMap vía Overture Maps (septiembre de 2026). Datos: <a href="/datos/nogaleras.geojson" download data-descarga>GeoJSON</a> · <a href="/datos/nogaleras.csv" download data-descarga>CSV</a>.</p>
+  </div>
+</dialog>
+</main>
+<script>(function(){var b=document.getElementById("menu-btn"),l=document.getElementById("lateral");b.addEventListener("click",function(){var o=l.classList.toggle("abierto");b.setAttribute("aria-expanded",o);b.textContent=o?"Cerrar":"Menú";});})();</script>
+<script src="/vendor/leaflet/leaflet.js"></script><script src="/nogaleras/app.js"></script>
+</body>
+</html>

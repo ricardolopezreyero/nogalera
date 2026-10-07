@@ -71,19 +71,16 @@ En `final.py`, función `precio_m2`:
 
 Calibración, con anuncios de 2025–2026: 50 ha con 1,100 nogales en Matamoros, $34.5 millones (≈ $69/m²; avalúo de $40.1 millones). 30 ha en La Loma, Lerdo, $40.5 millones (≈ $135/m²). 40 ha con 1,300 nogales, $20 millones (≈ $50/m²). Lotes urbanizados de Torreón, $3,500–3,750/m²; terrenos cerca de TSM, $850/m². No es un avalúo.
 
-## N6 (diseño de fraccionamiento)
+## La Nogalera (diseño del fraccionamiento en N6) y el sitio
+
+Dos partes: el pipeline pesado (necesita el venv y `data/`) escribe los datos a `public/datos/`; el constructor del sitio (`sitio.py`, solo python3) arma todas las secciones del tablero a partir de esos datos.
 
 ```bash
-./venv/bin/python scripts/n6_optimo.py                              # barrido de lotes de 280 a 330 m² → public/n6/n6.geojson y lotes-*.geojson
-./venv/bin/python scripts/n6_arboles.py                             # detecta cada nogal y la cuadrícula → data/n6_arboles.npy, data/n6_grid.npy
-./venv/bin/python scripts/n6_final.py data ../public/n6             # diseño alineado a los nogales → public/n6/final.geojson y arboles.json
+./venv/bin/python scripts/n6_arboles.py                                   # detecta cada nogal y la cuadrícula → data/n6_arboles.npy, data/n6_grid.npy
+./venv/bin/python scripts/n6_servicios.py data ../public/datos etiquetas/n6_limite.geojson
+#   ↑ corre toda la cadena: n6_confort (diseño) → n6_direcciones (calles, direcciones, fachada por lote) → n6_luz (iluminación) → servicios
+#     escribe confort.geojson, arboles_confort.json, luces.json, servicios.geojson, servicios.json y especificaciones.csv
+python3 scripts/sitio.py                                                  # el sitio completo: una carpeta por sección en public/
 ```
 
-El límite de N6 está en `etiquetas/n6_limite.geojson`.
-./venv/bin/python scripts/n6_direcciones.py data ../public/n6       # diseño simple (acceso, súper, club, parques) + nombres de calles y direcciones → public/n6/confort.geojson
-python3 scripts/n6_casa.py                                          # casa muestra: plantas amuebladas (n6_casa_planta.py) y 9 fachadas (n6_fachadas.py) → public/n6/casa.html
-python3 scripts/n6_acceso.py                                        # entrada: plano y cálculo de hora pico → public/n6/acceso.html (el trazo vive en n6_acceso_calc.py)
-./venv/bin/python scripts/n6_luz.py data ../public/n6               # iluminación (arbotantes, focos a los nogales, balizas, acceso) → public/n6/luces.json; suma su costo al proyecto
-python3 scripts/n6_terreno.py ../public/n6                          # precio del terreno y porcentaje justo en fideicomiso → public/n6/terreno.html
-./venv/bin/python scripts/n6_servicios.py data ../public/n6         # calles, drenajes, planta, agua, luz y fibra: capas del mapa (servicios.geojson), hoja (servicios.html), especificaciones.csv y presupuesto por partida. Corre después de todo lo anterior (llama a n6_luz.py)
-python3 scripts/n6_terreno.py ../public/n6 && python3 scripts/n6_acceso.py && python3 scripts/n6_casa.py   # vuelve a generar las páginas que usan el número de lotes y los costos
+Módulos que usa `sitio.py`: `n6_casa_planta.py` (plantas amuebladas), `n6_casa_dibujos.py` (conjunto, corte, azotea, fachadas y cuadra), `n6_fachadas.py` (los 9 tipos y el reparto), `n6_acceso_calc.py` y `n6_acceso.py` (hora pico y plano del acceso), `n6_terreno.py` (fideicomiso). El límite de N6 está en `etiquetas/n6_limite.geojson`. Versiones anteriores del diseño (`n6_optimo.py`, `n6_final.py`) quedan como referencia.

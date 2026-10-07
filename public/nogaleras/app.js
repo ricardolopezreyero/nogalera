@@ -45,17 +45,18 @@
     document.body.appendChild(el);
     setTimeout(function () { el.remove(); }, ms || 2600);
   }
-  var esCelular = function () { return window.matchMedia("(max-width: 40rem)").matches; };
+  var esCelular = function () { return window.matchMedia("(max-width: 60rem)").matches; };
   /* Espacio que tapan el panel y la lista, para no esconder la nogalera debajo. */
   function margenes() {
+    var c = document.getElementById("map").getBoundingClientRect();
     var p = document.getElementById("panel").getBoundingClientRect();
     var l = document.getElementById("lista");
     if (esCelular()) {
-      var abajo = l.hidden ? 12 : window.innerHeight - l.getBoundingClientRect().top + 12;
-      return { tl: [12, p.bottom + 12], br: [12, abajo] };
+      var abajo = l.hidden ? 12 : c.bottom - l.getBoundingClientRect().top + 12;
+      return { tl: [12, p.bottom - c.top + 12], br: [12, abajo] };
     }
-    var der = l.hidden ? 60 : window.innerWidth - l.getBoundingClientRect().left + 12;
-    return { tl: [p.right + 12, 12], br: [der, 12] };
+    var der = l.hidden ? 60 : c.right - l.getBoundingClientRect().left + 12;
+    return { tl: [p.right - c.left + 12, 12], br: [der, 12] };
   }
 
   /* ---------- Mapa ---------- */
@@ -89,7 +90,7 @@
         L.marker([c[1], c[0]], { icon: L.divIcon({ className: "pueblo" + (p.p >= 20000 ? " grande" : ""), html: escapar(p.n), iconSize: null }), interactive: false, keyboard: false }).addTo(nombres);
       });
     }
-    fetch("base.geojson").then(function (r) { return r.json(); }).then(function (fc) {
+    fetch("../datos/base.geojson").then(function (r) { return r.json(); }).then(function (fc) {
       locs = fc.features.filter(function (f) { return f.properties.k === "loc"; });
       L.geoJSON(fc, {
         filter: function (f) { return f.properties.k !== "loc"; },
@@ -367,7 +368,7 @@
     etiquetar();
   }
 
-  fetch("nogaleras.geojson")
+  fetch("../datos/nogaleras.geojson")
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(iniciar)
     .catch(function () { $("stats").textContent = "No se pudieron cargar los datos. Recarga la página."; });

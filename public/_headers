@@ -8,12 +8,8 @@
   Strict-Transport-Security: max-age=31536000
 
 # Datos: una hora en el navegador (se actualizan pocas veces).
-/nogaleras.geojson
+/datos/*
   Cache-Control: public, max-age=3600
-/nogaleras.csv
-  Cache-Control: public, max-age=3600
-/base.geojson
-  Cache-Control: public, max-age=86400
 
 # Leaflet no cambia.
 /vendor/*

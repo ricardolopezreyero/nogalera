@@ -1,13 +1,6 @@
-"""N6 · casa muestra: genera public/n6/casa.html (plantas, emplazamiento con el sol de Torreón, corte y 9 fachadas).
-Un solo modelo de casa para los lotes de 12.0 × 24.0 m o más; cambia solo la fachada (9 tipos, ver n6_fachadas.py)."""
-import math, sys
-OUT = sys.argv[1] if len(sys.argv) > 1 else "../public/n6/casa.html"
-import json, os
-_fc = json.load(open(os.path.join(os.path.dirname(os.path.abspath(OUT)), "confort.geojson")))
-_lt = [f["properties"] for f in _fc["features"] if f["properties"]["capa"] == "lote"]
-N_LOTES = len(_lt); N_CABE = sum(1 for p in _lt if p["ancho"] >= 12.0 and p["fondo"] >= 24.0); M2_MEDIO = sum(p["m2"] for p in _lt) / N_LOTES
-
-# ---------- datos ----------
+"""N6 · Modelo Nogal: dibujos (emplazamiento con el sol, corte, azotea, fachada posterior, 9 fachadas y cuadra). Lo usa sitio.py."""
+import math, os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 LOTE_W, LOTE_D = 12.7, 25.8          # lote muestra (cerca del promedio de los lotes)
 CASA_W = 9.0                         # deja 1.85 m libres a cada lado (1.5 m en lotes de 12.0 m)
 FRENTE = 5.5                         # cochera para 2 autos
@@ -290,180 +283,55 @@ def cuadra(n=6, calle_i=0, lado_norte=True, calle="Álamo"):
     w, h = (n * LOTE_W + 2 * mx) * S, (zt + 1.3) * S
     return f'<svg class="cuadra" viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="Una cuadra de {calle}">' + "".join(o) + "</svg>"
 
+# ---------- planta de azotea ----------
+def azotea(S=34):
+    W, D = CASA_W, PA_D
+    pad = 26; w, h = (W + 2.2) * S + 2 * pad, D * S + 2 * pad + 22
+    X = lambda x: pad + x * S; Y = lambda y: pad + 22 + (D - y) * S
+    o = [f'<svg viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="Planta de azotea">', f'<text x="{pad}" y="16" class="t">Planta de azotea</text>']
+    o.append(f'<rect x="{X(0)}" y="{Y(D)}" width="{W*S}" height="{D*S}" class="cuarto"/>')
+    o.append(f'<rect x="{X(0.15)}" y="{Y(D-0.15)}" width="{(W-0.3)*S}" height="{(D-0.3)*S}" class="pretil"/>')
+    bx0, by0, bx1, by1 = CP.BODEGA_EXT
+    o.append(f'<rect x="{X(bx0)}" y="{Y(by1)}" width="{(bx1-bx0)*S}" height="{(by1-by0)*S}" class="cuarto"/><rect x="{X(bx0+0.12)}" y="{Y(by1-0.12)}" width="{(bx1-bx0-0.24)*S}" height="{(by1-by0-0.24)*S}" class="pretil"/>')
+    o.append(f'<text x="{X((bx0+bx1)/2)}" y="{Y((by0+by1)/2)+3}" class="m" text-anchor="middle">bodega</text>')
+    # pendientes: 2 % hacia las bajadas de las esquinas del frente y del fondo (al jardín, no a la calle)
+    for (x, y, dx, dy) in ((1.0, 1.0, 1, 1), (8.0, 1.0, -1, 1), (1.0, D - 1.0, 1, -1), (8.0, D - 1.0, -1, -1)):
+        o.append(f'<circle cx="{X(x)}" cy="{Y(y)}" r="{0.12*S}" class="bajada"/>')
+        o.append(f'<line x1="{X(x+dx*2.6)}" y1="{Y(y+dy*2.6)}" x2="{X(x+dx*0.4)}" y2="{Y(y+dy*0.4)}" class="pend" marker-end="url(#pf2)"/>')
+    o.append(f'<text x="{X(4.5)}" y="{Y(2.4)}" class="a" text-anchor="middle">pendiente 2 % a 4 bajadas · descargan al jardín, no a la calle</text>')
+    # paneles solares: 12 de 1.1 × 1.8 en 2 filas, en la mitad que da al sur (se decide por lote)
+    for i in range(6):
+        for j in range(2):
+            o.append(f'<rect x="{X(1.2 + i * 1.15)}" y="{Y(10.6 - j * 2.0)}" width="{1.05*S}" height="{1.85*S}" class="panel"/>')
+    o.append(f'<text x="{X(4.5)}" y="{Y(11.1)}" class="r" text-anchor="middle">12 paneles solares · 5.5 kW</text>')
+    o.append(f'<text x="{X(4.5)}" y="{Y(11.1)+11}" class="a" text-anchor="middle">en la mitad que mira al sur, inclinados 20°</text>')
+    # calentador solar, tinaco, condensadoras, escalera marina
+    o.append(f'<rect x="{X(6.4)}" y="{Y(5.6)}" width="{2.0*S}" height="{1.2*S}" class="mueble"/><text x="{X(7.4)}" y="{Y(5.0)+3}" class="m" text-anchor="middle">calentador solar</text>')
+    o.append(f'<circle cx="{X(7.6)}" cy="{Y(3.2)}" r="{0.55*S}" class="mueble"/><text x="{X(7.6)}" y="{Y(3.2)+3}" class="m" text-anchor="middle">tinaco</text>')
+    for k, (x, y) in enumerate(((1.0, 6.6), (2.0, 6.6), (1.0, 13.3), (2.0, 13.3), (7.9, 13.3))):
+        o.append(f'<rect x="{X(x)}" y="{Y(y)}" width="{0.8*S}" height="{0.35*S}" class="mueble"/>')
+    o.append(f'<text x="{X(1.9)}" y="{Y(5.9)+3}" class="m" text-anchor="middle">condensadoras</text>')
+    o.append(f'<rect x="{X(4.35)}" y="{Y(1.9)}" width="{0.9*S}" height="{0.6*S}" class="mueble"/><text x="{X(4.8)}" y="{Y(2.05)+3}" class="m" text-anchor="middle">tapa</text>')
+    o.append(f'<text x="{X(4.8)}" y="{Y(0.6)+3}" class="a" text-anchor="middle">escalera marina desde el patio</text>')
+    o.append(f'<line x1="{X(0)}" y1="{Y(3.0)}" x2="{X(W)}" y2="{Y(3.0)}" class="div"/><text x="{X(0.3)}" y="{Y(3.25)}" class="a">↑ frente · ↓ sobre el portal</text>')
+    o.append(f'<text x="{X(4.5)}" y="{h-6}" class="a" text-anchor="middle">↓ calle · losa con aislante y acabado blanco reflejante</text>')
+    o.append("</svg>")
+    return "\n".join(o)
 
-HTML = f"""<!doctype html>
-<html lang="es-MX">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>N6 · Casa muestra</title>
-<meta name="description" content="Casa muestra para N6: 4 recámaras con baño, sala-comedor y jardín, orientada al sol de Torreón.">
-<link rel="icon" href="../favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../style.css">
-<style>
-  html, body {{ height: auto; }}
-  body {{ background: var(--papel); }}
-  .doc {{ max-width: 64rem; margin: 0 auto; padding: 1rem 1rem 3rem; }}
-  .nav {{ display: flex; flex-wrap: wrap; border: 1px solid var(--linea); margin-bottom: 1rem; max-width: 36rem; }}
-  .nav a {{ flex: 1 0 auto; text-align: center; padding: 0.35rem 0.5rem; text-decoration: none; font-size: 0.8125rem; border-right: 1px solid var(--linea); }}
-  .nav a:last-child {{ border-right: 0; }}
-  .nav a[aria-current="page"] {{ background: var(--tinta); color: var(--papel); }}
-  h1 {{ font-size: 1.75rem; margin: 0 0 0.25rem; letter-spacing: -0.01em; }}
-  h1 span {{ display: block; font-size: 0.9375rem; font-weight: 400; color: var(--gris); }}
-  h2 {{ font-size: 1.0625rem; margin: 2rem 0 0.5rem; border-top: 1px solid var(--linea); padding-top: 0.75rem; }}
-  p {{ max-width: 44rem; margin: 0.5rem 0; }}
-  .datos {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 0.5rem 1rem; margin: 1rem 0; font-variant-numeric: tabular-nums; }}
-  .datos div {{ border-top: 2px solid var(--tinta); padding-top: 0.3rem; }}
-  .datos dt {{ font-size: 0.75rem; color: var(--gris); }}
-  .datos dd {{ margin: 0; font-weight: 700; font-size: 1.0625rem; }}
-  .dos {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1rem 2rem; align-items: start; }}
-  svg {{ width: 100%; height: auto; display: block; color: var(--tinta); font-family: inherit; }}
-  svg .t {{ font-size: 13px; font-weight: 700; fill: currentColor; }}
-  svg .r {{ font-size: 11px; font-weight: 700; fill: currentColor; }}
-  svg .a {{ font-size: 9.5px; fill: var(--gris); }}
-  svg .inv {{ fill: #fff; }}
-  svg .cuarto {{ fill: #fff; }} svg .cuarto.guardar {{ fill: #f1f1f1; }} svg .cuarto.bano {{ fill: #fafafa; }}
-  svg .muroE {{ fill: #1a1a1a; }} svg .hueco {{ fill: #fff; }} svg .ventana {{ fill: #fff; stroke: #000; stroke-width: 0.8; }}
-  svg .hoja {{ stroke: #000; stroke-width: 1.4; }} svg .arco {{ fill: none; stroke: #000; stroke-width: 0.6; stroke-dasharray: 3 2; }}
-  svg .mueble {{ fill: #fff; stroke: #000; stroke-width: 0.9; }} svg .cubierta {{ fill: #e6e6e6; stroke: #000; stroke-width: 0.9; }}
-  svg .closet {{ fill: #d9d9d9; stroke: #000; stroke-width: 0.9; }} svg .barra {{ stroke: #000; stroke-width: 0.8; stroke-dasharray: 5 3; }}
-  svg .fino {{ stroke: #555; stroke-width: 0.5; fill: none; }} svg .fino2 {{ fill: none; stroke: #000; stroke-width: 0.7; }}
-  svg .almohada {{ fill: #fff; stroke: #000; stroke-width: 0.6; }} svg .respaldo {{ fill: #cfcfcf; stroke: #000; stroke-width: 0.6; }}
-  svg .silla {{ fill: #fff; stroke: #000; stroke-width: 0.6; }} svg .regadera {{ fill: #fff; stroke: #000; stroke-width: 0.9; }}
-  svg .negro {{ fill: #000; }} svg .corte {{ stroke: #000; stroke-width: 1.2; }} svg .barandal {{ stroke: #000; stroke-width: 2; }}
-  svg .m {{ font-size: 7.5px; fill: #333; }}
-  svg text.r, svg text.a {{ paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }} svg text.inv {{ stroke: none; }}
-  table.cuartos {{ max-width: none; }} table.cuartos td {{ vertical-align: top; }} table.cuartos td:nth-child(2), table.cuartos td:nth-child(3) {{ white-space: nowrap; text-align: right; }}
-  td.izq, th.izq {{ text-align: left !important; }}
-  .guardado {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 0.75rem 1.5rem; padding: 0; list-style: none; max-width: none; }}
-  .guardado li {{ border-top: 2px solid var(--tinta); padding-top: 0.35rem; margin: 0; }} .guardado b {{ display: block; }}
-  svg .portal {{ fill: #ededed; stroke: #000; stroke-width: 1; stroke-dasharray: 4 3; }}
-  svg .vidrio {{ stroke: #fff; stroke-width: 2.5; }}
-  svg .puerta {{ stroke: #fff; stroke-width: 4; }}
-  svg .div {{ stroke: #000; stroke-width: 0.8; stroke-dasharray: 3 3; }}
-  svg .esc {{ stroke: #000; stroke-width: 0.6; }}
-  svg .lote {{ fill: #f4f4f4; stroke: #000; stroke-width: 1.5; }}
-  svg .calle {{ fill: #cfcfcf; }}
-  svg .cochera {{ fill: #e2e2e2; stroke: #000; stroke-width: 0.6; }}
-  svg .casa {{ fill: #111; }}
-  svg .portal2 {{ fill: #8a8a8a; }}
-  svg .copa {{ fill: rgba(0,0,0,0.06); stroke: #000; stroke-width: 0.6; stroke-dasharray: 3 2; }}
-  svg .tronco {{ fill: #000; }}
-  svg .norte {{ stroke: #000; stroke-width: 2.5; color: #000; }}
-  svg .rosa {{ fill: #fff; stroke: #000; stroke-width: 1; }}
-  svg .sol {{ stroke: #000; stroke-width: 2; color: #000; }}
-  svg .sol2 {{ stroke: #000; stroke-width: 1.2; stroke-dasharray: 5 3; color: #000; }}
-  svg .suelo {{ stroke: #000; stroke-width: 2; }}
-  svg .corteM {{ fill: #fff; stroke: #000; stroke-width: 2.5; }}
-  svg .vidrioC {{ stroke: #000; stroke-width: 1; stroke-dasharray: 2 2; }}
-  svg .copaC {{ fill: rgba(0,0,0,0.06); stroke: #000; stroke-width: 0.8; stroke-dasharray: 3 2; }}
-  svg .tronco2 {{ stroke: #000; stroke-width: 4; }}
-  svg .fach {{ fill: #f2f2f2; stroke: #000; stroke-width: 2.5; }}
-  svg .ven {{ fill: #fff; stroke: #000; stroke-width: 1.2; }}
-  svg .alero {{ fill: #000; }}
-  svg .celos {{ stroke: #6a6a6a; stroke-width: 1.4; }}
-  svg .puertaF {{ fill: #111; }}
-  .fachadas {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1.5rem 1.5rem; margin: 1rem 0; }}
-  .fachadas figure {{ margin: 0; }} .fachadas figcaption {{ font-size: 0.875rem; margin-top: 0.375rem; }}
-  .fachadas figcaption b {{ display: block; font-size: 1rem; }} .fachadas figcaption span {{ display: block; color: var(--gris); font-size: 0.8125rem; margin-top: 0.2rem; }}
-  h3 {{ font-size: 1rem; margin: 1.5rem 0 0.5rem; }}
-  .scroll {{ overflow-x: auto; }} svg.cuadra {{ min-width: 52rem; }}
-  table {{ border-collapse: collapse; font-size: 0.875rem; font-variant-numeric: tabular-nums; width: 100%; max-width: 22rem; }}
-  td {{ border-bottom: 1px solid var(--suave); padding: 0.2rem 0.3rem; }} td:last-child {{ text-align: right; }}
-  ul {{ padding-left: 1.1rem; max-width: 44rem; }} li {{ margin: 0.3rem 0; }}
-</style>
-</head>
-<body>
-{DEFS}
-<main class="doc">
-  <nav class="nav" aria-label="Pestañas del proyecto">
-    <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html" aria-current="page">Casa muestra</a><a href="servicios.html">Servicios</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
-  </nav>
-  <h1>Casa muestra · Modelo Nogal <span>Un solo modelo para todo el fraccionamiento, con 9 fachadas distintas.</span></h1>
-  <dl class="datos">
-    <div><dt>Recámaras</dt><dd>4, cada una con clóset y baño</dd></div>
-    <div><dt>Construcción</dt><dd>{m2_pb + m2_pa:.0f} m² en 2 niveles + bodega de {m2_bodega:.1f} m²</dd></div>
-    <div><dt>Sala, comedor y cocina</dt><dd>{sala_m2:.0f} m² abiertos al portal</dd></div>
-    <div><dt>Para guardar</dt><dd>{len(CP.GUARDADO)} lugares, 2 cuartos de blancos</dd></div>
-    <div><dt>Portal techado</dt><dd>27 m²</dd></div>
-    <div><dt>Jardín (sin casa ni cochera)</dt><dd>≈ {jardin:.0f} m²</dd></div>
-    <div><dt>Cochera</dt><dd>2 autos</dd></div>
-    <div><dt>Lotes donde cabe</dt><dd>{N_CABE:,} de {N_LOTES:,} ({100*N_CABE/N_LOTES:.0f} %)</dd></div>
-  </dl>
-
-  <h2>Por qué un solo modelo</h2>
-  <p>Todos los lotes miden casi lo mismo: el promedio es de {M2_MEDIO:.0f} m², y {N_CABE:,} lotes miden al menos 12.0 × 24.0 m. La casa mide 9 m de ancho y deja 1.5 m o más libres a cada lado, así que entra igual en todos. Un solo juego de planos, de moldes y de compras: se construye más rápido y más barato. Los {N_LOTES - N_CABE} lotes que no la aceptan son remates angostos en las esquinas; conviene unirlos con el lote vecino o venderlos como lote sin casa.</p>
-  <p>Las calles corren al ENE–OSO (rumbo 59°), así que los lotes solo pueden mirar de dos maneras: jardín al NNO o jardín al SSE. La casa es la misma en los dos casos y solo cambia la fachada que da a la calle.</p>
-
-  <h2>Plantas amuebladas</h2>
-  <p>Todas las medidas son <b>libres, a paño interior de muro</b>: lo que de verdad queda para los muebles. Muros exteriores de 20 cm y muros interiores de 12 cm. Los muebles están dibujados a escala con medidas comerciales.</p>
-  <div class="dos">
-    <div>{CP.planta("PB", f"Planta baja · {m2_pb:.0f} m²")}</div>
-    <div>{CP.planta("PA", f"Planta alta · {m2_pa:.0f} m²")}</div>
-  </div>
-  <ul>
-    <li><b>Cada recámara tiene el mismo orden: recámara, clóset de paso y baño.</b> Para llegar al baño se pasa por el clóset: se sale de bañar y se viste ahí, y la ropa no queda a la vista de la cama. Los 3 baños de enfrente quedan uno encima del otro, con la tubería en línea.</li>
-    <li><b>La escalera sube hacia la fachada</b>, de la sala a la ventana alta del frente. Abajo, en la parte alta, queda el medio baño de visitas y, en la parte baja, una bodega. Arriba, el vacío de la escalera se ilumina con la ventana del frente.</li>
-    <li><b>Entrada de servicio:</b> de la cochera al patio de servicio, a la lavandería y a la cocina. El mandado y la ropa sucia no cruzan la sala.</li>
-    <li><b>La cocina es de dos frentes paralelos</b> con 1.70 m entre cubiertas, con el triángulo refri, parrilla y tarja a menos de 2 pasos, y se abre al comedor y a la sala.</li>
-    <li><b>La recámara principal da al jardín</b> y vuela sobre el portal. Se entra por un recibidor; de la recámara se pasa al vestidor y del vestidor al baño.</li>
-    <li><b>La estancia de arriba</b> sirve para tele o para trabajar en casa, lejos de la sala.</li>
-  </ul>
-
-  <h3>Medidas y muebles, cuarto por cuarto</h3>
-  <h4>Planta baja</h4>
-  {CP.tabla("PB")}
-  <h4>Planta alta</h4>
-  {CP.tabla("PA")}
-
-  <h2 id="guardado">Dónde se guardan las cosas</h2>
-  <p>Una casa con lugar para cada cosa se siente más grande y se mantiene ordenada sola. El Modelo Nogal tiene {len(CP.GUARDADO)} lugares para guardar, además de los gabinetes de cocina y baños:</p>
-  <ul class="guardado">{"".join(f"<li><b>{esc(a)}</b>{esc(b)}</li>" for a, b in CP.GUARDADO)}</ul>
-  <ul>
-    <li><b>Clósets:</b> 60 cm de fondo libre, doble barra (camisas arriba y abajo), una sección de barra larga para vestidos y abrigos, cajonera de 4 cajones y maletero arriba hasta el techo. Puertas corredizas o abatibles de piso a techo para que no quede polvo encima.</li>
-    <li><b>Baños:</b> regadera sin escalón, con piso a la coladera lineal y cancel fijo de cristal; nicho en el muro de la regadera; mueble de lavabo con cajones; WC lejos de la puerta; extractor y ventana alta en cada baño de enfrente.</li>
-    <li><b>Blancos:</b> entrepaños de 45 cm (una toalla doblada en 3 cabe justa) a 35 cm entre sí; el de arriba, a 2.20 m para lo que se usa poco.</li>
-  </ul>
-
-  <h2>Cómo se acomoda en el lote, con el sol de Torreón</h2>
-  <div class="dos">
-    <div>{emplazamiento("norte")}</div>
-    <div>{emplazamiento("sur")}</div>
-  </div>
-  <ul>
-    <li><b>El sol en Torreón:</b> en verano, al mediodía, pega casi vertical (88°) y se pone al ONO (296°). En invierno, al mediodía, sube solo 41° y viene del sur. Lo que más calienta es el sol de la tarde en verano.</li>
-    <li><b>Los costados miran al ENE y al OSO</b>, los lados del sol de la mañana y de la tarde. Por eso quedan casi ciegos, y la casa vecina, a 3.7 m, les da sombra.</li>
-    <li><b>Jardín al SSE</b> (lotes del lado sur de la calle): en invierno el sol entra hasta la sala, y de marzo a octubre el portal la deja en sombra. Es la mejor orientación.</li>
-    <li><b>Jardín al NNO</b> (lotes del lado norte): la sala casi no recibe sol directo y queda fresca todo el año. El sol de la tarde de verano entra de lado al portal: ahí van una celosía corrediza de madera y los nogales del fondo.</li>
-    <li><b>Los nogales hacen el resto:</b> tiran la hoja en invierno y dan sombra en verano. Cada lote conserva unos 3 en sus linderos, y su copa cubre parte de la azotea y del jardín.</li>
-  </ul>
-
-  <h2>Corte</h2>
-  {corte()}
-
-  <h2 id="fachadas">Fachadas: 9 tipos, una sola casa</h2>
-  <p>Detrás de las 9 fachadas está la misma casa: mismos muros, losas, instalaciones y huecos de ventana. Cambian el material, los marcos, los remates y lo que da sombra. Así cada casa tiene su identidad y la obra sigue siendo de un solo modelo.</p>
-  <div class="fachadas">
-{"".join(f'    <figure id="f-{slug(n)}">{fachada(n)}<figcaption><b>{i}. {n}</b> {TEXTO[n]} <span>Sombra: {SOMBRA_DE[n]}.</span></figcaption></figure>' + chr(10) for i, n in enumerate(NOMBRES, 1))}  </div>
-  <h3>Así se ve una cuadra</h3>
-  <div class="scroll">{cuadra()}</div>
-  <ul>
-    <li><b>Cada lote ya tiene su fachada asignada</b> (en el mapa, al tocar un lote). La regla: la casa de al lado y la de enfrente nunca repiten, y cada calle empieza la serie en otro punto. El mismo tipo vuelve a salir hasta 9 casas después.</li>
-    <li><b>Sirven para las dos orientaciones.</b> Cada tipo ya trae su manera de dar sombra a las ventanas del frente. En las calles que reciben sol (lotes del lado norte, frente al SSE) esa protección trabaja; en las de sombra, da privacidad.</li>
-    <li>Los nogales de los linderos quedan delante de las casas y unen la cuadra: de la calle se ve una arboleda con casas distintas, no una fila de casas iguales.</li>
-  </ul>
-
-  <h2>Para Torreón</h2>
-  <ul>
-    <li>Losa con aislante y acabado blanco reflejante: es la superficie que más calor recibe en verano.</li>
-    <li>Doble vidrio en las ventanas del frente y el fondo. Los costados casi no llevan ventanas.</li>
-    <li>Azotea libre para calentador y paneles solares, sin sombra de vecinos más altos (todo el fraccionamiento es de 2 niveles).</li>
-    <li>Jardín de bajo consumo de agua bajo los nogales: grava, plantas del desierto y una zona de pasto chica.</li>
-  </ul>
-  <p style="color:var(--gris);font-size:0.8125rem">Borrador de anteproyecto: falta revisar el reglamento de construcción de Torreón (restricciones, coeficientes) y el cálculo estructural.</p>
-</main>
-</body>
-</html>
-"""
-open(OUT, "w").write(HTML)
-print("ok", OUT, f"construcción {m2_pb + m2_pa:.0f} m², jardín {jardin:.0f} m²")
+# ---------- fachada posterior (al jardín): igual en las 9 ----------
+def fachada_posterior():
+    d = Dib(0.9, 7.5)
+    d.r(0, 9, 0, 3.0, "#f5f5f5", "#000", 1.2)                                           # portal: fondo (muro de la sala con cancel)
+    d.vidrio(0.4, 8.6, 0.05, 2.7, 4)                                                       # cancel corredizo de 4 hojas
+    d.r(0, 9, 3.0, 3.35, "#1a1a1a")                                                        # losa de la planta alta (vuela sobre el portal)
+    d.r(0, 9, 3.35, 6.95, ESTUCO, "#000", 1.4)
+    for x in (0.9, 8.1): d.r(x - 0.15, x + 0.15, 0, 3.0, "#444")                            # 2 columnas delgadas al borde del portal
+    d.vidrio(0.6, 4.6, 4.0, 6.0, 2); d.sombra(0.6, 4.6, 5.8, 6.0); d.r(0.4, 4.8, 6.0, 6.2, NEGRO)   # recámara principal, con alero
+    d.vidrio(6.0, 7.2, 5.2, 6.1); d.vidrio(7.6, 8.6, 5.2, 6.1)                              # baño principal: ventanas altas
+    d.r(-0.3, 9.3, 6.95, 7.2, NEGRO)                                                       # pretil
+    d.ln(-0.9, 0, 9.9, 0, "#000", 2.2)
+    for x in (-0.6, 9.6):                                                                  # nogales de los linderos
+        d.ln(x, 0, x, 3.2, "#000", 4); d.o.append(f'<ellipse cx="{d.X(x):.1f}" cy="{d.Z(6.0):.1f}" rx="{3.2*S:.1f}" ry="{2.9*S:.1f}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1" stroke-dasharray="5 4"/>')
+    d.o.append(f'<text x="{d.X(4.5):.1f}" y="{d.Z(1.4):.1f}" font-size="11" fill="#555" text-anchor="middle">portal · cancel de 8.2 m a la sala y el comedor</text>')
+    w, h = (9 + 1.8) * S, 7.85 * S
+    return f'<svg viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="Fachada posterior, al jardín">' + "".join(d.o) + "</svg>"
