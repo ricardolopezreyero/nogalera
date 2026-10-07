@@ -3,6 +3,7 @@ import sys, json
 args = sys.argv[1:]
 exec(open(__file__.replace("n6_direcciones.py", "n6_confort.py")).read())
 
+from n6_fachadas import fachada_de
 FRACC = "La Nogalera"                       # nombre del fraccionamiento (provisional)
 # Calles: las que corren a lo largo (paralelas al bulevar) son árboles; las que cruzan, aves. Las dos en orden alfabético:
 # de sur a norte y de poniente a oriente. Si sabes una letra, sabes dónde está la calle.
@@ -25,6 +26,7 @@ for (c, lado_n), Ls in por_calle.items():
     Ls.sort(key=lambda L: L["g"].centroid.x)
     for k, L in enumerate(Ls):
         L["calle"] = nombre_v[c][0]; L["num"] = 2 * k + (1 if lado_n else 2)
+        L["fachada"] = fachada_de(k, lado_n, LARGAS.index(L["calle"]))
 dirs = [f'{L["calle"]} {L["num"]}' for L in lotes]
 assert len(set(dirs)) == len(dirs), "direcciones repetidas"
 max_num = max(L["num"] for L in lotes)
@@ -37,7 +39,7 @@ print(f"direcciones: {len(dirs)}; número más alto {max_num}")
 # ===== Salida: enriquece confort.geojson =====
 it = iter([f for f in feats if f["properties"]["capa"] == "lote"])
 for L in lotes:
-    f = next(it); f["properties"].update(dir=f'{L["calle"]} {L["num"]}')
+    f = next(it); f["properties"].update(dir=f'{L["calle"]} {L["num"]}', fachada=L["fachada"])
 for f in feats:
     p = f["properties"]
 # nombres de parques y plazas por su calle de cruce

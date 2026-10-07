@@ -1,5 +1,5 @@
-"""N6 · casa muestra: genera public/n6/casa.html (plantas, emplazamiento con el sol de Torreón, corte y 2 fachadas).
-Un solo modelo de casa para los lotes de 12.0 × 24.0 m o más; solo cambia la fachada según hacia dónde da la calle."""
+"""N6 · casa muestra: genera public/n6/casa.html (plantas, emplazamiento con el sol de Torreón, corte y 9 fachadas).
+Un solo modelo de casa para los lotes de 12.0 × 24.0 m o más; cambia solo la fachada (9 tipos, ver n6_fachadas.py)."""
 import math, sys
 OUT = sys.argv[1] if len(sys.argv) > 1 else "../public/n6/casa.html"
 
@@ -137,33 +137,185 @@ def corte(S=22):
     return "\n".join(o)
 
 # ---------- fachadas ----------
-def fachada(tipo, S=34):
-    pad = 24; W = CASA_W; H = 7.0
-    w, h = W * S + 2 * pad, H * S + 2 * pad + 22
-    X = lambda x: pad + x * S; Z = lambda z: pad + 22 + (H - z) * S
-    sol = tipo == "sol"
-    tit = "Fachada A · calle al SSE (lotes del lado norte)" if sol else "Fachada B · calle al NNO (lotes del lado sur)"
-    o = [f'<svg viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="{tit}">', f'<text x="{pad}" y="16" class="t">{tit}</text>']
-    o.append(f'<rect x="{X(0)}" y="{Z(6.9)}" width="{W*S}" height="{6.9*S}" class="fach"/>')
-    o.append(f'<line x1="{X(0)}" y1="{Z(3.3)}" x2="{X(W)}" y2="{Z(3.3)}" class="div"/>')
-    def ven(x0, x1, z0, z1):
-        o.append(f'<rect x="{X(x0)}" y="{Z(z1)}" width="{(x1-x0)*S}" height="{(z1-z0)*S}" class="ven"/>')
-        if sol:   # alero profundo y celosía de madera
-            o.append(f'<rect x="{X(x0-0.3)}" y="{Z(z1+0.35)}" width="{(x1-x0+0.6)*S}" height="{0.25*S}" class="alero"/>')
-            for k in range(int((x1 - x0) / 0.25) + 1):
-                xx = x0 + 0.1 + k * 0.25
-                if xx < x1 - 0.05: o.append(f'<line x1="{X(xx)}" y1="{Z(z1)}" x2="{X(xx)}" y2="{Z(z0)}" class="celos"/>')
-        else:
-            o.append(f'<rect x="{X(x0-0.1)}" y="{Z(z1+0.15)}" width="{(x1-x0+0.2)*S}" height="{0.12*S}" class="alero"/>')
-    if sol:
-        ven(0.6, 3.3, 1.0, 2.4); ven(6.3, 8.4, 1.1, 2.3); ven(0.6, 3.3, 4.3, 5.7); ven(6.1, 8.6, 4.3, 5.7)
-    else:
-        ven(0.6, 3.3, 0.5, 2.5); ven(6.3, 8.4, 0.9, 2.4); ven(0.6, 3.3, 3.9, 6.0); ven(6.1, 8.6, 3.9, 6.0)
-    o.append(f'<rect x="{X(4.25)}" y="{Z(2.5)}" width="{1.1*S}" height="{2.5*S}" class="puertaF"/>')
-    o.append(f'<rect x="{X(4.35)}" y="{Z(6.2)}" width="{0.9*S}" height="{2.6*S}" class="ven"/>')   # ventana alta de la escalera
-    o.append(f'<line x1="{X(-0.4)}" y1="{Z(0)}" x2="{X(W+0.4)}" y2="{Z(0)}" class="suelo"/>')
-    o.append("</svg>")
-    return "\n".join(o)
+from n6_fachadas import NOMBRES, SEQ, slug, fachada_de
+S = 30                                     # unidades de dibujo por metro (las mismas en todas las fachadas y en la cuadra)
+ESTUCO, BLANCO, NEGRO, VIDRIO, SOMBRA = "#f5f5f5", "#ffffff", "#161616", "#2c2c2c", "rgba(0,0,0,0.17)"
+DEFS = f"""<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<pattern id="p-cantera" width="36" height="27" patternUnits="userSpaceOnUse"><rect width="36" height="27" fill="#e2e2e2"/><path d="M0 13.5H36M0 27H36M0.35 0V13.5M18 13.5V27" stroke="#9a9a9a" stroke-width="0.7" fill="none"/></pattern>
+<pattern id="p-ladrillo" width="21.6" height="7.2" patternUnits="userSpaceOnUse"><rect width="21.6" height="7.2" fill="#b3b3b3"/><path d="M0 3.6H21.6M0 7.2H21.6M0.3 0V3.6M10.8 0V3.6M5.4 3.6V7.2M16.2 3.6V7.2" stroke="#f2f2f2" stroke-width="0.7" fill="none"/></pattern>
+<pattern id="p-soldado" width="3.6" height="8" patternUnits="userSpaceOnUse"><rect width="3.6" height="8" fill="#b0b0b0"/><path d="M0.3 0V8" stroke="#f2f2f2" stroke-width="0.6"/></pattern>
+<pattern id="p-madera" width="3.6" height="10" patternUnits="userSpaceOnUse"><rect width="3.6" height="10" fill="#9b9b9b"/><path d="M0.4 0V10" stroke="#5c5c5c" stroke-width="0.9"/></pattern>
+<pattern id="p-viga" width="20" height="3" patternUnits="userSpaceOnUse"><rect width="20" height="3" fill="#585858"/><path d="M0 1.5H12M6 0.4H20" stroke="#3a3a3a" stroke-width="0.5"/></pattern>
+<pattern id="p-concreto" width="36" height="18" patternUnits="userSpaceOnUse"><rect width="36" height="18" fill="#d5d5d5"/><path d="M0 9H36M0 18H36" stroke="#bdbdbd" stroke-width="0.6"/><circle cx="9" cy="4.5" r="0.9" fill="#8a8a8a"/><circle cx="27" cy="4.5" r="0.9" fill="#8a8a8a"/></pattern>
+<pattern id="p-celosia" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#eeeeee"/><circle cx="4.5" cy="4.5" r="3" fill="#3a3a3a"/></pattern>
+<pattern id="p-petatillo" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#c4c4c4"/><rect x="2.2" y="2.2" width="4.6" height="4.6" fill="#333"/></pattern>
+<pattern id="p-lamas" width="10" height="4.5" patternUnits="userSpaceOnUse"><rect width="10" height="2.8" fill="#dcdcdc"/><path d="M0 2.8H10" stroke="#6e6e6e" stroke-width="0.6"/></pattern>
+</defs></svg>"""
+
+class Dib:
+    """Dibujo en metros: x a lo ancho de la fachada (0 = esquina izquierda de la casa), z hacia arriba (0 = piso)."""
+    def __init__(self, ox, ztop): self.o, self.ox, self.zt = [], ox, ztop
+    def X(self, x): return (x + self.ox) * S
+    def Z(self, z): return (self.zt - z) * S
+    def r(self, x0, x1, z0, z1, fill, stroke=None, sw=1.0):
+        st = f' stroke="{stroke}" stroke-width="{sw}"' if stroke else ""
+        self.o.append(f'<rect x="{self.X(x0):.1f}" y="{self.Z(z1):.1f}" width="{(x1-x0)*S:.1f}" height="{(z1-z0)*S:.1f}" fill="{fill}"{st}/>')
+    def ln(self, x0, z0, x1, z1, color="#000", sw=1.0):
+        self.o.append(f'<line x1="{self.X(x0):.1f}" y1="{self.Z(z0):.1f}" x2="{self.X(x1):.1f}" y2="{self.Z(z1):.1f}" stroke="{color}" stroke-width="{sw}"/>')
+    def c(self, x, z, rad, fill):
+        self.o.append(f'<circle cx="{self.X(x):.1f}" cy="{self.Z(z):.1f}" r="{rad*S:.1f}" fill="{fill}"/>')
+    def vidrio(self, x0, x1, z0, z1, cols=1, rows=1, marco=NEGRO):
+        self.r(x0, x1, z0, z1, VIDRIO, marco, 1.4)
+        self.o.append(f'<polygon points="{self.X(x0):.1f},{self.Z(z1):.1f} {self.X(x0+(x1-x0)*0.45):.1f},{self.Z(z1):.1f} {self.X(x0):.1f},{self.Z(z1-(z1-z0)*0.55):.1f}" fill="rgba(255,255,255,0.09)"/>')
+        for k in range(1, cols): self.ln(x0 + (x1 - x0) * k / cols, z0, x0 + (x1 - x0) * k / cols, z1, "#8c8c8c", 1.1)
+        for k in range(1, rows): self.ln(x0, z0 + (z1 - z0) * k / rows, x1, z0 + (z1 - z0) * k / rows, "#8c8c8c", 1.1)
+    def sombra(self, x0, x1, z0, z1): self.r(x0, x1, z0, z1, SOMBRA)
+    def suelo(self, x0, x1): self.ln(x0, 0, x1, 0, "#000", 2.2)
+
+# huecos (iguales en las 9): recámara 1, puerta, cocina; recámara 2, escalera, recámara 3
+W1, PU, W2 = (0.6, 3.3), (4.25, 5.35), (6.3, 8.4)
+W3, ES, W4 = (0.6, 3.3), (4.35, 5.25), (6.1, 8.6)
+
+def puerta_madera(d, x0=PU[0], x1=PU[1], z1=2.6, marco=NEGRO):
+    d.r(x0 - 0.1, x1 + 0.1, 0, z1 + 0.1, marco); d.r(x0, x1, 0, z1, "url(#p-madera)", "#000", 0.8); d.ln(x1 - 0.18, 0.9, x1 - 0.18, 1.5, "#fff", 2)
+
+def f_cantera(d):
+    d.r(0, 9, 0, 6.95, ESTUCO, "#000", 1.6)
+    d.r(0, 9, 0, 3.3, "url(#p-cantera)", "#000", 1.2)
+    d.r(-0.06, 9.06, 3.25, 3.47, "url(#p-cantera)", "#000", 0.8)                     # imposta de cantera
+    d.sombra(0, 9, 6.55, 6.75); d.r(-0.15, 9.15, 6.75, 7.0, "url(#p-cantera)", "#000", 1)   # cornisa
+    for (a, b), z0, z1, cols in ((W3, 4.2, 5.9, 2), (W4, 4.2, 5.9, 2)):
+        d.r(a - 0.18, b + 0.18, z0 - 0.25, z1 + 0.18, "url(#p-cantera)", "#000", 1)
+        d.vidrio(a, b, z0, z1, cols); d.sombra(a - 0.18, b + 0.18, z0 - 0.4, z0 - 0.25)
+    d.r(ES[0] - 0.15, ES[1] + 0.15, 3.65, 6.3, "url(#p-cantera)", "#000", 1); d.vidrio(*ES, 3.8, 6.15, 1, 3)
+    for (a, b), z0, z1 in ((W1, 0.9, 2.5), (W2, 1.1, 2.5)):
+        d.vidrio(a, b, z0, z1, 2); d.sombra(a, b, z1 - 0.14, z1); d.r(a - 0.1, b + 0.1, z0 - 0.1, z0, "#d0d0d0", "#000", 0.6)
+    d.r(4.05, 5.55, 0, 2.85, NEGRO); puerta_madera(d, z1=2.65, marco=NEGRO)
+
+def f_celosia(d):
+    d.r(0, 9, 0, 6.9, ESTUCO, "#000", 1.6); d.r(0, 9, 0, 0.35, "#cfcfcf", "#000", 0.8)
+    d.vidrio(*W1, 0.9, 2.6, 2); d.vidrio(*W2, 1.1, 2.6); puerta_madera(d)
+    d.sombra(0.4, 5.7, 3.38, 3.55)
+    d.r(0.25, 5.55, 3.55, 6.45, "url(#p-celosia)", "#000", 1.4)                          # celosía de barro sobre recámara y escalera
+    d.r(5.95, 8.75, 4.0, 6.1, BLANCO, "#000", 1.2); d.vidrio(*W4, 4.15, 5.95, 2)
+    d.sombra(W4[0], W4[1], 5.78, 5.95); d.sombra(W4[0], W4[0] + 0.15, 4.15, 5.78)
+    d.ln(0, 6.9, 9, 6.9, "#000", 2.5)
+
+def f_marco(d):
+    d.r(0, 9, 0, 3.3, "url(#p-madera)", "#000", 1.4)
+    d.vidrio(*W1, 0.5, 2.7, 3); d.vidrio(*W2, 1.0, 2.7, 2)
+    d.r(PU[0] - 0.05, PU[1] + 0.05, 0, 2.75, NEGRO); d.ln(PU[1] - 0.2, 0.8, PU[1] - 0.2, 1.9, "#bbb", 2)
+    d.sombra(0, 9, 2.85, 3.3)
+    d.r(-0.25, 9.25, 3.3, 7.05, NEGRO)                                                 # caja con marco negro
+    d.r(0.15, 8.85, 3.65, 6.7, ESTUCO); d.sombra(0.15, 8.85, 6.42, 6.7); d.sombra(0.15, 0.38, 3.65, 6.42)
+    d.vidrio(*W3, 4.1, 6.0, 2); d.vidrio(*ES, 3.85, 6.25); d.vidrio(*W4, 4.1, 6.0, 2)
+
+def f_duela(d):
+    d.r(0, 9, 0, 3.3, ESTUCO, "#000", 1.6)
+    d.r(0, 9, 3.3, 6.85, "url(#p-madera)", "#000", 1.4); d.r(-0.05, 9.05, 6.85, 7.0, BLANCO, "#000", 1)
+    d.r(0, 9, 3.22, 3.36, NEGRO)
+    d.vidrio(*W3, 4.1, 6.0, 2); d.r(1.85, 3.6, 4.0, 6.1, "url(#p-madera)", "#000", 1.2); d.sombra(3.6, 3.72, 4.0, 6.1)   # postigo corrido
+    d.vidrio(*W4, 4.1, 6.0, 2); d.r(5.9, 7.7, 4.0, 6.1, "url(#p-madera)", "#000", 1.2); d.sombra(7.7, 7.82, 4.0, 6.1)
+    d.vidrio(*ES, 3.7, 6.3)
+    for k in range(1, 6): d.ln(ES[0] + k * 0.15, 3.7, ES[0] + k * 0.15, 6.3, "#9b9b9b", 2.2)
+    d.vidrio(*W1, 0.6, 2.7, 3); d.vidrio(*W2, 1.1, 2.7, 2); puerta_madera(d, z1=2.7)
+
+def f_ladrillo(d):
+    d.r(0, 9, 0, 6.95, "url(#p-ladrillo)", "#000", 1.6)
+    d.r(0, 9, 3.3, 3.5, "#e0e0e0", "#000", 0.8); d.r(-0.05, 9.05, 6.8, 6.98, "#e0e0e0", "#000", 0.8)
+    for (a, b), z0, z1, cols in ((W1, 0.9, 2.5, 2), (W2, 1.1, 2.5, 1), (W3, 4.1, 5.8, 2), (W4, 4.1, 5.8, 2)):
+        d.vidrio(a, b, z0, z1, cols); d.r(a - 0.12, b + 0.12, z1, z1 + 0.27, "url(#p-soldado)", "#000", 0.6)
+        d.r(a - 0.06, b + 0.06, z0 - 0.08, z0, "#e0e0e0", "#000", 0.5)
+    d.r(ES[0] - 0.1, ES[1] + 0.1, 3.75, 6.55, "url(#p-petatillo)", "#000", 1)            # celosía de ladrillo (petatillo)
+    d.r(PU[0], PU[1], 0, 2.6, NEGRO); d.r(PU[1] - 0.3, PU[1] - 0.15, 0.2, 2.4, "#6a6a6a")
+    d.r(PU[0] - 0.12, PU[1] + 0.12, 2.6, 2.87, "url(#p-soldado)", "#000", 0.6)
+
+def f_hacienda(d):
+    d.r(0, 9, 0, 6.95, BLANCO, "#000", 1.8); d.r(0, 9, 0, 0.45, "#d6d6d6", "#000", 0.8)    # rodapié
+    for (a, b), z0, z1, rej in ((W1, 0.9, 2.4, True), (W2, 1.1, 2.4, True), (W3, 4.1, 5.7, False), (W4, 4.1, 5.7, False)):
+        d.vidrio(a, b, z0, z1, 2, 2); d.sombra(a, b, z1 - 0.2, z1); d.sombra(a, a + 0.2, z0, z1 - 0.2)    # muro grueso: hueco hondo
+        d.r(a - 0.4, b + 0.4, z1, z1 + 0.22, "url(#p-viga)", "#000", 0.6)                 # cerramiento de madera
+        d.r(a - 0.05, b + 0.05, z0 - 0.08, z0, "#d6d6d6", "#000", 0.5)
+        if rej:
+            for k in range(1, int((b - a) / 0.16)): d.ln(a + k * 0.16, z0, a + k * 0.16, z1, "#000", 1.3)
+            d.ln(a, (z0 + z1) / 2, b, (z0 + z1) / 2, "#000", 1.3)
+    d.vidrio(*ES, 3.9, 5.9, 1, 3); d.sombra(ES[0], ES[1], 5.7, 5.9); d.r(ES[0] - 0.3, ES[1] + 0.3, 5.9, 6.1, "url(#p-viga)", "#000", 0.6)
+    d.r(PU[0] - 0.15, PU[1] + 0.15, 0, 2.75, "url(#p-madera)", "#000", 1); d.ln(4.8, 0, 4.8, 2.75, "#000", 1)
+    for x in (4.45, 4.63, 4.97, 5.15):                                                  # clavos de la puerta
+        for j in range(4): d.c(x, 0.5 + j * 0.6, 0.035, "#000")
+    d.r(PU[0] - 0.5, PU[1] + 0.5, 2.75, 2.98, "url(#p-viga)", "#000", 0.6)
+    for k in range(15): d.c(0.3 + k * 0.6, 6.5, 0.09, "#4a4a4a")                       # rollizos (puntas de las vigas)
+    for g in (1.95, 7.35):                                                             # gárgolas
+        d.r(g - 0.12, g + 0.12, 6.6, 6.78, "#3a3a3a"); d.ln(g, 6.6, g, 5.95, "#9a9a9a", 0.8)
+
+def f_horizonte(d):
+    d.r(0, 9, 0, 6.6, ESTUCO, "#000", 1.6)
+    d.r(0.3, 8.7, 4.0, 6.25, "#8a8a8a", "#000", 1)                                     # franja corrida
+    d.vidrio(*W3, 4.15, 6.1, 3); d.vidrio(*ES, 4.15, 6.1); d.vidrio(*W4, 4.15, 6.1, 3)
+    d.sombra(0, 9, 2.95, 3.2); d.sombra(0, 9, 6.3, 6.6)
+    d.r(-0.6, 9.6, 3.2, 3.45, NEGRO); d.r(-0.6, 9.6, 6.6, 6.95, NEGRO)                 # losas voladas 60 cm
+    d.vidrio(*W1, 0.45, 2.85, 3); d.vidrio(*W2, 1.2, 2.85, 2); puerta_madera(d, z1=2.85)
+    d.r(5.75, 9.35, 0, 0.6, "url(#p-concreto)", "#000", 1)                              # jardinera
+    for k in range(7): d.c(6.0 + k * 0.5, 0.75, 0.17, "#7a7a7a")
+
+def f_lamas(d):
+    d.r(0, 9, 0, 6.9, ESTUCO, "#000", 1.6); d.r(0, 9, 0, 0.3, "#cfcfcf", "#000", 0.8)
+    d.sombra(0.4, 8.95, 3.45, 3.65)
+    d.r(0.25, 8.75, 3.65, 6.5, NEGRO); d.r(0.35, 8.65, 3.75, 6.4, VIDRIO)
+    d.r(0.35, 8.65, 3.75, 6.4, "url(#p-lamas)")                                         # piel de lamas de aluminio
+    for x in (3.0, 5.7): d.ln(x, 3.75, x, 6.4, NEGRO, 2)
+    d.vidrio(*W1, 0.8, 2.6, 2); d.vidrio(*W2, 1.1, 2.6)
+    d.r(PU[0] - 0.1, PU[1] + 0.1, 0, 3.0, NEGRO); d.r(PU[0], PU[1], 0, 2.9, "url(#p-madera)", "#000", 0.8); d.ln(PU[0] + 0.2, 0.7, PU[0] + 0.2, 2.2, "#fff", 2)
+
+def f_concreto(d):
+    d.r(0, 9, 0, 6.95, "url(#p-concreto)", "#000", 1.6)
+    d.sombra(0.42, 3.72, 3.7, 3.9)
+    d.r(0.3, 3.6, 3.9, 6.25, BLANCO, "#000", 1.4)                                       # cajón blanco
+    d.vidrio(*W3, 4.2, 5.95); d.sombra(W3[0], W3[1], 5.8, 5.95); d.sombra(W3[0], W3[0] + 0.14, 4.2, 5.8)
+    d.r(4.15, 5.45, 0, 6.5, NEGRO)                                                      # ranura de piso a techo
+    d.r(PU[0], PU[1], 0, 2.6, "url(#p-madera)", "#000", 0.8); d.vidrio(*ES, 3.0, 6.35, 1, 1, "#555")
+    d.vidrio(*W4, 4.2, 5.9, 1, 1, "#555"); d.vidrio(*W1, 1.0, 2.5, 1, 1, "#555"); d.vidrio(*W2, 1.1, 2.4, 1, 1, "#555")
+
+DIBUJO = dict(zip(NOMBRES, [f_cantera, f_celosia, f_marco, f_duela, f_ladrillo, f_hacienda, f_horizonte, f_lamas, f_concreto]))
+TEXTO = {
+    "Cantera": "Planta baja de cantera, planta alta lisa y ventanas enmarcadas en cantera, con cornisa. Mexicana y sobria.",
+    "Celosía": "Una celosía de barro tapa la recámara y la escalera: de día filtra el sol y de noche la casa brilla a través de ella.",
+    "Marco": "La planta alta es una caja con marco negro que vuela sobre una planta baja forrada de madera.",
+    "Duela": "Planta alta forrada de duela de madera, con postigos corredizos que se abren o se cierran según el sol. Planta baja blanca.",
+    "Ladrillo": "Ladrillo aparente, cerramientos de ladrillo parado y una celosía de petatillo en la escalera.",
+    "Hacienda": "Muros blancos gruesos, vigas de madera, herrería, rollizos y gárgolas. Lagunera de siempre.",
+    "Horizonte": "Dos losas que vuelan 60 cm y una franja de ventanas corrida en la planta alta. Se ve larga y baja.",
+    "Lamas": "Una piel de lamas de aluminio cubre toda la planta alta: da sombra y privacidad sin perder la vista.",
+    "Concreto": "Concreto aparente con huella de cimbra, un cajón blanco en la ventana principal y una ranura de piso a techo en la entrada.",
+}
+SOMBRA_DE = {"Cantera": "ventanas remetidas en su marco", "Celosía": "la celosía", "Marco": "la caja, que vuela", "Duela": "los postigos",
+             "Ladrillo": "el hueco hondo del ladrillo", "Hacienda": "el muro grueso y las vigas", "Horizonte": "las losas voladas",
+             "Lamas": "las lamas", "Concreto": "el cajón y la ranura"}
+
+def fachada(nombre):
+    d = Dib(0.9, 7.5)
+    DIBUJO[nombre](d); d.suelo(-0.8, 9.8)
+    w, h = (9 + 1.8) * S, 7.85 * S
+    return f'<svg viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="Fachada {nombre}">' + "".join(d.o) + "</svg>"
+
+def cuadra(n=6, calle_i=0, lado_norte=True, calle="Álamo"):
+    """Elevación de una acera: n lotes seguidos, con los nogales en los linderos."""
+    zt, mx = 11.8, 0.6
+    tipos = [fachada_de(k, lado_norte, calle_i) for k in range(n)]
+    o = []
+    for k, t in enumerate(tipos):
+        d = Dib(mx + k * LOTE_W + (LOTE_W - CASA_W) / 2, zt); DIBUJO[t](d); o += d.o
+        num = 2 * k + (1 if lado_norte else 2)
+        o.append(f'<text x="{(mx + k * LOTE_W + LOTE_W / 2) * S:.0f}" y="{(zt + 0.75) * S:.0f}" font-size="26" font-weight="700" fill="#000" text-anchor="middle">{calle} {num} · {t}</text>')
+    d = Dib(mx, zt)
+    for k in range(n + 1):                                   # nogales en los linderos, delante de las casas
+        x = k * LOTE_W
+        d.ln(x, 0, x, 3.4, "#000", 4)
+        d.o.append(f'<ellipse cx="{d.X(x):.1f}" cy="{d.Z(7.2):.1f}" rx="{4.4*S:.1f}" ry="{3.6*S:.1f}" fill="rgba(0,0,0,0.04)" stroke="#000" stroke-width="1" stroke-dasharray="5 4"/>')
+    d.suelo(-mx, n * LOTE_W + mx)
+    o += d.o
+    w, h = (n * LOTE_W + 2 * mx) * S, (zt + 1.3) * S
+    return f'<svg class="cuadra" viewBox="0 0 {w:.0f} {h:.0f}" role="img" aria-label="Una cuadra de {calle}">' + "".join(o) + "</svg>"
 
 rows_pb = "".join(f"<tr><td>{n}</td><td>{area((n,a,b,c,d)):.0f} m²</td></tr>" for n, a, b, c, d in PB)
 rows_pa = "".join(f"<tr><td>{n}</td><td>{area((n,a,b,c,d)):.0f} m²</td></tr>" for n, a, b, c, d in PA)
@@ -227,17 +379,23 @@ HTML = f"""<!doctype html>
   svg .alero {{ fill: #000; }}
   svg .celos {{ stroke: #6a6a6a; stroke-width: 1.4; }}
   svg .puertaF {{ fill: #111; }}
+  .fachadas {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 1.5rem 1.5rem; margin: 1rem 0; }}
+  .fachadas figure {{ margin: 0; }} .fachadas figcaption {{ font-size: 0.875rem; margin-top: 0.375rem; }}
+  .fachadas figcaption b {{ display: block; font-size: 1rem; }} .fachadas figcaption span {{ display: block; color: var(--gris); font-size: 0.8125rem; margin-top: 0.2rem; }}
+  h3 {{ font-size: 1rem; margin: 1.5rem 0 0.5rem; }}
+  .scroll {{ overflow-x: auto; }} svg.cuadra {{ min-width: 52rem; }}
   table {{ border-collapse: collapse; font-size: 0.875rem; font-variant-numeric: tabular-nums; width: 100%; max-width: 22rem; }}
   td {{ border-bottom: 1px solid var(--suave); padding: 0.2rem 0.3rem; }} td:last-child {{ text-align: right; }}
   ul {{ padding-left: 1.1rem; max-width: 44rem; }} li {{ margin: 0.3rem 0; }}
 </style>
 </head>
 <body>
+{DEFS}
 <main class="doc">
   <nav class="nav" aria-label="Pestañas del proyecto">
     <a href="../">Nogaleras</a><a href="./">N6 · diseño</a><a href="acceso.html">Acceso</a><a href="casa.html" aria-current="page">Casa muestra</a><a href="terreno.html">Terreno</a><a href="base.html">N6 · base</a><a href="tamanos.html">N6 · tamaños</a>
   </nav>
-  <h1>Casa muestra · Modelo Nogal <span>Un solo modelo para todo el fraccionamiento. Solo cambia la fachada según hacia dónde da la calle.</span></h1>
+  <h1>Casa muestra · Modelo Nogal <span>Un solo modelo para todo el fraccionamiento, con 9 fachadas distintas.</span></h1>
   <dl class="datos">
     <div><dt>Recámaras</dt><dd>4, cada una con baño</dd></div>
     <div><dt>Construcción</dt><dd>{m2_pb + m2_pa:.0f} m² en 2 niveles</dd></div>
@@ -281,12 +439,17 @@ HTML = f"""<!doctype html>
   <h2>Corte</h2>
   {corte()}
 
-  <h2>Fachadas: lo único que cambia</h2>
-  <div class="dos">
-    <div>{fachada("sol")}<p>Esta calle recibe sol: aleros de 60 cm y celosía de madera en las ventanas de la planta alta. Ventanas de tamaño normal.</p></div>
-    <div>{fachada("sombra")}<p>Esta calle casi no recibe sol: ventanas más altas para ganar luz y aleros delgados.</p></div>
-  </div>
-  <p>Mismos muros, mismas losas, mismas instalaciones y los mismos huecos estructurales en las dos versiones. Cambian solo los aleros, la celosía y la altura de algunas ventanas. Los materiales y el color pueden variar por calle para que no se vea repetido.</p>
+  <h2 id="fachadas">Fachadas: 9 tipos, una sola casa</h2>
+  <p>Detrás de las 9 fachadas está la misma casa: mismos muros, losas, instalaciones y huecos de ventana. Cambian el material, los marcos, los remates y lo que da sombra. Así cada casa tiene su identidad y la obra sigue siendo de un solo modelo.</p>
+  <div class="fachadas">
+{"".join(f'    <figure id="f-{slug(n)}">{fachada(n)}<figcaption><b>{i}. {n}</b> {TEXTO[n]} <span>Sombra: {SOMBRA_DE[n]}.</span></figcaption></figure>' + chr(10) for i, n in enumerate(NOMBRES, 1))}  </div>
+  <h3>Así se ve una cuadra</h3>
+  <div class="scroll">{cuadra()}</div>
+  <ul>
+    <li><b>Cada lote ya tiene su fachada asignada</b> (en el mapa, al tocar un lote). La regla: la casa de al lado y la de enfrente nunca repiten, y cada calle empieza la serie en otro punto. El mismo tipo vuelve a salir hasta 9 casas después.</li>
+    <li><b>Sirven para las dos orientaciones.</b> Cada tipo ya trae su manera de dar sombra a las ventanas del frente. En las calles que reciben sol (lotes del lado norte, frente al SSE) esa protección trabaja; en las de sombra, da privacidad.</li>
+    <li>Los nogales de los linderos quedan delante de las casas y unen la cuadra: de la calle se ve una arboleda con casas distintas, no una fila de casas iguales.</li>
+  </ul>
 
   <h2>Para Torreón</h2>
   <ul>
