@@ -19,6 +19,13 @@
     "bindings": [{ "name": "PROSPECTOS", "class_name": "Prospectos" }]
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Prospectos"] }],
+  // Variables de texto (no secretas). AVISO_CORREO (a quién avisar de cada prospecto) sí es secreto.
+  "vars": { "AVISO_DESDE": "La Nogalera <nogalera@capitaltorreon.com>" },
+  // La llave de Resend ya vive en el Secrets Store de la cuenta (nombre RESEND_API_KEY, scope workers): se conecta aquí con el id de la bóveda,
+  // que sale de `npx wrangler secrets-store store list`. El código acepta las dos formas (binding del Store o `npx wrangler secret put RESEND_API_KEY`).
+  // "secrets_store_secrets": [
+  //   { "binding": "RESEND_API_KEY", "store_id": "<id de la bóveda>", "secret_name": "RESEND_API_KEY" }
+  // ],
   // Al publicar, Cloudflare conecta el subdominio y crea el registro DNS y el certificado.
   // Requiere que la zona capitaltorreon.com esté en la misma cuenta de Cloudflare.
   "routes": [
