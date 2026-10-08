@@ -491,7 +491,7 @@ export class Foto3D {
     sol.shadow.camera.near = 1; sol.shadow.camera.far = 2000; sol.shadow.bias = -0.0003; sol.shadow.normalBias = 0.02 + ext / 4000; sol.shadow.radius = 4;
     const hemi = new THREE.HemisphereLight(H.hemi[0], H.hemi[1], H.hemi[2]); hemi.position.set(0, 0, 1); L.add(hemi);
     // luces de la escena (noche y atardecer): las más cercanas a la cámara
-    const luces = this.luces.length ? this.luces : this.lamparas.map(l => [l[0], l[1], l[2], 2.6, "#ffd9a0"]);
+    const luces = this.luces.length ? this.luces : this.lamparas.map(l => [l[0], l[1], l[2], 1.3, "#ffd9a0"]);
     for (const m of scene.children) if (m.isMesh && m.material.transparent && m.material.isMeshPhysicalMaterial) { m.material.emissive = new THREE.Color(0xffd9a0); m.material.emissiveIntensity = (H.noche && !this.luces.length ? 0.35 : 0) * H.luces; }
     if (H.luces > 0.05) {
       const cerca = luces.map(l => [Math.hypot(l[0] - cam.cx, l[1] - cam.cy), l]).sort((a, b) => a[0] - b[0]).slice(0, 48);
