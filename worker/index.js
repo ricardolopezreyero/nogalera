@@ -58,14 +58,16 @@ async function guardarProspecto(request, env, ctx) {
   if (nombre.length < 2) return json({ error: "Falta el nombre" }, 400);
   if (celular.replace(/\D/g, "").length < 10) return json({ error: "El celular necesita 10 dígitos" }, 400);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) return json({ error: "El correo no parece correcto" }, 400);
-  if (!CASA[c.casa] || !CREDITO[c.credito] || !RAPIDEZ[c.rapidez]) return json({ error: "Faltan respuestas" }, 400);
-  const p = { fecha: new Date().toISOString(), nombre, celular, correo, casa: CASA[c.casa], credito: CREDITO[c.credito], rapidez: RAPIDEZ[c.rapidez], mensaje,
+  const brochure = c.tipo === "brochure";                                     // el formulario corto: solo nombre, celular y correo para recibir el brochure
+  if (!brochure && (!CASA[c.casa] || !CREDITO[c.credito] || !RAPIDEZ[c.rapidez])) return json({ error: "Faltan respuestas" }, 400);
+  const p = { fecha: new Date().toISOString(), nombre, celular, correo, casa: CASA[c.casa] || "—", credito: CREDITO[c.credito] || "—", rapidez: RAPIDEZ[c.rapidez] || (brochure ? "Pidió el brochure" : "—"), mensaje,
               origen: limpia(c.origen, 200), pais: request.cf?.country || "", ciudad: request.cf?.city || "", agente: limpia(request.headers.get("user-agent"), 200) };
   const stub = env.PROSPECTOS.get(env.PROSPECTOS.idFromName("todos"));
   const repetido = await stub.repetido(p.celular, p.correo);
   const n = await stub.guardar(p);
   if (env.RESEND_API_KEY && env.AVISO_CORREO) ctx.waitUntil(avisar(env, p, n, repetido));
-  return json({ ok: true, n, repetido });
+  if (env.RESEND_API_KEY && brochure && !repetido) ctx.waitUntil(confirmarBrochure(env, p));
+  return json({ ok: true, n, repetido, correo: !!env.RESEND_API_KEY });
 }
 
 async function avisar(env, p, n, repetido) {
@@ -76,6 +78,22 @@ async function avisar(env, p, n, repetido) {
       body: JSON.stringify({ from: env.AVISO_DESDE || "La Nogalera <onboarding@resend.dev>", to: env.AVISO_CORREO.split(",").map(s => s.trim()),
         subject: `Prospecto ${n}: ${p.nombre} · ${p.rapidez}${repetido ? " (ya había escrito)" : ""}`, text: texto + "\n\nTodos: https://nogalera.capitaltorreon.com/api/prospectos?clave=…&formato=csv" }) });
   } catch (e) { /* el prospecto ya quedó guardado; el aviso es un extra */ }
+}
+
+/* al que pide el brochure se le contesta en el momento: el brochure se le manda en cuanto esté listo */
+async function confirmarBrochure(env, p) {
+  const nombre = p.nombre.split(" ")[0];
+  const texto = `Hola, ${nombre}.\n\nGracias por tu interés en La Nogalera. Ya tenemos tus datos: en cuanto el brochure esté listo te lo mandamos a este correo, con la lista de precios de la etapa 1, el plano para elegir lote y la cita para recorrer la huerta.\n\nMientras, puedes ver la casa, la huerta y las noches en https://nogalera.capitaltorreon.com/inicio/\n\nSi prefieres que te llamemos, contesta este correo con la hora que te acomode.\n\nLa Nogalera · La Paz, Torreón`;
+  const html = `<div style="font-family:Georgia,serif;max-width:36rem;margin:auto;color:#1a1d1a;line-height:1.5"><p style="font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;color:#c9a65c">La Nogalera · Torreón</p>
+<h1 style="font-weight:600;font-size:1.75rem;margin:0 0 1rem">Gracias, ${nombre}.</h1>
+<p>Ya tenemos tus datos. <b>En cuanto el brochure esté listo te lo mandamos a este correo</b>, con la lista de precios de la etapa 1, el plano para elegir lote y la cita para recorrer la huerta.</p>
+<p>Mientras, puedes ver la casa, la huerta y las noches en <a href="https://nogalera.capitaltorreon.com/inicio/" style="color:#2f5d3a">nogalera.capitaltorreon.com/inicio</a>.</p>
+<p>Si prefieres que te llamemos, contesta este correo con la hora que te acomode.</p>
+<p style="font-size:0.8125rem;color:#6b6f68;margin-top:2rem">La Nogalera · La Paz, Torreón, Coahuila. Vivir entre nogales de cuarenta años.</p></div>`;
+  try {
+    await fetch("https://api.resend.com/emails", { method: "POST", headers: { authorization: "Bearer " + env.RESEND_API_KEY, "content-type": "application/json" },
+      body: JSON.stringify({ from: env.AVISO_DESDE || "La Nogalera <onboarding@resend.dev>", to: [p.correo], reply_to: env.AVISO_CORREO ? env.AVISO_CORREO.split(",")[0].trim() : undefined, subject: "La Nogalera: te mandamos el brochure en cuanto esté listo", text: texto, html }) });
+  } catch (e) { /* el prospecto ya quedó guardado */ }
 }
 
 async function listarProspectos(request, env) {

@@ -38,10 +38,12 @@ section { padding: clamp(3.5rem, 8vw, 7rem) 0; }
 
 /* portada */
 .hero { position: relative; min-height: 100svh; display: grid; align-items: end; color: var(--crema); background: var(--noche); isolation: isolate; padding: 0; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(20rem, 26rem); gap: clamp(1.5rem, 4vw, 4rem); align-items: end; }
+@media (max-width: 60rem) { .hero-grid { grid-template-columns: 1fr; } }
 .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
-.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(14, 18, 15, 0.55) 0%, rgba(14, 18, 15, 0.1) 35%, rgba(14, 18, 15, 0.2) 60%, rgba(14, 18, 15, 0.92) 100%); }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(14, 18, 15, 0.6) 0%, rgba(14, 18, 15, 0.15) 30%, rgba(14, 18, 15, 0.35) 60%, rgba(14, 18, 15, 0.94) 100%); }
 .hero .ancho { padding-block: clamp(6rem, 12vw, 9rem) clamp(2.5rem, 6vw, 4.5rem); }
-.hero h1 { font-size: clamp(2.75rem, 8vw, 6.5rem); max-width: 14ch; text-wrap: balance; }
+.hero h1 { font-size: clamp(2.75rem, 7vw, 5.75rem); max-width: 14ch; text-wrap: balance; }
 .hero .lede { max-width: 34rem; margin-top: 1.25rem; opacity: 0.95; }
 .hero .acciones { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
 .chips { display: flex; gap: 0.5rem 1.5rem; flex-wrap: wrap; margin-top: 2rem; font-size: 0.875rem; opacity: 0.9; padding: 0; list-style: none; }
@@ -136,3 +138,44 @@ footer a { color: inherit; }
 .fijo { position: fixed; right: 1rem; bottom: 1rem; z-index: 20; box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35); }
 @media (min-width: 48rem) { .fijo { display: none; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } figure.foto img { transition: none; } }
+
+/* ---------- el brochure: el formulario principal ---------- */
+form.brochure { display: grid; gap: 0.75rem; max-width: 30rem; padding: 1.5rem; background: rgba(14, 18, 15, 0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(201, 166, 92, 0.45); color: var(--crema); box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.35); }
+.contacto form.brochure { background: rgba(255, 255, 255, 0.03); box-shadow: none; }
+form.brochure h3 { font-size: 1.75rem; margin: -0.25rem 0 0; }
+form.brochure .nota { color: rgba(244, 239, 228, 0.75); margin: 0; }
+form.brochure label { font-size: 0.8125rem; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(244, 239, 228, 0.8); }
+form.brochure input::placeholder, form.brochure textarea::placeholder { color: rgba(244, 239, 228, 0.35); text-transform: none; letter-spacing: 0; }
+.boton.grande { justify-content: center; width: 100%; font-size: 1.0625rem; padding: 1rem 1.4rem; }
+form.brochure .estado { margin: 0; min-height: 0; } form.brochure .estado:empty { display: none; }
+form.brochure .estado2 { margin: 0; font-size: 0.875rem; } .estado2.error { color: #f0b4a0; }
+form.brochure .gracias { border: 0; padding: 0; display: grid; gap: 0.75rem; }
+form.brochure .gracias p { margin: 0; }
+form.brochure .gracias legend { text-transform: none; letter-spacing: 0; font-size: 0.9375rem; }
+form.brochure .gracias label { text-transform: none; letter-spacing: 0; font-size: 0.875rem; }
+form.brochure .listo { color: var(--oro2); font-weight: 600; }
+.hero-forma { padding-bottom: 0.5rem; }
+.lista-brochure { padding-left: 1.1rem; margin: 0 0 1rem; display: grid; gap: 0.35rem; max-width: 34rem; }
+.lista-brochure li::marker { color: var(--oro); }
+
+/* ---------- aparecer ---------- */
+.rev { opacity: 0; transform: translateY(1.25rem); transition: opacity 0.7s ease, transform 0.7s ease; }
+.rev.ver { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .rev { opacity: 1; transform: none; transition: none; } }
+
+/* ---------- fachadas fotorrealistas y un día aquí ---------- */
+.fachadas-c { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0.75rem; }
+figure.fach figcaption { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.25rem; font-weight: 600; letter-spacing: 0.02em; }
+.centrado { text-align: center; }
+details.planos { margin-top: 1.5rem; } details.planos summary { cursor: pointer; font-size: 0.9375rem; color: var(--gris); margin-bottom: 1rem; }
+.tres { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.tres .hora { display: block; font-family: "Cormorant Garamond", Georgia, serif; font-size: 2.5rem; font-weight: 600; color: var(--nogal); line-height: 1; margin-bottom: 0.5rem; }
+.tres figure.foto figcaption { position: static; background: none; color: inherit; padding: 0.75rem 0 0; font-size: 0.9375rem; line-height: 1.45; }
+.tres figure.foto { background: none; }
+.pasos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1.5rem 2rem; padding: 0; margin: 0; list-style: none; counter-reset: none; }
+.pasos li { border-top: 1px solid var(--oro); padding-top: 0.75rem; }
+.pasos b { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.5rem; display: block; margin-bottom: 0.25rem; font-weight: 600; }
+.pasos p { font-size: 0.9375rem; margin: 0; }
+.cab .nav .boton { white-space: nowrap; }
+[hidden] { display: none !important; }
+.fijo.oculto { display: none; }
