@@ -1,0 +1,282 @@
+[
+ {
+  "fase": "Acuerdos",
+  "actividad": "Confirmar el predio",
+  "inicio": 0,
+  "fin": 2,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "Lindero y superficie real con catastro, tenencia (propiedad privada o ejido) y gravámenes en el Registro Público. Sin esto no hay fideicomiso."
+ },
+ {
+  "fase": "Acuerdos",
+  "actividad": "Título de agua del pozo",
+  "inicio": 0,
+  "fin": 3,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "Concesión de CONAGUA a nombre del predio, volumen anual y cambio de uso agrícola a urbano. Define si hay agua propia."
+ },
+ {
+  "fase": "Acuerdos",
+  "actividad": "Propuesta al dueño y carta de intención",
+  "inicio": 1,
+  "fin": 2,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "$522/m² en fideicomiso: 34.3 % de cada venta. Se firma una carta de intención con exclusividad mientras se arman los contratos."
+ },
+ {
+  "fase": "Acuerdos",
+  "actividad": "Contrato de fideicomiso y aportación del terreno",
+  "inicio": 2,
+  "fin": 4,
+  "responsable": "Dueño del terreno",
+  "descripcion": "Fideicomiso de desarrollo con un banco: el dueño aporta el terreno libre de gravámenes; el contrato fija el orden de pagos de cada venta."
+ },
+ {
+  "fase": "Acuerdos",
+  "actividad": "Acuerdo con el inversionista",
+  "inicio": 2,
+  "fin": 4,
+  "responsable": "Inversionista",
+  "descripcion": "Monto ($566 millones de obra, nunca más de $239 millones a la vez), 15 % anual y calendario de aportaciones por etapa."
+ },
+ {
+  "fase": "Acuerdos",
+  "actividad": "Reparto entre las partes por escrito",
+  "inicio": 3,
+  "fin": 4,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "Comercializador, constructor de casas, constructor desarrollador e idea: porcentajes de las reglas del juego en contratos."
+ },
+ {
+  "fase": "Estudios",
+  "actividad": "Topografía y mecánica de suelos",
+  "inicio": 2,
+  "fin": 4,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Levantamiento a cada 10 m con los nogales uno por uno, sondeos y pruebas de carga. Base del proyecto ejecutivo."
+ },
+ {
+  "fase": "Estudios",
+  "actividad": "Infiltración y aforo del pozo",
+  "inicio": 3,
+  "fin": 5,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Pruebas de infiltración para el drenaje pluvial (el agua se queda en la huerta) y aforo del pozo para la red."
+ },
+ {
+  "fase": "Estudios",
+  "actividad": "Uso de suelo en Desarrollo Urbano",
+  "inicio": 3,
+  "fin": 5,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "Consulta de densidad, restricciones, áreas de donación y la conexión a la Calzada José Vasconcelos."
+ },
+ {
+  "fase": "Estudios",
+  "actividad": "Factibilidad de agua y drenaje (SIMAS o planta)",
+  "inicio": 4,
+  "fin": 8,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Dictamen de SIMAS o permiso de planta de tratamiento propia y reúso del agua tratada para riego."
+ },
+ {
+  "fase": "Estudios",
+  "actividad": "Factibilidad de CFE y Protección Civil",
+  "inicio": 4,
+  "fin": 8,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Carga eléctrica, subestación y transformadores; dictamen de riesgos y de la salida de emergencia."
+ },
+ {
+  "fase": "Estudios",
+  "actividad": "Impacto ambiental y vial",
+  "inicio": 4,
+  "fin": 8,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Manifestación de impacto ambiental (nogales que se conservan y reubican) y estudio vial del acceso."
+ },
+ {
+  "fase": "Proyecto",
+  "actividad": "Proyecto ejecutivo de urbanización",
+  "inicio": 4,
+  "fin": 8,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Lotificación, vialidades, agua, drenaje sanitario y pluvial, luz, fibra e iluminación, con este anteproyecto como base. Presupuesto por partida."
+ },
+ {
+  "fase": "Proyecto",
+  "actividad": "Casa Modelo Nogal, nueve fachadas y reglamento",
+  "inicio": 5,
+  "fin": 8,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "Planos ejecutivos de la casa, catálogo de fachadas por cuadra y reglamento del fraccionamiento (lo que cada comprador firma)."
+ },
+ {
+  "fase": "Proyecto",
+  "actividad": "Licencia de fraccionamiento y régimen",
+  "inicio": 8,
+  "fin": 9,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "Autorización municipal, régimen de propiedad y permiso de venta. Con la licencia empiezan las ventas."
+ },
+ {
+  "fase": "Imagen y ventas",
+  "actividad": "Nombre, marca, renders y página",
+  "inicio": 6,
+  "fin": 9,
+  "responsable": "Comercializador",
+  "descripcion": "Nombre definitivo, identidad, renders de día y de noche, página del cliente y campaña de arranque."
+ },
+ {
+  "fase": "Imagen y ventas",
+  "actividad": "Lista de precios y contratos de compraventa",
+  "inicio": 8,
+  "fin": 9,
+  "responsable": "Comercializador",
+  "descripcion": "Lista por etapa ($3,400/m² y +5 % por etapa), premios por parque y bulevar, contrato y escrituración con notario."
+ },
+ {
+  "fase": "Imagen y ventas",
+  "actividad": "Oficina de ventas y casa muestra en el acceso",
+  "inicio": 9,
+  "fin": 14,
+  "responsable": "Constructor de casas",
+  "descripcion": "La primera casa Modelo Nogal construida con el molde, amueblada, junto a la oficina de ventas en el acceso."
+ },
+ {
+  "fase": "Imagen y ventas",
+  "actividad": "Ventas etapa 1",
+  "inicio": 9,
+  "fin": 20,
+  "responsable": "Comercializador",
+  "descripcion": "277 lotes alrededor del acceso, el bulevar y el club social, al precio más bajo de la lista."
+ },
+ {
+  "fase": "Imagen y ventas",
+  "actividad": "Ventas etapa 2",
+  "inicio": 20,
+  "fin": 31,
+  "responsable": "Comercializador",
+  "descripcion": "276 lotes; ya se ve el club deportivo y el primer parque."
+ },
+ {
+  "fase": "Imagen y ventas",
+  "actividad": "Ventas etapa 3",
+  "inicio": 31,
+  "fin": 42,
+  "responsable": "Comercializador",
+  "descripcion": "276 lotes con el fraccionamiento a medio habitar."
+ },
+ {
+  "fase": "Imagen y ventas",
+  "actividad": "Ventas etapa 4",
+  "inicio": 42,
+  "fin": 53,
+  "responsable": "Comercializador",
+  "descripcion": "276 lotes; cierre con la lista más alta."
+ },
+ {
+  "fase": "Obra",
+  "actividad": "Obra etapa 1: acceso, bulevar, planta y club social",
+  "inicio": 8,
+  "fin": 15,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Lo que se tiene que ver desde el primer día. La planta de tratamiento y la cisterna son de la etapa 1 porque sirven a todo."
+ },
+ {
+  "fase": "Obra",
+  "actividad": "Reubicación de nogales e iluminación de paisaje",
+  "inicio": 8,
+  "fin": 33,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Los 362 nogales que estorban se trasplantan en época de reposo; los nogales iluminados y las balizas van etapa por etapa."
+ },
+ {
+  "fase": "Obra",
+  "actividad": "Obra etapa 2 + club deportivo y parques",
+  "inicio": 14,
+  "fin": 21,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Calles, redes y alumbrado de la etapa 2; canchas, pista, gimnasio y los parques."
+ },
+ {
+  "fase": "Obra",
+  "actividad": "Obra etapa 3",
+  "inicio": 20,
+  "fin": 27,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Calles, redes, alumbrado y nogales regados de la etapa 3, antes de entregar sus lotes."
+ },
+ {
+  "fase": "Obra",
+  "actividad": "Obra etapa 4 y barda completa",
+  "inicio": 26,
+  "fin": 33,
+  "responsable": "Constructor desarrollador",
+  "descripcion": "Última etapa de urbanización; se cierra la barda perimetral y las cámaras."
+ },
+ {
+  "fase": "Casas",
+  "actividad": "Molde de aluminio, cuadrillas y compras por volumen",
+  "inicio": 9,
+  "fin": 11,
+  "responsable": "Constructor de casas",
+  "descripcion": "Se fabrica el molde del Modelo Nogal, se contratan las cuadrillas en serie y se cierran precios de volumen con proveedores."
+ },
+ {
+  "fase": "Casas",
+  "actividad": "Construcción de casas, 8 meses cada una",
+  "inicio": 11,
+  "fin": 62,
+  "responsable": "Constructor de casas",
+  "descripcion": "Arranca 2 meses después de cada venta; en el pico hay 202 casas en obra a la vez. 774 casas en total."
+ },
+ {
+  "fase": "Fideicomiso",
+  "actividad": "El dueño cobra de cada venta",
+  "inicio": 9,
+  "fin": 52,
+  "responsable": "Dueño del terreno",
+  "descripcion": "34.3 % de cada lote, conforme se vende: $463 millones en total."
+ },
+ {
+  "fase": "Fideicomiso",
+  "actividad": "Capital del inversionista: puesto y devuelto",
+  "inicio": 8,
+  "fin": 48,
+  "responsable": "Inversionista",
+  "descripcion": "Aporta por etapa, las ventas lo van devolviendo con 15 % anual; recupera todo en el mes 48."
+ },
+ {
+  "fase": "Fideicomiso",
+  "actividad": "La idea cobra sus lotes",
+  "inicio": 48,
+  "fin": 49,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "68 lotes al precio de lista, cuando el inversionista ya recuperó."
+ },
+ {
+  "fase": "Operación",
+  "actividad": "Operadora: seguridad, mantenimiento y agua",
+  "inicio": 12,
+  "fin": 120,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "Arranca con la primera etapa entregada; costo fijo de $320,000 al mes desde el mes 12. Sigue más allá del año 10."
+ },
+ {
+  "fase": "Operación",
+  "actividad": "Cobro de cuotas y agua",
+  "inicio": 21,
+  "fin": 120,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "Desde la primera casa habitada (mes 21): $1,500 por casa, $1,000 por lote baldío y el agua por tarifa."
+ },
+ {
+  "fase": "Operación",
+  "actividad": "Cosecha de nuez cada octubre",
+  "inicio": 46,
+  "fin": 120,
+  "responsable": "Idea y desarrollo",
+  "descripcion": "1,943 nogales comunes, 8 kg por árbol, desde el año 3."
+ }
+]

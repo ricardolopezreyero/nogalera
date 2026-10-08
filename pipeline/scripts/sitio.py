@@ -902,29 +902,95 @@ def etapas():
         v = sum(p["m2"] * precio_lote(p) for p in por[k]); dur = len(por[k]) / TE.RITMO
         cal.append((k, mes, mes + dur)); filas.append((f"Etapa {k}", f0(len(por[k])), f0(sum(p['m2'] for p in por[k])), mill(v), f"mes {mes:.0f} a {mes + dur:.0f}")); mes += dur
     fin = cal[-1][2]
-    barras = [("Lindero, tenencia y título de agua", 0, 3, 1), ("Acuerdo del terreno (compra o fideicomiso)", 1, 4, 1), ("Topografía, suelos e infiltración", 2, 5, 1), ("Factibilidades: municipio, SIMAS, CFE, Protección Civil", 3, 8, 1),
-              ("Proyecto ejecutivo y licencia", 3, 9, 1), ("Obra etapa 1: acceso, bulevar, planta, club social", 8, 15, 0), ("Casa muestra y oficina de ventas", 9, 14, 0),
-              ("Ventas etapa 1", cal[0][1], cal[0][2], 1), ("Obra etapa 2 + club deportivo y parques", 14, 21, 0), ("Ventas etapa 2", cal[1][1], cal[1][2], 1),
-              ("Obra etapa 3", 20, 27, 0), ("Ventas etapa 3", cal[2][1], cal[2][2], 1), ("Obra etapa 4", 26, 33, 0), ("Ventas etapa 4", cal[3][1], cal[3][2], 1),
-              ("Construcción de casas (12 meses después de cada venta)", cal[0][1] + 3, fin + 12, 0)]
+    m_ini = min(MOD["ventas"]); m_rec = MOD["m_recupera"]; m_mant = next(f["mes"] for f in MOD["flujo"] if f["casas"] > 0); fin_casas = CON["fin"]
+    # Actividades en orden de ejecución: (fase, actividad, mes inicio, mes fin, responsable, qué es / qué desbloquea). Teórico: luego pasa a Notion.
+    ACT = [
+        ("Acuerdos", "Confirmar el predio", 0, 2, "idea", "Lindero y superficie real con catastro, tenencia (propiedad privada o ejido) y gravámenes en el Registro Público. Sin esto no hay fideicomiso."),
+        ("Acuerdos", "Título de agua del pozo", 0, 3, "idea", "Concesión de CONAGUA a nombre del predio, volumen anual y cambio de uso agrícola a urbano. Define si hay agua propia."),
+        ("Acuerdos", "Propuesta al dueño y carta de intención", 1, 2, "idea", f"${f0(PRECIO_FID)}/m² en fideicomiso: {pct(X_DUENO)} de cada venta. Se firma una carta de intención con exclusividad mientras se arman los contratos."),
+        ("Acuerdos", "Contrato de fideicomiso y aportación del terreno", 2, 4, "terreno", "Fideicomiso de desarrollo con un banco: el dueño aporta el terreno libre de gravámenes; el contrato fija el orden de pagos de cada venta."),
+        ("Acuerdos", "Acuerdo con el inversionista", 2, 4, "inversionista", f"Monto ({mill(OBRA_TOTAL)} de obra, nunca más de {mill(MOD['capital_pico'])} a la vez), {TASA_INV_TXT} y calendario de aportaciones por etapa."),
+        ("Acuerdos", "Reparto entre las partes por escrito", 3, 4, "idea", "Comercializador, constructor de casas, constructor desarrollador e idea: porcentajes de las reglas del juego en contratos."),
+        ("Estudios", "Topografía y mecánica de suelos", 2, 4, "desarrollador", "Levantamiento a cada 10 m con los nogales uno por uno, sondeos y pruebas de carga. Base del proyecto ejecutivo."),
+        ("Estudios", "Infiltración y aforo del pozo", 3, 5, "desarrollador", "Pruebas de infiltración para el drenaje pluvial (el agua se queda en la huerta) y aforo del pozo para la red."),
+        ("Estudios", "Uso de suelo en Desarrollo Urbano", 3, 5, "idea", "Consulta de densidad, restricciones, áreas de donación y la conexión a la Calzada José Vasconcelos."),
+        ("Estudios", "Factibilidad de agua y drenaje (SIMAS o planta)", 4, 8, "desarrollador", "Dictamen de SIMAS o permiso de planta de tratamiento propia y reúso del agua tratada para riego."),
+        ("Estudios", "Factibilidad de CFE y Protección Civil", 4, 8, "desarrollador", "Carga eléctrica, subestación y transformadores; dictamen de riesgos y de la salida de emergencia."),
+        ("Estudios", "Impacto ambiental y vial", 4, 8, "desarrollador", "Manifestación de impacto ambiental (nogales que se conservan y reubican) y estudio vial del acceso."),
+        ("Proyecto", "Proyecto ejecutivo de urbanización", 4, 8, "desarrollador", "Lotificación, vialidades, agua, drenaje sanitario y pluvial, luz, fibra e iluminación, con este anteproyecto como base. Presupuesto por partida."),
+        ("Proyecto", "Casa Modelo Nogal, nueve fachadas y reglamento", 5, 8, "idea", "Planos ejecutivos de la casa, catálogo de fachadas por cuadra y reglamento del fraccionamiento (lo que cada comprador firma)."),
+        ("Proyecto", "Licencia de fraccionamiento y régimen", 8, 9, "idea", "Autorización municipal, régimen de propiedad y permiso de venta. Con la licencia empiezan las ventas."),
+        ("Imagen y ventas", "Nombre, marca, renders y página", 6, 9, "comercializador", "Nombre definitivo, identidad, renders de día y de noche, página del cliente y campaña de arranque."),
+        ("Imagen y ventas", "Lista de precios y contratos de compraventa", 8, 9, "comercializador", f"Lista por etapa (${f0(PRECIO_BASE)}/m² y +{pct(FI.ESCALON_ETAPA, 0)} por etapa), premios por parque y bulevar, contrato y escrituración con notario."),
+        ("Imagen y ventas", "Oficina de ventas y casa muestra en el acceso", 9, 14, "constructor", "La primera casa Modelo Nogal construida con el molde, amueblada, junto a la oficina de ventas en el acceso."),
+        ("Imagen y ventas", "Ventas etapa 1", cal[0][1], cal[0][2], "comercializador", f"{f0(len(por[1]))} lotes alrededor del acceso, el bulevar y el club social, al precio más bajo de la lista."),
+        ("Imagen y ventas", "Ventas etapa 2", cal[1][1], cal[1][2], "comercializador", f"{f0(len(por[2]))} lotes; ya se ve el club deportivo y el primer parque."),
+        ("Imagen y ventas", "Ventas etapa 3", cal[2][1], cal[2][2], "comercializador", f"{f0(len(por[3]))} lotes con el fraccionamiento a medio habitar."),
+        ("Imagen y ventas", "Ventas etapa 4", cal[3][1], cal[3][2], "comercializador", f"{f0(len(por[4]))} lotes; cierre con la lista más alta."),
+        ("Obra", "Obra etapa 1: acceso, bulevar, planta y club social", 8, 15, "desarrollador", "Lo que se tiene que ver desde el primer día. La planta de tratamiento y la cisterna son de la etapa 1 porque sirven a todo."),
+        ("Obra", "Reubicación de nogales e iluminación de paisaje", 8, 33, "desarrollador", f"Los {R['reubicar']} nogales que estorban se trasplantan en época de reposo; los nogales iluminados y las balizas van etapa por etapa."),
+        ("Obra", "Obra etapa 2 + club deportivo y parques", 14, 21, "desarrollador", "Calles, redes y alumbrado de la etapa 2; canchas, pista, gimnasio y los parques."),
+        ("Obra", "Obra etapa 3", 20, 27, "desarrollador", "Calles, redes, alumbrado y nogales regados de la etapa 3, antes de entregar sus lotes."),
+        ("Obra", "Obra etapa 4 y barda completa", 26, 33, "desarrollador", "Última etapa de urbanización; se cierra la barda perimetral y las cámaras."),
+        ("Casas", "Molde de aluminio, cuadrillas y compras por volumen", 9, 11, "constructor", "Se fabrica el molde del Modelo Nogal, se contratan las cuadrillas en serie y se cierran precios de volumen con proveedores."),
+        ("Casas", "Construcción de casas, 8 meses cada una", m_ini + FI.ARRANQUE_CASA, fin_casas, "constructor", f"Arranca {FI.ARRANQUE_CASA} meses después de cada venta; en el pico hay {CON['pico_obra']:.0f} casas en obra a la vez. {CON['casas']:.0f} casas en total."),
+        ("Fideicomiso", "El dueño cobra de cada venta", m_ini, MOD["fin_ventas"], "terreno", f"{pct(X_DUENO)} de cada lote, conforme se vende: {mill(MOD['dueno_total'])} en total."),
+        ("Fideicomiso", "Capital del inversionista: puesto y devuelto", 8, m_rec, "inversionista", f"Aporta por etapa, las ventas lo van devolviendo con {TASA_INV_TXT}; recupera todo en el mes {m_rec}."),
+        ("Fideicomiso", "La idea cobra sus lotes", m_rec, m_rec + 1, "idea", f"{MOD['lotes_desarrollador']:.0f} lotes al precio de lista, cuando el inversionista ya recuperó."),
+        ("Operación", "Operadora: seguridad, mantenimiento y agua", 12, 120, "idea", f"Arranca con la primera etapa entregada; costo fijo de ${f0(FI.COSTO_FIJO_OPER)} al mes desde el mes 12. Sigue más allá del año 10."),
+        ("Operación", "Cobro de cuotas y agua", m_mant, 120, "idea", f"Desde la primera casa habitada (mes {m_mant}): ${f0(FI.CUOTA_CASA)} por casa, ${f0(FI.CUOTA_LOTE)} por lote baldío y el agua por tarifa."),
+        ("Operación", "Cosecha de nuez cada octubre", FI.ANIO_NUEZ * 12 + FI.MES_NUEZ, 120, "idea", f"{f0(FI.N_NOGALES)} nogales comunes, {FI.NUEZ_KG_ARBOL:.0f} kg por árbol, desde el año {FI.ANIO_NUEZ}."),
+    ]
+    HITOS = [(9, "Licencia: empiezan las ventas"), (m_ini + 2, "Primeras ventas"), (33, "Termina la urbanización"), (m_rec, "El inversionista recuperó todo"), (MOD["fin_ventas"], "Última venta"), (fin_casas, "Última casa entregada")]
+    FASES = []
+    for f_, *_ in ACT:
+        if f_ not in FASES: FASES.append(f_)
     def gantt():
-        W, fila_h, izq, pad = 1000, 22, 330, 20; meses = int(fin + 13); H = pad * 2 + fila_h * (len(barras) + 1)
-        X = lambda m: izq + (W - izq - pad) * m / meses
-        o = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Calendario del proyecto" class="gantt">']
-        for y in range(0, meses + 1, 6):
-            o.append(f'<line x1="{X(y):.1f}" y1="{pad}" x2="{X(y):.1f}" y2="{H - pad}" class="gantt-eje"/><text x="{X(y):.1f}" y="{pad - 6}" class="gantt-a" text-anchor="middle">{"mes " if y == 0 else ""}{y}</text>')
-        for yr in range(1, int(meses / 12) + 1): o.append(f'<text x="{X(yr*12):.1f}" y="{H - pad + 14}" class="gantt-a" text-anchor="middle">año {yr}</text>')
-        for i, (t, a, b, claro) in enumerate(barras):
-            y = pad + fila_h * (i + 0.5)
-            o.append(f'<text x="{izq - 10}" y="{y + 4:.1f}" class="gantt-t" text-anchor="end">{e(t)}</text><rect x="{X(a):.1f}" y="{y - 7:.1f}" width="{max(X(b) - X(a), 2):.1f}" height="14" class="gantt-barra{" clara" if claro else ""}"/>')
+        W, fila_h, izq, pad, arriba = 1000, 19, 326, 46, 58; meses = 66; H = arriba + fila_h * (len(ACT) + len(FASES)) + 44
+        X = lambda m: izq + (W - izq - pad) * min(m, meses) / meses
+        o = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Calendario del proyecto: actividades en orden" class="gantt">']
+        o.append(f'<rect x="{izq}" y="{arriba - 4}" width="{W - izq - pad}" height="{fila_h * (len(ACT) + len(FASES)) + 8}" fill="#fafafa"/>')
+        for y_ in range(0, meses + 1, 6):
+            o.append(f'<line x1="{X(y_):.1f}" y1="{arriba - 4}" x2="{X(y_):.1f}" y2="{H - 40}" stroke="{"#bbb" if y_ % 12 == 0 else "#e4e4e4"}" stroke-width="{1 if y_ % 12 == 0 else 0.6}"/><text x="{X(y_):.1f}" y="{arriba - 10}" class="gantt-a" text-anchor="middle">{"mes " if y_ == 0 else ""}{y_}</text>')
+        for yr in range(1, meses // 12 + 1): o.append(f'<text x="{X(yr * 12 - 6):.1f}" y="{H - 24}" class="gantt-a" text-anchor="middle" font-weight="700">año {yr}</text>')
+        y = arriba; n = 0; filas_y = {}
+        for fase in FASES:
+            o.append(f'<text x="2" y="{y + 13}" font-size="11" font-weight="700" fill="#000" letter-spacing="0.06em">{e(fase.upper())}</text><line x1="{izq}" y1="{y + fila_h - 2}" x2="{W - pad}" y2="{y + fila_h - 2}" stroke="#ddd" stroke-width="0.6"/>')
+            y += fila_h
+            for (f_, t, a, b, p, d) in ACT:
+                if f_ != fase: continue
+                n += 1; cy = y + fila_h / 2; filas_y[n] = cy
+                o.append(f'<text x="{izq - 8}" y="{cy + 4:.1f}" class="gantt-t" text-anchor="end"><tspan fill="#777">{n}</tspan>  {e(t)}</text>')
+                x0, x1 = X(a), X(b); w = max(x1 - x0, 3); sigue = b > meses
+                o.append(f'<rect x="{x0:.1f}" y="{cy - 6:.1f}" width="{w:.1f}" height="12" rx="3" fill="{PARTE_COL[p]}" fill-opacity="0.9"><title>{e(t)} · mes {a:.0f} a {b:.0f} · {e(PARTE_NOM[p])}. {e(d)}</title></rect>')
+                if sigue: o.append(f'<path d="M{X(meses) + 2:.1f},{cy - 6:.1f} l8,6 l-8,6" fill="{PARTE_COL[p]}"/>')
+                o.append(f'<text x="{x1 + 6 if not sigue else X(meses) + 14:.1f}" y="{cy + 3.5:.1f}" font-size="9" fill="#555">{"mes " + str(int(round(a))) + ("" if b - a <= 1 else " a " + str(int(round(b)))) if not sigue else "sigue →"}</text>')
+                y += fila_h
+        for m, t in HITOS:
+            o.append(f'<line x1="{X(m):.1f}" y1="{arriba - 4}" x2="{X(m):.1f}" y2="{H - 40}" stroke="#000" stroke-width="0.8" stroke-dasharray="3 3"/><path d="M{X(m):.1f},{H - 46} l5,5 l-5,5 l-5,-5 z" fill="#000"/>')
         o.append("</svg>")
         return "\n".join(o)
+    lista_act = ""
+    n = 0
+    for fase in FASES:
+        lista_act += f"<h3>{e(fase)}</h3><ol start='{n + 1}' class='actividades'>"
+        for (f_, t, a, b, p, d) in ACT:
+            if f_ != fase: continue
+            n += 1; lista_act += f"<li><b>{e(t)}</b> <span class='nota'>· mes {a:.0f}{'' if b - a <= 1 else f' a {b:.0f}'} · {chip(p)}</span><br>{e(d)}</li>"
+        lista_act += "</ol>"
+    hitos_txt = " · ".join(f"<b>mes {m}</b> {e(t)}" for m, t in HITOS)
+    json.dump([dict(fase=f_, actividad=t, inicio=round(a), fin=round(b), responsable=PARTE_NOM[p], descripcion=d) for f_, t, a, b, p, d in ACT], open(os.path.join(PUB, "datos", "calendario.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     cuerpo = f"""
 {kpis([("Etapas", "4", "desde el acceso hacia los dos lados"), ("Lotes por etapa", f"≈ {f0(N/4)}", "11 meses de venta cada una"), ("Arranque de ventas", f"mes {TE.INICIO}", "con la licencia"), ("Última venta", f"mes {fin:.0f}", f"{fin/12:.1f} años"), ("Ritmo", f"{TE.RITMO} lotes/mes", "supuesto del modelo")])}
 <figure><div class="dibujo">{plano_svg("etapas", titulo="Etapas de construcción")}</div><figcaption><b>Las etapas crecen desde el acceso.</b> La etapa 1 lleva lo que se tiene que ver desde el primer día: acceso, mini súper, club social, bulevar, planta de tratamiento y los lotes de alrededor. Cada etapa se urbaniza completa (calles, redes, alumbrado, nogales regados) antes de entregar lotes.</figcaption></figure>
 {tabla(filas, ["Etapa", "Lotes", "m² vendibles", "Venta", "Ventas"], "", ("<b>Total</b>", f"<b>{f0(N)}</b>", f"<b>{f0(R['vendible_m2'])}</b>", f"<b>{mill(VENTA_LOTES)}</b>", ""))}
-<h2 id="calendario">Calendario</h2>
-<div class="scroll sec" style="--min:52rem"><div class="dibujo">{gantt()}</div></div>
+<h2 id="calendario">Calendario: las actividades en orden</h2>
+<p>De izquierda a derecha, en el orden exacto en que se ejecutan: cada barra empieza cuando ya existe lo que necesita. El color es la parte responsable; los rombos son los hitos. Pasa el ratón sobre una barra para leer qué es.</p>
+<p class="leyenda">{" ".join(f"<span>{chip(p)}</span>" for p, _, _ in PARTES)}</p>
+<div class="scroll sec" style="--min:56rem"><div class="dibujo">{gantt()}</div></div>
+<p class="nota">Hitos: {hitos_txt}. La operación sigue después del año 10.</p>
+<h3>Qué es cada actividad</h3>
+<div class="actividades-lista">{lista_act}</div>
 <ul>
 <li><b>Meses 0 a 9: papeles.</b> Lindero y tenencia con catastro y el Registro Público, título de agua, acuerdo con el dueño, topografía y mecánica de suelos, factibilidades y proyecto ejecutivo. Las ventas empiezan con la licencia.</li>
 <li><b>La obra va una etapa adelante de las ventas:</b> cuando se vende la etapa 1 ya se está urbanizando la 2. La planta de tratamiento y la cisterna son de la etapa 1 porque sirven a todo.</li>
@@ -943,7 +1009,7 @@ def etapas():
 <p class="nota">El calendario es un supuesto de trabajo con el ritmo de ventas del modelo ({TE.RITMO} lotes al mes). Los plazos de trámites dependen del municipio y de los organismos.</p>
 """
     pagina("etapas", "Etapas y siguientes pasos", "17 · Etapas y siguientes pasos", "Cuatro etapas que crecen desde el acceso, un calendario de obra y ventas, y la lista de lo que hay que confirmar para arrancar.", cuerpo,
-           [("calendario", "Calendario"), ("siguientes", "Siguientes pasos")])
+           [("calendario", "Calendario"), ("siguientes", "Siguientes pasos")], descripcion="Etapas, calendario de actividades en orden y siguientes pasos de La Nogalera.")
 
 # ======================= NOGALERAS (mapa de La Laguna) =======================
 def nogaleras():
