@@ -5,7 +5,7 @@ import renders_ia as RIA
 json.dump(RIA.PROMPTS, open(f"{DAT}/escenas/prompts_ia.json", "w"), ensure_ascii=False, indent=1)
 RENDERS_10 = ["calle", "casa", "aerea", "acceso", "bulevar", "parque", "pista", "interior", "portal", "noche"]
 IDX = {e["id"]: e for e in ESC.INDICE}
-HORAS_TXT = dict(dia="mediodía", tarde="tarde", atardecer="atardecer", noche="noche")
+HORAS_TXT = dict(dia="mediodía", tarde="tarde", atardecer="atardecer", noche="noche", manana="mañana", amanecer="amanecer", crepusculo="crepúsculo")
 
 FOTOS_LISTA = json.load(open(os.path.join(AQUI, "fotos_lista.json"), encoding="utf-8"))
 FOTOS_TXT = {"completo-entrada": "La entrada: pórtico, casetas, reja y los nogales iluminados, al atardecer (modelo completo).", "completo-casa": "La casa Modelo Nogal en su cuadra real, con sus vecinas (modelo completo).", "completo-parque": "Parque Garza: nogales, pérgola, juegos y gente (modelo completo).", "completo-aereo": "El fraccionamiento completo desde el aire: cada casa, cada nogal, cada luminaria.", "completo-sur": "El fraccionamiento desde el sur, con la calzada y las huertas vecinas.", "completo-club": "El club: salón con oficinas, gimnasio, canchas y plaza.", "completo-bulevar": "Bulevar Nogal con su camellón y sendero.", "completo-entrada-alta": "El acceso desde el aire.", "completo-parque-alto": "Parque Garza desde el aire.", "completo-casa-frente": "La casa de frente.", "fachada-horizonte": "Fachada Horizonte: las dos losas que vuelan y la franja de ventanas.", "fachada-cantera": "Fachada Cantera.", "fachada-ladrillo": "Fachada Ladrillo.", "fachada-lamas": "Fachada Lamas.", "fachada-marco": "Fachada Marco.",

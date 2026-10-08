@@ -10,7 +10,7 @@
 [
 "completo-casa",
 "completo",
-"tarde",
+"manana",
 "casa",
 3840,
 2160
@@ -74,7 +74,7 @@
 [
 "completo-casa-frente",
 "completo",
-"tarde",
+"manana",
 "casa_frente",
 2560,
 1440
@@ -82,7 +82,7 @@
 [
 "fachada-horizonte",
 "fachadas",
-"tarde",
+"manana",
 "f9_horizonte",
 2560,
 1440
@@ -90,7 +90,7 @@
 [
 "fachada-cantera",
 "fachadas",
-"tarde",
+"manana",
 "f1_cantera",
 2560,
 1440
@@ -98,7 +98,7 @@
 [
 "fachada-ladrillo",
 "fachadas",
-"tarde",
+"manana",
 "f2_ladrillo",
 2560,
 1440
@@ -106,7 +106,7 @@
 [
 "fachada-lamas",
 "fachadas",
-"tarde",
+"manana",
 "f3_lamas",
 2560,
 1440
@@ -114,7 +114,7 @@
 [
 "fachada-marco",
 "fachadas",
-"tarde",
+"manana",
 "f4_marco",
 2560,
 1440
@@ -122,7 +122,7 @@
 [
 "fachada-hacienda",
 "fachadas",
-"tarde",
+"manana",
 "f5_hacienda",
 2560,
 1440
@@ -130,7 +130,7 @@
 [
 "fachada-concreto",
 "fachadas",
-"tarde",
+"manana",
 "f6_concreto",
 2560,
 1440
@@ -138,7 +138,7 @@
 [
 "fachada-celosia",
 "fachadas",
-"tarde",
+"manana",
 "f7_celosia",
 2560,
 1440
@@ -146,7 +146,7 @@
 [
 "fachada-duela",
 "fachadas",
-"tarde",
+"manana",
 "f8_duela",
 2560,
 1440
@@ -154,7 +154,7 @@
 [
 "fachada-frente",
 "fachadas",
-"tarde",
+"manana",
 "frente_9",
 2560,
 1440

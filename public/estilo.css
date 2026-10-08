@@ -384,3 +384,11 @@ table.fijo td:nth-child(2) { color: #333; font-size: 0.8125rem; } table.fijo td:
 .lote > summary { cursor: pointer; line-height: 1.5; }
 .renders.minis { grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)); gap: .75rem 1rem; margin: .75rem 0 .25rem; }
 .render.mini figcaption { font-size: .8rem; line-height: 1.3; margin-top: .25rem; }
+/* las partes del negocio: un color por parte (dueño, inversionista, comercializador, constructor, desarrollador, idea) */
+.chip { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 0.2em; margin-right: 0.4em; vertical-align: -0.05em; }
+table.partes td:first-child { white-space: normal; } table.partes b { white-space: nowrap; }
+table.reglas td:nth-child(2), table.reglas td:nth-child(3), table.reglas td:nth-child(5) { text-align: left; font-size: 0.8125rem; line-height: 1.35; min-width: 11rem; }
+table.reglas th:nth-child(2), table.reglas th:nth-child(3), table.reglas th:nth-child(5) { text-align: left; }
+table.anios { font-size: 0.8125rem; } table.anios td, table.anios th { padding: 0.3rem 0.35rem; white-space: nowrap; }
+.leyenda { display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; font-size: 0.875rem; margin: 0.5rem 0 0.75rem; }
+.dos h4 { margin: 0.75rem 0 0.25rem; }

@@ -226,6 +226,85 @@ _m0 = FI.modelo(R["venta"], N, X_DUENO, SV["URB"], dict(social=AM_SOCIAL, deport
 ESCEN0 = dict(lotes=_m0["lotes_desarrollador"], desarrollador=_m0["desarrollador"], recupera=_m0["m_recupera"])   # el mismo modelo sin subir la lista por etapa
 EJEMPLO = next(p["dir"] for p in sorted(LOTES, key=lambda p: p["n"]) if p["dir"].startswith("Encino 4") and int(p["dir"].split()[1]) % 2 == 1)
 
+# ---- las partes del negocio: quién gana qué, mes a mes y por negocio (lotes, casas, operación). Un color por parte, el mismo en todo el sitio ----
+PARTES = [("terreno", "Dueño del terreno", "#2e7d32"), ("inversionista", "Inversionista", "#1565c0"), ("comercializador", "Comercializador", "#ef6c00"),
+          ("constructor", "Constructor de casas", "#c62828"), ("desarrollador", "Constructor desarrollador", "#6a1b9a"), ("idea", "Idea y desarrollo", "#b8860b")]
+PARTE_NOM = {k: n for k, n, c in PARTES}; PARTE_COL = {k: c for k, n, c in PARTES}
+NEGOCIOS = [("lotes", "Lotes (fideicomiso)"), ("casas", "Casas"), ("oper", "Operación")]
+NEG_COL = {"lotes": "#444", "casas": "#c62828", "oper": "#00838f"}
+def chip(p, txt=None): return f'<span class="chip" style="background:{PARTE_COL[p]}"></span>{e(PARTE_NOM[p]) if txt is None else txt}'
+def ganancias(con):
+    fl = MOD["flujo"]; g = {p: {n: [0.0] * FI.HORIZONTE for n, _ in NEGOCIOS} for p, _, _ in PARTES}
+    for i, f in enumerate(fl):
+        g["terreno"]["lotes"][i] = f["dueno"]; g["comercializador"]["lotes"][i] = f["comision"] * FI.COMISION_VENDEDOR / FI.COMISION
+        g["desarrollador"]["lotes"][i] = (f["obra"] + f["amen"]) * FI.MARGEN_URB; g["inversionista"]["lotes"][i] = f["rend"]; g["idea"]["lotes"][i] = f["pago_idea"]
+        for p_, k_ in FI.OPERADORA_DE.items(): g[p_]["oper"][i] = f["oper_margen"] * k_
+        if con:
+            for p_, k_ in FI.REPARTO_CASAS.items(): g[p_]["casas"][i] = CON["util"][i] * k_
+    return g
+GANA = {True: ganancias(True), False: ganancias(False)}
+def gana(con, p, n=None): return sum(sum(GANA[con][p][k]) for k, _ in NEGOCIOS) if n is None else sum(GANA[con][p][n])
+def gana_anual(con, p, n=None):
+    ks = [k for k, _ in NEGOCIOS] if n is None else [n]
+    return [sum(sum(GANA[con][p][k][a * 12:(a + 1) * 12]) for k in ks) for a in range(10)]
+TODO = {True: sum(gana(True, p) for p, _, _ in PARTES), False: sum(gana(False, p) for p, _, _ in PARTES)}
+LOTE_TIPICO = PRECIO_BASE * 300
+MES_PICO = next(f["mes"] for f in MOD["flujo"] if f["capital"] == MOD["capital_pico"])
+TASA_INV_TXT = f"{FI.TASA_INV*100:.0f} % anual"
+
+def reglas_html(con=True):
+    """Las reglas del juego: quién pone qué, qué recibe, cuánto a 10 años y el rendimiento aproximado."""
+    REP = FI.REPARTO_CASAS; m = MOD
+    casas = lambda p: f" y {pct(REP[p], 0)} de la utilidad de cada casa (${f0(FI.MARGEN_CASA * REP[p])} por casa)" if con else ""
+    filas = [("terreno", f"El terreno: {ha(GROSS)} de nogalera, que vale {mill(PRECIO_FID * GROSS)} de contado. No pone dinero ni corre con la obra.",
+              f"{pct(X_DUENO)} de cada venta, conforme se vende (primero que nadie){casas('terreno')}", gana(con, "terreno"),
+              f"+{pct(gana(con, 'terreno') / (PRECIO_FID * GROSS) - 1, 0)} sobre el valor de contado, cobrado en {m['fin_ventas'] / 12:.1f} años"),
+             ("inversionista", f"La obra: {mill(OBRA_TOTAL)} en total, pero nunca más de {mill(m['capital_pico'])} puestos a la vez (mes {MES_PICO}), porque las ventas la van pagando.",
+              f"Todo su capital de vuelta en el mes {m['m_recupera']} + {TASA_INV_TXT} sobre lo que tenga puesto cada mes{casas('inversionista')}", gana(con, "inversionista"),
+              f"TIR de {pct(m['tir_inv'], 0)} anual · recibe {m['moic']:.2f} veces lo que pone"),
+             ("comercializador", "La fuerza de ventas, la publicidad y la escrituración de cada lote. Sin capital.",
+              f"{pct(FI.COMISION_VENDEDOR, 0)} de cada venta (otro {pct(FI.COMISION - FI.COMISION_VENDEDOR, 0)} paga escrituras y publicidad){casas('comercializador')}", gana(con, "comercializador"),
+              f"${f0(gana(con, 'comercializador', 'lotes') / N)} por lote vendido" + (f" + ${f0(FI.MARGEN_CASA * REP['comercializador'])} por casa" if con else "")),
+             ("constructor", "El molde de aluminio, las cuadrillas y las compras por volumen. La casa se paga sola (30 % anticipo, 60 % estimaciones, 10 % entrega): no pone capital.",
+              f"{pct(REP['constructor'], 0)} de la utilidad de cada casa: ${f0(FI.MARGEN_CASA * REP['constructor'])} por casa", gana(con, "constructor"),
+              f"{pct(FI.MARGEN_CASA * REP['constructor'] / FI.PRECIO_CASA, 1)} del precio de cada casa, {CON['casas']:.0f} casas") if con else
+             ("constructor", "Las casas las construye cada comprador por su cuenta.", "—", 0.0, "—"),
+             ("desarrollador", "Ejecuta la urbanización, el club, los parques y el acceso con el dinero del fideicomiso.",
+              f"{pct(FI.MARGEN_URB, 0)} de margen dentro del presupuesto de obra ({mill(OBRA_TOTAL)}){casas('desarrollador')}", gana(con, "desarrollador"),
+              f"{mill(OBRA_TOTAL * FI.MARGEN_URB)} de la obra" + (f" + {mill(gana(con, 'desarrollador', 'casas'))} de las casas" if con else "")),
+             ("idea", "El proyecto, la gestión, el paquete lote + casa y la operadora. Dos años de trabajo antes de cobrar un peso.",
+              f"{m['lotes_desarrollador']:.0f} lotes al precio de lista cuando el inversionista ya recuperó (mes {m['m_recupera']}){casas('idea')} + el margen de la operación", gana(con, "idea"),
+              f"{mill(OPER_ANIO)} al año de la operación cuando el fraccionamiento está lleno; el resto es una sola vez")]
+    rows = [(f'<b>{chip(p)}</b>', e(pone), e(recibe), f"<b>{mill(c)}</b>", e(r)) for p, pone, recibe, c, r in filas]
+    return tabla(rows, ["Quién", "Qué pone", "Qué recibe", "A 10 años", "Rendimiento aproximado"], "partes reglas", ("<b>Todos juntos</b>", "", "", f"<b>{mill(TODO[con])}</b>", f"lotes {mill(sum(gana(con, p, 'lotes') for p, _, _ in PARTES))}" + (f" · casas {mill(sum(gana(con, p, 'casas') for p, _, _ in PARTES))}" if con else "") + f" · operación {mill(sum(gana(con, p, 'oper') for p, _, _ in PARTES))}"))
+
+def unidad_html(con=True):
+    """Un lote típico y una casa: cuánto se lleva cada quien de cada peso."""
+    VT = MOD["venta_total"]; REP = FI.REPARTO_CASAS
+    lote = [("terreno", None, X_DUENO), ("comercializador", None, FI.COMISION_VENDEDOR), (None, "Escrituras y publicidad", FI.COMISION - FI.COMISION_VENDEDOR), (None, "Proyecto ejecutivo y permisos", FI.PROYECTO * R["venta"] / VT),
+            (None, "La obra, a costo (urbanización, club, parques, acceso)", OBRA_TOTAL / VT * (1 - FI.MARGEN_URB)), ("desarrollador", None, OBRA_TOTAL / VT * FI.MARGEN_URB), ("inversionista", None, MOD["rend"] / VT), ("idea", None, MOD["desarrollador"] / VT)]
+    casa = [(None, "Costo de construcción (materiales, mano de obra, molde)", FI.COSTO_CASA / FI.PRECIO_CASA)] + [(p, None, FI.MARGEN_CASA / FI.PRECIO_CASA * REP[p]) for p, _, _ in PARTES]
+    def t(filas, total, titulo):
+        rows = [(f'<b>{chip(p)}</b>' if p else e(nom), f"${f0(total * k)}", pct(k, 1)) for p, nom, k in filas]
+        return tabla(rows, [titulo, "Pesos", "Parte"], "partes", ("<b>Total</b>", f"<b>${f0(total)}</b>", f"<b>{pct(sum(k for _, _, k in filas), 0)}</b>"))
+    return f'<div class="dos"><div><h4>Un lote típico de 300 m²: ${f0(LOTE_TIPICO)}</h4>{t(lote, LOTE_TIPICO, "De cada lote vendido")}<p class="nota">A precio de etapa 1. Las proporciones salen del modelo completo a 10 años (la lista sube {pct(FI.ESCALON_ETAPA, 0)} por etapa y el dueño cobra su parte también de eso).</p></div>' + \
+           (f'<div><h4>Una casa Modelo Nogal: ${f0(FI.PRECIO_CASA)}</h4>{t(casa, FI.PRECIO_CASA, "De cada casa construida")}<p class="nota">{FI.M2_CASA:.0f} m² a ${f0(FI.PRECIO_M2_MERCADO)}/m², el precio de cualquier constructor de Torreón; la utilidad ({pct(CON["margen"], 0)}, {mill(FI.MARGEN_CASA, 2)} por casa) sale del molde y las compras en serie, y se reparte entre todos.</p></div>' if con else '<div><h4>Una casa</h4><p class="nota">Con el interruptor apagado las casas no son parte del negocio.</p></div>') + '</div>'
+
+def negocios_html(con=True):
+    """Todos los negocios juntos: qué le deja cada negocio a cada parte, y año por año."""
+    cols = ["Quién"] + [n for _, n in NEGOCIOS] + ["Total a 10 años", "Del total"]
+    rows = [(f'<b>{chip(p)}</b>', *(mill(gana(con, p, k)) if gana(con, p, k) else "—" for k, _ in NEGOCIOS), f"<b>{mill(gana(con, p))}</b>", pct(gana(con, p) / TODO[con])) for p, _, _ in PARTES]
+    tot = ("<b>Todos juntos</b>", *(f"<b>{mill(sum(gana(con, p, k) for p, _, _ in PARTES))}</b>" for k, _ in NEGOCIOS), f"<b>{mill(TODO[con])}</b>", "<b>100 %</b>")
+    t1 = tabla(rows, cols, "partes", tot)
+    cols2 = ["Millones de pesos"] + [f"Año {a + 1}" for a in range(10)] + ["10 años"]
+    mm = lambda v: ("−" if v < 0 else "") + f"{abs(v) / 1e6:,.0f}"
+    rows2 = [(f'<b>{chip(p)}</b>', *(mm(v) if abs(v) >= 5e5 else "—" for v in gana_anual(con, p)), f"<b>{mm(gana(con, p))}</b>") for p, _, _ in PARTES]
+    tot_a = [sum(gana_anual(con, p)[a] for p, _, _ in PARTES) for a in range(10)]
+    t2 = tabla(rows2, cols2, "partes anios", ("<b>Todos</b>", *(f"<b>{mm(v)}</b>" for v in tot_a), f"<b>{mm(TODO[con])}</b>"))
+    oper = FI.anual(MOD["flujo"], "oper_margen"); casas_fin = [MOD["flujo"][min(FI.HORIZONTE - 1, (a + 1) * 12 - 1)]["casas"] for a in range(10)]
+    t3 = tabla([(f"Año {a + 1}", f0(casas_fin[a]), ("−" if oper[a] < 0 else "") + mill(abs(oper[a]), 1)) for a in range(10)], ["La operación, año por año", "Casas habitadas", "Margen"], "compacta", ("<b>10 años</b>", "", f"<b>{mill(OPER_10, 1)}</b>"))
+    return t1, t2, t3
+
 # ======================= RESUMEN =======================
 def resumen():
     tarj = [("terreno", "El terreno", f"{ha(GROSS)} de nogalera en La Paz, al oriente de Torreón; {f0(R['arboles'])} nogales mapeados uno por uno."),
@@ -252,11 +331,17 @@ def resumen():
 <p class="frase"><b>🚶 Caminar en el modelo 3D:</b> <a class="boton" href="/renders/foto/?escena=completo&amp;caminar=1">el fraccionamiento completo</a> <a class="boton" href="/renders/foto/?escena=fachadas&amp;caminar=1">la cuadra de las nueve fachadas</a> <a class="boton" href="/renders/foto/?escena=parque&amp;caminar=1">el parque</a> <span class="nota">flechas para avanzar, ratón para mirar.</span></p>
 <p class="frase"><b>Así lo ve el cliente:</b> <a href="/inicio/">nogalera.capitaltorreon.com/inicio/</a>. La página de venta, con todos los renders, lo que incluye, los precios de la etapa 1 y el formulario que guarda a cada interesado en la base de datos (nombre, celular, correo, primera o segunda casa, crédito y qué tan rápido quiere comprar). Los prospectos se descargan desde <a href="/datos/#prospectos">Datos</a>.</p>
 <p class="frase">La propuesta al dueño: <b>${f0(PRECIO_FID)} por m² en fideicomiso: te damos el {pct(X_DUENO)} de cada venta.</b> Aportas el terreno, no pones un peso más, y cobras conforme se vende: {mill(DUENO_TOTAL)} a precio de arranque, {mill(MOD['dueno_total'])} con la lista subiendo por etapa. Cómo opera, en <a href="/numeros/">Números y fideicomiso</a>.</p>
+<h2 id="reglas">Las reglas del juego</h2>
+<p>Quién pone qué y qué recibe cada quien. Cada parte tiene su color, el mismo en todo el sitio. El detalle, mes a mes y año por año, está en <a href="/numeros/">Números y fideicomiso</a>.</p>
+{reglas_html(True)}
+{kpis([("Todos los negocios juntos, 10 años", mill(TODO[True]), "lotes + casas + operación, entre las seis partes"), ("Venta de lotes", mill(MOD["venta_total"]), f"{f0(N)} lotes y el comercio"), ("Casas", f"{CON['casas']:.0f}", f"{mill(CON['utilidad'])} de utilidad, repartida entre todos"), ("La operación", mill(OPER_ANIO), "al año cuando está lleno")])}
+<h3>Un lote y una casa: cuánto se lleva cada quien</h3>
+{unidad_html(True)}
 <figure><div class="dibujo">{plano_svg("plan", titulo="Plano maestro")}</div><figcaption><b>Plano maestro.</b> Cada punto es un nogal en su lugar exacto; los blancos son los {f0(R['reubicar'])} que se reubican. El bulevar Nogal corre por la hilera que ya faltaba en la huerta; el club, por la otra.</figcaption></figure>
 <h2 id="secciones">Secciones</h2>
 <ul class="tarjetas">{"".join(f'<li><a class="tarjeta" href="/{s_}/"><span class="n">{dict((x[0], x[2]) for x in SECCIONES if x)[s_]}</span><b>{e(t)}</b><p>{e(d)}</p></a></li>' for s_, t, d in tarj)}</ul>
 """
-    pagina("", f"{NOMBRE}", "01 · Resumen", "", cuerpo, [("secciones", "Secciones")],
+    pagina("", f"{NOMBRE}", "01 · Resumen", "", cuerpo, [("reglas", "Las reglas del juego"), ("secciones", "Secciones")],
            descripcion=f"{NOMBRE}: fraccionamiento de {f0(N)} casas entre nogales en el oriente de Torreón. Anteproyecto completo.")
 
 # ======================= TERRENO =======================
@@ -605,8 +690,8 @@ def esquema_fideicomiso(con=False):
     caja(20, 230, 250, 120, "Dueño del terreno", [f"Aporta {ha(GROSS)} de nogalera.", "No pone un peso más.", f"Recibe {pct(X_DUENO)} de cada venta:", f"{mill(DUENO_TOTAL)} en {MOD['fin_ventas']/12:.1f} años."])
     caja(360, 20, 280, 120, "Inversionista", [f"Respalda la obra: {mill(OBRA_TOTAL)}.", f"Llega a tener puestos {mill(MOD['capital_pico'])}", f"(mes {next(f['mes'] for f in MOD['flujo'] if f['capital'] == MOD['capital_pico'])}). Recupera todo en el mes {MOD['m_recupera']}", f"con {TASA_INV_TXT} de rendimiento: {mill(MOD['rend'])}."])
     caja(730, 230, 250, 120, "Compradores", [f"{f0(N)} lotes urbanizados", f"y {f0(R['predio_comercial_m2'])} m² de comercio.", f"Pagan {mill(R['venta'])}", f"en {MOD['fin_ventas'] - 8} meses de ventas."])
-    if con: caja(360, 430, 280, 120, "Nosotros · desarrollo, casas y operación", ["Ponemos el proyecto, la gestión y las ventas.", f"Cobramos en lotes ({MOD['lotes_desarrollador']:.0f}) y construimos las casas:", f"{CON['casas']:.0f} casas, {mill(CON['utilidad'])} de utilidad.", "Después operamos el agua y el mantenimiento."])
-    else: caja(360, 430, 280, 120, "Nosotros · desarrollo y operación", ["Ponemos el proyecto, la gestión y las ventas.", f"Cobramos en lotes: {MOD['lotes_desarrollador']:.0f} lotes ({mill(MOD['desarrollador'])}).", "Después operamos la seguridad, el mantenimiento", f"y el agua (${f0(FI.CUOTA_CASA)} por casa + agua)."])
+    if con: caja(360, 430, 280, 120, "Idea, comercializador y constructor", ["Ponen el proyecto, la gestión y las ventas.", f"La idea cobra en lotes ({MOD['lotes_desarrollador']:.0f}); el constructor hace las casas:", f"{CON['casas']:.0f} casas, {mill(CON['utilidad'])} de utilidad para todos.", "Después la idea opera el agua y el mantenimiento."])
+    else: caja(360, 430, 280, 120, "Idea y comercializador", ["Ponen el proyecto, la gestión y las ventas.", f"La idea cobra en lotes: {MOD['lotes_desarrollador']:.0f} lotes ({mill(MOD['desarrollador'])}).", "Después opera la seguridad, el mantenimiento", f"y el agua (${f0(FI.CUOTA_CASA)} por casa + agua)."])
     flecha(270, 260, cx, 260, "terreno", "arriba"); flecha(cx, 320, 270, 320, f"{pct(X_DUENO)} de cada venta", "abajo")
     flecha(470, 140, 470, cy, "dinero para la obra", "arriba", dx=-70); flecha(530, cy, 530, 140, "capital + rendimiento", "arriba", dx=72)
     flecha(730, 260, cx + cw, 260, "pago de cada lote", "arriba"); flecha(cx + cw, 320, 730, 320, "lote escriturado", "abajo")
@@ -619,10 +704,10 @@ def esquema_fideicomiso(con=False):
     return "\n".join(o)
 
 def grafica_flujo(con=False):
-    """Flujo de efectivo mes a mes con los puntos de contacto."""
+    """Flujo de efectivo mes a mes con los puntos de contacto; un color por parte."""
     fl = MOD["flujo"]; fin = fl[-1]["mes"]; W = 1000; izq, der = 64, 24
     X = lambda m: izq + (W - izq - der) * m / fin
-    ALTO = 1000 if con else 840
+    ALTO = 1090 if con else 920
     o = [f'<svg viewBox="0 0 {W} {ALTO}" role="img" aria-label="Flujo de efectivo del fideicomiso" class="flujo">']
     def panel(y0, h, titulo, vmax, unidad):
         o.append(f'<text x="{izq}" y="{y0 - 8}" font-size="12" font-weight="700" fill="#000">{e(titulo)}</text>')
@@ -630,57 +715,70 @@ def grafica_flujo(con=False):
         for k in (0.5, 1.0):
             yy = y0 + h - h * k; o.append(f'<line x1="{izq}" y1="{yy:.1f}" x2="{W - der}" y2="{yy:.1f}" stroke="#ddd" stroke-width="0.6"/><text x="{izq - 6}" y="{yy + 4:.1f}" font-size="10" text-anchor="end" fill="#555">{unidad(vmax * k)}</text>')
         return lambda v: y0 + h - h * v / vmax
+    def rotulo(x, y, txt, color="#000", ancla="end", peso="400"):
+        o.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="11" font-weight="{peso}" text-anchor="{ancla}" fill="{color}" style="paint-order:stroke;stroke:#fff;stroke-width:4px">{e(txt)}</text>')
     # panel 1: lotes vendidos por mes
-    y1, h1 = 112, 110; vmax1 = max(f["lotes"] for f in fl) * 1.15
+    y1, h1 = 112, 100; vmax1 = max(f["lotes"] for f in fl) * 1.15
     Y1 = panel(y1, h1, "Lotes vendidos por mes", vmax1, lambda v: f"{v:.0f}")
     bw = (W - izq - der) / fin * 0.7
     for f in fl:
-        if f["lotes"]: o.append(f'<rect x="{X(f["mes"]) - bw/2:.1f}" y="{Y1(f["lotes"]):.1f}" width="{bw:.1f}" height="{y1 + h1 - Y1(f["lotes"]):.1f}" fill="#1a1a1a"/>')
-    # panel 2: dinero acumulado
-    y2, h2 = 272, 200
+        if f["lotes"]: o.append(f'<rect x="{X(f["mes"]) - bw/2:.1f}" y="{Y1(f["lotes"]):.1f}" width="{bw:.1f}" height="{y1 + h1 - Y1(f["lotes"]):.1f}" fill="#666"/>')
+    # panel 2: dinero acumulado del fideicomiso
+    y2, h2 = 262, 190
     acum_d = []; acum_v = []; td = tv = 0.0
     for f in fl: td += f["dueno"]; tv += f["ingreso"]; acum_d.append(td); acum_v.append(tv)
     vmax2 = max(acum_v) * 1.05
-    Y2 = panel(y2, h2, "Dinero acumulado (millones de pesos)", vmax2, lambda v: f"{v/1e6:,.0f}")
-    def linea(vals, cls, grueso=2, dash=""):
-        o.append('<polyline points="' + " ".join(f"{X(f['mes']):.1f},{Y2(v):.1f}" for f, v in zip(fl, vals)) + f'" fill="none" stroke="#000" stroke-width="{grueso}"{f" stroke-dasharray={chr(34)}{dash}{chr(34)}" if dash else ""}/>')
-    o.append('<polygon points="' + f"{X(0):.1f},{Y2(0):.1f} " + " ".join(f"{X(f['mes']):.1f},{Y2(f['capital']):.1f}" for f in fl) + f" {X(fin):.1f},{Y2(0):.1f}" + '" fill="rgba(0,0,0,0.14)"/>')
-    linea(acum_v, "", 2.2); linea(acum_d, "", 2.2, "6 4"); linea([f["excedente"] for f in fl], "", 1.6, "2 3")
+    Y2 = panel(y2, h2, "El fideicomiso: dinero acumulado (millones de pesos)", vmax2, lambda v: f"{v/1e6:,.0f}")
+    def linea(vals, color, grueso=2, dash=""):
+        o.append('<polyline points="' + " ".join(f"{X(f['mes']):.1f},{Y2(v):.1f}" for f, v in zip(fl, vals)) + f'" fill="none" stroke="{color}" stroke-width="{grueso}"{f" stroke-dasharray={chr(34)}{dash}{chr(34)}" if dash else ""}/>')
+    o.append('<polygon points="' + f"{X(0):.1f},{Y2(0):.1f} " + " ".join(f"{X(f['mes']):.1f},{Y2(f['capital']):.1f}" for f in fl) + f" {X(fin):.1f},{Y2(0):.1f}" + f'" fill="{PARTE_COL["inversionista"]}" fill-opacity="0.28"/>')
+    linea(acum_v, "#000", 2.2); linea(acum_d, PARTE_COL["terreno"], 2.6); linea([f["excedente"] for f in fl], PARTE_COL["idea"], 2.2)
     ult = fl[-1]
-    o.append(f'<text x="{X(fin) - 4}" y="{Y2(acum_v[-1]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">ventas cobradas · {mill(acum_v[-1])}</text>')
-    o.append(f'<text x="{X(fin) - 4}" y="{Y2(acum_d[-1]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">cobrado por el dueño · {mill(acum_d[-1])} (línea punteada)</text>')
+    rotulo(X(fin) - 4, Y2(acum_v[-1]) - 6, f"ventas cobradas · {mill(acum_v[-1])}")
+    rotulo(X(fin) - 4, Y2(acum_d[-1]) - 6, f"cobrado por el dueño del terreno · {mill(acum_d[-1])}", PARTE_COL["terreno"], peso="700")
     mp = next(f for f in fl if f["capital"] == MOD["capital_pico"])
-    o.append(f'<text x="{X(1):.1f}" y="{Y2(mp["capital"]) - 26:.1f}" font-size="11" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">capital del inversionista puesto en cada momento (sombreado) · pico {mill(mp["capital"])} en el mes {mp["mes"]}</text>')
-    o.append(f'<text x="{X(fin) - 4}" y="{Y2(ult["excedente"]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">excedente para el desarrollador, en lotes · {mill(ult["excedente"])}</text>')
-    # panel 3: cuotas
-    y3, h3 = 522, 110; vmax3 = max(f["cuotas"] for f in fl) * 1.15
-    Y3 = panel(y3, h3, "Mantenimiento y agua que cobra la operación, por mes (millones de pesos)", vmax3, lambda v: f"{v/1e6:,.1f}")
-    o.append('<polygon points="' + f"{X(0):.1f},{Y3(0):.1f} " + " ".join(f"{X(f['mes']):.1f},{Y3(f['cuotas']):.1f}" for f in fl) + f" {X(fin):.1f},{Y3(0):.1f}" + '" fill="#1a1a1a"/>')
-    o.append(f'<text x="{X(fin) - 4}" y="{Y3(ult["cuotas"]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">{f0(ult["casas"])} casas · {mill(ult["cuotas"], 2)} al mes</text>')
+    rotulo(X(1), Y2(mp["capital"]) - 26, f"capital del inversionista puesto en cada momento (azul) · pico {mill(mp['capital'])} en el mes {mp['mes']}", PARTE_COL["inversionista"], "start", "700")
+    rotulo(X(fin) - 4, Y2(ult["excedente"]) - 6, f"pago en lotes a la idea · {mill(ult['excedente'])}", PARTE_COL["idea"], peso="700")
+    # panel 3: cuotas de la operación
+    y3, h3 = 502, 100; vmax3 = max(f["cuotas"] for f in fl) * 1.15
+    Y3 = panel(y3, h3, "La operación: mantenimiento y agua que cobra por mes (millones de pesos)", vmax3, lambda v: f"{v/1e6:,.1f}")
+    o.append('<polygon points="' + f"{X(0):.1f},{Y3(0):.1f} " + " ".join(f"{X(f['mes']):.1f},{Y3(f['cuotas']):.1f}" for f in fl) + f" {X(fin):.1f},{Y3(0):.1f}" + f'" fill="{NEG_COL["oper"]}" fill-opacity="0.85"/>')
+    rotulo(X(fin) - 4, Y3(ult["cuotas"]) - 6, f"{f0(ult['casas'])} casas · {mill(ult['cuotas'], 2)} al mes · deja {mill(OPER_ANIO)} al año", NEG_COL["oper"], peso="700")
     yb = y3 + h3
-    # panel 4 (con casas): casas que construimos y utilidad acumulada
+    # panel 4 (con casas): casas que se construyen y utilidad acumulada
     if con:
-        y4, h4 = y3 + h3 + 60, 110; vmax4 = max(CON["entregas"]) * 1.15
-        Y4 = panel(y4, h4, "Casas que construimos nosotros: entregas por mes · línea: utilidad acumulada (millones)", vmax4, lambda v: f"{v:.0f}")
+        y4, h4 = y3 + h3 + 60, 100; vmax4 = max(CON["entregas"]) * 1.15
+        Y4 = panel(y4, h4, "Las casas: entregas por mes (barras) y utilidad acumulada (línea, millones), que se reparte entre todos", vmax4, lambda v: f"{v:.0f}")
         for m_, n_ in enumerate(CON["entregas"]):
-            if n_: o.append(f'<rect x="{X(m_) - bw/2:.1f}" y="{Y4(n_):.1f}" width="{bw:.1f}" height="{y4 + h4 - Y4(n_):.1f}" fill="#1a1a1a"/>')
+            if n_: o.append(f'<rect x="{X(m_) - bw/2:.1f}" y="{Y4(n_):.1f}" width="{bw:.1f}" height="{y4 + h4 - Y4(n_):.1f}" fill="{NEG_COL["casas"]}" fill-opacity="0.75"/>')
         vmaxU = max(CON["acum"]) * 1.1; YU = lambda v: y4 + h4 - h4 * v / vmaxU
-        o.append('<polyline points="' + " ".join(f"{X(m_):.1f},{YU(v_):.1f}" for m_, v_ in enumerate(CON["acum"])) + '" fill="none" stroke="#000" stroke-width="2.2" stroke-dasharray="6 4"/>')
-        o.append(f'<text x="{X(fin) - 4}" y="{YU(CON["acum"][-1]) + 14:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">{CON["casas"]:.0f} casas · utilidad {mill(CON["utilidad"])}</text>')
+        o.append('<polyline points="' + " ".join(f"{X(m_):.1f},{YU(v_):.1f}" for m_, v_ in enumerate(CON["acum"])) + f'" fill="none" stroke="{NEG_COL["casas"]}" stroke-width="2.4"/>')
+        rotulo(X(fin) - 4, YU(CON["acum"][-1]) + 14, f"{CON['casas']:.0f} casas · utilidad {mill(CON['utilidad'])}", NEG_COL["casas"], peso="700")
         yb = y4 + h4
-    # panel 5: lo nuestro, acumulado
-    y5, h5 = yb + 60, 110
-    nos = []; t_ = 0.0
-    for m_, f in enumerate(fl): t_ += f["nosotros"] + (CON["util"][m_] if con else 0); nos.append(t_)
-    sin_ = []; t_ = 0.0
-    for f in fl: t_ += f["nosotros"]; sin_.append(t_)
-    vmax5 = max(nos) * 1.12
-    Y5 = panel(y5, h5, "Lo nuestro, acumulado (millones): lotes + margen de la operación" + (" + construcción de casas" if con else ""), vmax5, lambda v: f"{v/1e6:,.0f}")
-    o.append('<polygon points="' + f"{X(0):.1f},{Y5(0):.1f} " + " ".join(f"{X(m_):.1f},{Y5(v_):.1f}" for m_, v_ in enumerate(nos)) + f" {X(fin):.1f},{Y5(0):.1f}" + '" fill="rgba(0,0,0,0.12)"/>')
-    o.append('<polyline points="' + " ".join(f"{X(m_):.1f},{Y5(v_):.1f}" for m_, v_ in enumerate(nos)) + '" fill="none" stroke="#000" stroke-width="2.4"/>')
-    if con: o.append('<polyline points="' + " ".join(f"{X(m_):.1f},{Y5(v_):.1f}" for m_, v_ in enumerate(sin_)) + '" fill="none" stroke="#000" stroke-width="1.4" stroke-dasharray="2 3"/>')
-    o.append(f'<text x="{X(fin) - 4}" y="{Y5(nos[-1]) - 6:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">a 10 años · {mill(nos[-1])}</text>')
-    if con: o.append(f'<text x="{X(fin) - 4}" y="{Y5(sin_[-1]) + 14:.1f}" font-size="11" text-anchor="end" fill="#000" style="paint-order:stroke;stroke:#fff;stroke-width:4px">sin construir casas · {mill(sin_[-1])} (punteada)</text>')
+    # panel 5: lo que gana cada quien, acumulado y apilado (lotes + casas + operación)
+    y5, h5 = yb + 96, 170
+    orden = [p for p, _, _ in PARTES if con or p != "constructor"]
+    series = {}
+    for p in orden:
+        t_ = 0.0; s_ = []
+        for i in range(FI.HORIZONTE): t_ += sum(GANA[con][p][k][i] for k, _ in NEGOCIOS); s_.append(max(0.0, t_))
+        series[p] = s_
+    base = [0.0] * FI.HORIZONTE; tope = {}
+    for p in orden: tope[p] = [b + v for b, v in zip(base, series[p])]; base = tope[p]
+    vmax5 = max(base) * 1.1
+    Y5 = panel(y5, h5, "Lo que gana cada quien, acumulado (millones): lotes" + (" + casas" if con else "") + " + operación", vmax5, lambda v: f"{v/1e6:,.0f}")
+    abajo = [0.0] * FI.HORIZONTE
+    for p in orden:
+        pts = " ".join(f"{X(i):.1f},{Y5(v):.1f}" for i, v in enumerate(tope[p])) + " " + " ".join(f"{X(i):.1f},{Y5(v):.1f}" for i, v in reversed(list(enumerate(abajo))))
+        o.append(f'<polygon points="{pts}" fill="{PARTE_COL[p]}" fill-opacity="0.82"/>'); abajo = tope[p]
+    # leyenda con totales, arriba del panel
+    xl = izq; yl = y5 - 44
+    for p in orden:
+        txt = f"{PARTE_NOM[p]} {mill(gana(con, p))}"
+        o.append(f'<rect x="{xl}" y="{yl - 9}" width="10" height="10" fill="{PARTE_COL[p]}"/><text x="{xl + 14}" y="{yl}" font-size="10.5" fill="#000">{e(txt)}</text>')
+        xl += 14 + 6.1 * len(txt) + 14
+        if xl > W - 150: xl = izq; yl += 14
+    rotulo(X(fin) - 4, Y5(base[-1]) - 6, f"todos juntos a 10 años · {mill(TODO[con])}", "#000", peso="700")
     yb = y5 + h5
     # eje de meses
     for m in range(0, fin + 1, 12):
@@ -690,7 +788,7 @@ def grafica_flujo(con=False):
     ventas = MOD["ventas"]; m_ini = min(ventas); pico_m = max(ventas, key=lambda m: (ventas[m], -m)); valle_m = next(m for m in sorted(ventas) if m > pico_m and ventas[m] < ventas[pico_m] * 0.6)
     m_mant = next(f["mes"] for f in fl if f["casas"] > 0); m_sube = next(f["mes"] for f in fl if f["casas"] >= N * 0.5)
     PUNTOS = [(0, "Se crea el fideicomiso"), (0, "Se aporta el terreno"), (8, "Se aporta para la obra"), (8, "Inicia la construcción"), (m_ini, "Inicia la venta"), (m_ini + 2, "Primeras ventas"),
-              (pico_m, "Pico de ventas"), (valle_m, "Valle de ventas"), (33, "Termina la urbanización"), (m_mant, "Se empieza a cobrar mantenimiento"), (m_sube, "El mantenimiento sube"), (MOD["fin_ventas"], "Última venta")]
+              (pico_m, "Pico de ventas"), (valle_m, "Valle de ventas"), (33, "Termina la urbanización"), (m_mant, "Se empieza a cobrar mantenimiento"), (m_sube, "El mantenimiento sube"), (MOD["fin_ventas"], "Última venta"), (MOD["m_recupera"], "El inversionista recuperó todo; la idea cobra sus lotes")]
     if con: PUNTOS += [(m_ini + FI.ARRANQUE_CASA + FI.DURACION_CASA, "Primera casa entregada"), (CON["fin"], "Última casa entregada")]
     PUNTOS.sort(key=lambda t: t[0])
     ultimo = [-99, -99, -99, -99]
@@ -703,46 +801,62 @@ def grafica_flujo(con=False):
     lista = "".join(f"<li><b>{i}.</b> {e(t)} <span class='nota'>· mes {m}</span></li>" for i, (m, t) in enumerate(PUNTOS, 1))
     return "\n".join(o), lista
 
-TASA_INV_TXT = f"{FI.TASA_INV*100:.0f} % anual"
-
 def numeros():
     grupos = {"Frente a parque (+8 %)": [p for p in LOTES if p["premio"] == "parque"], "Frente al bulevar (+5 %)": [p for p in LOTES if p["premio"] == "bulevar"], "Frente a calle": [p for p in LOTES if not p["premio"]]}
     filas_v = [(k, f0(len(v)), f0(sum(p["m2"] for p in v)), f"${f0(sum(p['m2'] * precio_lote(p) for p in v) / sum(p['m2'] for p in v))}", f"${f0(sum(p['m2'] * precio_lote(p) for p in v) / len(v))}", mill(sum(p["m2"] * precio_lote(p) for p in v), 1)) for k, v in grupos.items()]
     filas_v.append(("Comercio (súper y frente a Espinoza)", f"{R['lotes_comerciales']} + 1", f0(R["predio_comercial_m2"]), "$6,000", "", mill(VENTA_COM, 1)))
     svg_con, lista_con = grafica_flujo(True); svg_sin, lista_sin = grafica_flujo(False)
     VT = MOD["venta_total"]
-    reparto = [("Dueño del terreno", f"{pct(X_DUENO)} de cada venta", mill(MOD["dueno_total"], 1), pct(MOD["dueno_total"] / VT)),
-               ("Ventas, comisiones y escrituras", f"{pct(FI.COMISION, 0)} de cada venta", mill(MOD["comis_total"], 1), pct(MOD["comis_total"] / VT)),
+    reparto = [(f'<b>{chip("terreno")}</b>', f"{pct(X_DUENO)} de cada venta", mill(MOD["dueno_total"], 1), pct(MOD["dueno_total"] / VT)),
+               (f'<b>{chip("comercializador")}</b>', f"{pct(FI.COMISION_VENDEDOR, 0)} de cada venta", mill(MOD["comis_total"] * FI.COMISION_VENDEDOR / FI.COMISION, 1), pct(MOD["comis_total"] * FI.COMISION_VENDEDOR / FI.COMISION / VT)),
+               ("Escrituras y publicidad", f"{pct(FI.COMISION - FI.COMISION_VENDEDOR, 0)} de cada venta", mill(MOD["comis_total"] * (1 - FI.COMISION_VENDEDOR / FI.COMISION), 1), pct(MOD["comis_total"] * (1 - FI.COMISION_VENDEDOR / FI.COMISION) / VT)),
                ("Proyecto ejecutivo y permisos", "al inicio", mill(FI.PROYECTO * R["venta"], 1), pct(FI.PROYECTO * R["venta"] / VT)),
                ("Obra: urbanización, club, parques, acceso, agua e iluminación", "por etapas, meses 8 a 33", mill(OBRA_TOTAL, 1), pct(OBRA_TOTAL / VT)),
-               ("Rendimiento del inversionista", f"{TASA_INV_TXT} sobre lo que tiene puesto", mill(MOD["rend"], 1), pct(MOD["rend"] / VT)),
-               ("Nosotros: pago en lotes", f"{MOD['lotes_desarrollador']:.0f} lotes al precio de lista", mill(MOD["desarrollador"], 1), pct(MOD["desarrollador"] / VT))]
+               (f'<span class="nota">de la obra, el margen del</span> <b>{chip("desarrollador")}</b>', f"{pct(FI.MARGEN_URB, 0)} del presupuesto de obra (ya incluido arriba)", mill(OBRA_TOTAL * FI.MARGEN_URB, 1), f"<span class='nota'>{pct(OBRA_TOTAL * FI.MARGEN_URB / VT)}</span>"),
+               (f'<b>{chip("inversionista")}</b>', f"{TASA_INV_TXT} sobre lo que tiene puesto", mill(MOD["rend"], 1), pct(MOD["rend"] / VT)),
+               (f'<b>{chip("idea")}</b>', f"{MOD['lotes_desarrollador']:.0f} lotes al precio de lista, al final", mill(MOD["desarrollador"], 1), pct(MOD["desarrollador"] / VT))]
+    NEG_CON = negocios_html(True); NEG_SIN = negocios_html(False)
+    leyenda = '<p class="leyenda">' + " ".join(f"<span>{chip(p)}</span>" for p, _, _ in PARTES) + f'<span><span class="chip" style="background:{NEG_COL["oper"]}"></span>La operación</span><span><span class="chip" style="background:{NEG_COL["casas"]}"></span>Las casas (se reparten)</span></p>'
     kp_base = [("Para el dueño", f"{pct(X_DUENO)} de cada venta", f"{mill(MOD['dueno_total'])} en {MOD['fin_ventas']/12:.1f} años · {mill(DUENO_TOTAL)} si todo se vendiera a precio de arranque"), ("Equivale hoy a", f"${f0(PRECIO_FID)}/m²", f"{mill(PRECIO_FID*GROSS)} de contado"),
                ("Venta de lotes", mill(MOD["venta_total"]), f"{f0(N)} lotes y el comercio, con la lista subiendo {pct(FI.ESCALON_ETAPA, 0)} por etapa"), ("Obra", mill(OBRA_TOTAL), "la respalda el inversionista"), ("Capital puesto al mismo tiempo", mill(MOD["capital_pico"]), f"como máximo, en el mes {next(f['mes'] for f in MOD['flujo'] if f['capital'] == MOD['capital_pico'])}")]
-    kp_sin = kp_base + [("Nosotros", f"{MOD['lotes_desarrollador']:.0f} lotes", "y la operadora: seguridad, mantenimiento y agua"), ("Lo nuestro a 10 años", mill(NOS_SIN), f"lotes + operadora ({mill(OPER_ANIO)} al año en crucero)")]
-    kp_con = kp_base + [("Casas que construimos", f"{CON['casas']:.0f}", f"{pct(FI.ADOPCION, 0)} de los lotes, llave en mano"), ("Utilidad de construcción", mill(CON["utilidad"]), f"{pct(CON['margen'], 0)} sobre {mill(CON['ingresos'])} de venta"), ("Lo nuestro a 10 años", mill(NOS_CON), "lotes + operación + casas")]
+    kp_sin = kp_base + [("Idea y desarrollo", f"{MOD['lotes_desarrollador']:.0f} lotes", "y la operadora: seguridad, mantenimiento y agua"), ("Todos los negocios a 10 años", mill(TODO[False]), "lotes + operación, entre todas las partes")]
+    kp_con = kp_base + [("Casas que se construyen", f"{CON['casas']:.0f}", f"{pct(FI.ADOPCION, 0)} de los lotes, llave en mano"), ("Utilidad de las casas", mill(CON["utilidad"]), f"{pct(CON['margen'], 0)} sobre {mill(CON['ingresos'])} de venta · se reparte entre todos"), ("Todos los negocios a 10 años", mill(TODO[True]), "lotes + casas + operación, entre todas las partes")]
     cuerpo = f"""
 <p class="frase" style="font-size:1.25rem"><b>${f0(PRECIO_FID)} por m² en fideicomiso: te damos el {pct(X_DUENO)} de cada venta.</b></p>
 <div class="switch"><label><input type="checkbox" id="sw-casas" checked> <b>Con construcción de casas</b> <span>apágalo para ver el negocio solo con lotes; al dueño no le cambia nada</span></label></div>
 <div class="v-con">{kpis(kp_con)}</div><div class="v-sin">{kpis(kp_sin)}</div>
 <p>El dueño aporta el terreno a un fideicomiso con un banco y cobra el {pct(X_DUENO)} de cada lote conforme se vende: no pone dinero, no corre con la obra y no espera al final. Cada peso que entra se reparte según el contrato: primero el dueño, luego las ventas y la obra, luego el capital del inversionista con su rendimiento, y lo que sobra es la paga del desarrollador, en lotes.</p>
-<div class="v-con"><p><b>Además construimos las casas.</b> El comprador que quiere su casa lista la encarga con nosotros: el Modelo Nogal con la fachada que le tocó, al precio de cualquier constructor de Torreón, pero con el molde, las compras y las cuadrillas ya montadas. Es un negocio aparte del fideicomiso y es el que más deja: ver <a href="#casas">Construir las casas</a>.</p></div>
+<div class="v-con"><p><b>Además se construyen las casas.</b> El comprador que quiere su casa lista la encarga al constructor del proyecto: el Modelo Nogal con la fachada que le tocó, al precio de cualquier constructor de Torreón, pero con el molde, las compras y las cuadrillas ya montadas. Es un negocio aparte del fideicomiso, es el que más deja, y su utilidad se reparte entre todas las partes: ver <a href="#casas">Construir las casas</a>.</p></div>
+
+<h2 id="reglas">Las reglas del juego</h2>
+<p>Quién pone qué, qué recibe y cuánto a 10 años. Cada parte tiene su color, el mismo en todas las tablas y gráficas del sitio.</p>
+<div class="v-con">{reglas_html(True)}</div><div class="v-sin">{reglas_html(False)}</div>
+<h3>Un lote y una casa: cuánto se lleva cada quien</h3>
+<div class="v-con">{unidad_html(True)}</div><div class="v-sin">{unidad_html(False)}</div>
 
 <h2 id="esquema">Cómo opera</h2>
 <figure><div class="dibujo"><div class="v-con">{esquema_fideicomiso(True)}</div><div class="v-sin">{esquema_fideicomiso(False)}</div></div><figcaption><b>Cuatro partes y un fiduciario.</b> El banco cobra cada venta y reparte sin que nadie tenga que confiar en nadie: el contrato dice a quién le toca qué.</figcaption></figure>
 
 <h2 id="reparto">Qué recibe cada quien</h2>
-{tabla([(e(a), e(b), c, d) for a, b, c, d in reparto], ["", "Cómo", "Importe", "De la venta de lotes"], "", ("<b>Venta de lotes</b>", f"lista de ${f0(PRECIO_BASE)}/m² en la etapa 1, +{pct(FI.ESCALON_ETAPA, 0)} por etapa", f"<b>{mill(MOD['venta_total'], 1)}</b>", "<b>100 %</b>"))}
+{tabla([(a, e(b), c, d) for a, b, c, d in reparto], ["", "Cómo", "Importe", "De la venta de lotes"], "", ("<b>Venta de lotes</b>", f"lista de ${f0(PRECIO_BASE)}/m² en la etapa 1, +{pct(FI.ESCALON_ETAPA, 0)} por etapa", f"<b>{mill(MOD['venta_total'], 1)}</b>", "<b>100 %</b>"))}
 <p class="nota">Si todo se vendiera al precio de arranque (${f0(PRECIO_BASE)}/m², sin subir la lista por etapa) la venta sería {mill(R['venta'])}, el dueño cobraría {mill(DUENO_TOTAL)} y a nosotros nos quedarían {ESCEN0['lotes']:.0f} lotes: la lista que sube por etapa es la que paga al desarrollador, y le da al dueño {mill(MOD['dueno_total'] - DUENO_TOTAL)} más. El <a href="/porque/">{pct(X_DUENO)}</a> está calculado sobre el precio de arranque, a favor del dueño.</p>
-<div class="v-con">{tabla([("Nosotros: construcción de las casas", f"{CON['casas']:.0f} casas a {mill(FI.PRECIO_CASA, 2)}, fuera del fideicomiso", mill(CON['ingresos'], 1), f"utilidad {mill(CON['utilidad'], 1)} ({pct(CON['margen'], 0)})"),
-   ("Nosotros: la operadora", f"cuota de ${f0(FI.CUOTA_CASA)} por casa y ${f0(FI.CUOTA_LOTE)} por lote, el agua por tarifa y la nuez, 10 años", mill(OPER_10, 1), f"{mill(OPER_ANIO, 1)} al año cuando está lleno")], ["Aparte del fideicomiso", "Cómo", "Margen", ""], "")}</div>
+<div class="v-con">{tabla([("Las casas (fuera del fideicomiso)", f"{CON['casas']:.0f} casas a {mill(FI.PRECIO_CASA, 2)}; la utilidad se reparte entre las seis partes", mill(CON['ingresos'], 1), f"utilidad {mill(CON['utilidad'], 1)} ({pct(CON['margen'], 0)})"),
+   ("La operación (agua, mantenimiento y nuez)", f"cuota de ${f0(FI.CUOTA_CASA)} por casa y ${f0(FI.CUOTA_LOTE)} por lote, el agua por tarifa y la nuez, 10 años", mill(OPER_10, 1), f"{mill(OPER_ANIO, 1)} al año cuando está lleno")], ["Aparte del fideicomiso", "Cómo", "Margen", ""], "")}</div>
+<h2 id="negocios">Todos los negocios juntos</h2>
+<p>Tres negocios: <b>los lotes</b> (el fideicomiso), <b>las casas</b> y <b>la operación</b>. Qué le deja cada uno a cada parte, y después año por año.</p>
+<div class="v-con">{NEG_CON[0]}<h3>Año por año</h3>{NEG_CON[1]}</div><div class="v-sin">{NEG_SIN[0]}<h3>Año por año</h3>{NEG_SIN[1]}</div>
+<h3>La operación, año por año</h3>
+<p>Es el negocio chico y de largo plazo: cuotas de mantenimiento, agua y nuez contra seguridad, jardinería y bombeo. Los primeros años apenas se sostiene; cuando el fraccionamiento está lleno deja {mill(OPER_ANIO)} al año. Es amor al arte y reinversión: lo que vale es tener el fraccionamiento impecable, que es lo que sostiene el precio de los lotes y de las casas.</p>
+{NEG_CON[2]}
 <ul>
 <li><b>El dueño cobra primero y de cada venta.</b> Si el proyecto vende más caro, cobra más; si vende más despacio, cobra lo mismo pero más tarde. Nunca pone dinero.</li>
 <li><b>El inversionista respalda toda la obra ({mill(OBRA_TOTAL)})</b>, pero como las ventas la van pagando, nunca llega a tener puestos más de {mill(MOD['capital_pico'])} al mismo tiempo. Recupera todo en el mes {MOD['m_recupera']} con {TASA_INV_TXT} de rendimiento sobre lo que tenga puesto cada mes.</li>
-<li><b>Nosotros cobramos en lotes</b>, no en dinero: {MOD['lotes_desarrollador']:.0f} lotes al precio de lista, que se nos entregan al final, cuando el inversionista ya recuperó. Y nos quedamos con <b>la operadora</b>: seguridad 24 horas, mantenimiento de todo el fraccionamiento y el agua (pozos, cisterna, red y planta), cobrando ${f0(FI.CUOTA_CASA)} por casa habitada, ${f0(FI.CUOTA_LOTE)} por lote baldío y el agua por tarifa. Es un negocio en sí mismo: ver <a href="#operadora">La operadora</a>.</li>
+<li><b>La idea cobra en lotes</b>, no en dinero: {MOD['lotes_desarrollador']:.0f} lotes al precio de lista, que se le entregan al final, cuando el inversionista ya recuperó. Y se queda con <b>la operadora</b>: seguridad 24 horas, mantenimiento de todo el fraccionamiento y el agua (pozos, cisterna, red y planta), cobrando ${f0(FI.CUOTA_CASA)} por casa habitada, ${f0(FI.CUOTA_LOTE)} por lote baldío y el agua por tarifa. Es un negocio en sí mismo: ver <a href="#operadora">La operadora</a>.</li>
 </ul>
 
 <h2 id="flujo">Flujo de efectivo a 10 años</h2>
+<p>Mes a mes: los lotes que se venden, el dinero del fideicomiso (lo que cobra el dueño, el capital que tiene puesto el inversionista y el pago en lotes a la idea), lo que cobra la operación, las casas y, abajo, <b>lo que va ganando cada quien, apilado</b>.</p>
+{leyenda}
 <div class="v-con"><div class="scroll sec"><div class="dibujo">{svg_con}</div></div><ol class="puntos">{lista_con}</ol></div>
 <div class="v-sin"><div class="scroll sec"><div class="dibujo">{svg_sin}</div></div><ol class="puntos">{lista_sin}</ol></div>
 <p>Los lotes se venden conforme se urbanizan: arranque lento en la etapa 1, un pico cuando ya se ve el club y el bulevar, un valle a media obra y un cierre parejo. El modelo supone que el comprador paga el lote completo al escriturar (contado o crédito bancario); si se vende a plazos, el dueño cobra su {pct(X_DUENO)} de cada mensualidad.</p>
@@ -755,12 +869,11 @@ def numeros():
         ("Ritmo", f"arranca {FI.ARRANQUE_CASA} meses después de la venta del lote; en el pico hay {CON['pico_obra']:.0f} casas en obra a la vez (≈ 8 frentes de 25 casas)"), ("Total", f"<b>{mill(CON['ingresos'])} de venta, {mill(CON['costos'])} de costo, {mill(CON['utilidad'])} de utilidad</b> entre el mes {min(MOD['ventas']) + FI.ARRANQUE_CASA} y el {CON['fin']}")],
        ["", ""], "spec")}
 <div class="v-con">
-<h3>Con y sin: lo nuestro a 10 años</h3>
-{tabla([("Lotes que nos tocan del fideicomiso", mill(MOD['desarrollador']), mill(MOD['desarrollador'])), ("Margen de la operación (agua y mantenimiento), 10 años", mill(OPER_10), mill(OPER_10)), ("Construcción de las casas", "—", mill(CON['utilidad']))],
-       ["", "Sin construir casas", "Construyendo las casas"], "", ("<b>Total</b>", f"<b>{mill(NOS_SIN)}</b>", f"<b>{mill(NOS_CON)}</b>"))}
-<p>Construir las casas multiplica por {NOS_CON / NOS_SIN:.0f} lo que deja el proyecto para nosotros, sin cambiar un peso de lo que recibe el dueño ni el inversionista. Lo que pide a cambio es una constructora de verdad: {CON['pico_obra']:.0f} casas en obra al mismo tiempo en el pico, compras centralizadas y control de calidad de serie.</p>
+<h3>Con y sin casas: lo que gana cada quien a 10 años</h3>
+{tabla([(f'<b>{chip(p)}</b>', mill(gana(False, p)) if gana(False, p) else "—", mill(gana(True, p))) for p, _, _ in PARTES], ["", "Sin construir casas", "Construyendo las casas"], "partes", ("<b>Todos juntos</b>", f"<b>{mill(TODO[False])}</b>", f"<b>{mill(TODO[True])}</b>"))}
+<p>Construir las casas multiplica por {TODO[True] / TODO[False]:.1f} lo que deja el proyecto en total, y le da a cada parte, incluidos el dueño del terreno y el inversionista, una parte de cada casa. Lo que pide a cambio es una constructora de verdad: {CON['pico_obra']:.0f} casas en obra al mismo tiempo en el pico, compras centralizadas y control de calidad de serie.</p>
 </div>
-<div class="v-sin"><p class="nota">Con el interruptor apagado, el proyecto es solo lotes: nos quedan los {MOD['lotes_desarrollador']:.0f} lotes y la operación. Enciéndelo para ver qué pasa si además construimos las casas.</p></div>
+<div class="v-sin"><p class="nota">Con el interruptor apagado, el proyecto es solo lotes: la idea se queda con los {MOD['lotes_desarrollador']:.0f} lotes y la operación. Enciéndelo para ver qué pasa si además construimos las casas.</p></div>
 
 <h2 id="ventas">De dónde salen las ventas</h2>
 <p>El lote se vende urbanizado, sin casa, a <b>${f0(PRECIO_BASE)}/m²</b> para 300 m² en la etapa 1 (baja $2 por cada m² de más), con 8 % más frente a parque y 5 % más frente al bulevar. El comercio, a $6,000/m². Son precios de 2026 comparables con lotes urbanizados de Torreón ($3,500–3,750/m²): la etapa 1 arranca por debajo del mercado para vender rápido, y <b>la lista sube {pct(FI.ESCALON_ETAPA, 0)} en cada etapa</b> ({" → ".join(f"${f0(x)}" for x in LISTA)}), porque cada etapa se vende con más fraccionamiento construido. Eso suma {pct(MOD['escalacion'], 1)} a la venta ({mill(MOD['venta_total'] - R['venta'])} más), y el dueño cobra su {pct(X_DUENO)} también de ese extra. La tabla va a precios de etapa 1; la lista completa está en <a href="/comercializador/#lista">Para el comercializador</a>.</p>
@@ -778,7 +891,7 @@ def numeros():
 <p class="nota">Cuentas en pesos de 2026, antes de impuestos. El fideicomiso de desarrollo lo administra un banco: el dueño aporta el terreno libre de gravámenes, el inversionista pone la obra, nosotros el proyecto, la gestión y las ventas, y el banco le paga a cada quien su parte de cada cobro. Todo sale de <code>pipeline/scripts/n6_fideicomiso.py</code>.</p>
 """
     pagina("numeros", "Números y fideicomiso", "13 · Números y fideicomiso", f"El dueño aporta el terreno y cobra el {pct(X_DUENO)} de cada venta; el inversionista pone la obra; nosotros cobramos en lotes y operamos el agua y el mantenimiento.", cuerpo,
-           [("esquema", "Cómo opera"), ("reparto", "Qué recibe cada quien"), ("flujo", "Flujo a 10 años"), ("casas", "Construir las casas"), ("ventas", "Ventas y obra"), ("porque", f"De dónde sale el {pct(X_DUENO)}"), ("operadora", "La operadora")],
+           [("reglas", "Las reglas del juego"), ("esquema", "Cómo opera"), ("reparto", "Qué recibe cada quien"), ("negocios", "Todos los negocios juntos"), ("flujo", "Flujo a 10 años"), ("casas", "Construir las casas"), ("ventas", "Ventas y obra"), ("porque", f"De dónde sale el {pct(X_DUENO)}"), ("operadora", "La operadora")],
            script='<script>(function(){var s=document.getElementById("sw-casas"),d=document.querySelector(".doc");function f(){d.classList.toggle("con",s.checked);d.classList.toggle("sin",!s.checked);}s.addEventListener("change",f);if(location.hash==="#sin")s.checked=false;f();})();</script>')
 
 # ======================= ETAPAS =======================

@@ -59,7 +59,7 @@ export function luzSolar(hora, dia, aj) {
     turb: 2 + 7 * bajo * diaF + 1.5 * (1 - diaF), ray: 0.9 + 2.2 * bajo, mie: 0.0025 + 0.02 * bajo * diaF, mieG: 0.78 + 0.14 * bajo,
     expo: (0.72 + 0.16 * bajo + 0.55 * noche + 1.2 * sm(0, 6, -e) * (1 - noche)) * (aj.expo === undefined ? 1 : aj.expo), env: 0.06 + 0.1 * noche,   // en el crepúsculo la cámara abre más (como el ojo)
     bloom: [0.05 + 0.1 * bajo + 0.2 * noche, 0.4 + 0.2 * noche, 1.0 - 0.1 * bajo - 0.2 * noche], bruma: (0.0012 + 0.001 * bajo + 0.0012 * noche) * (aj.bruma === undefined ? 1 : aj.bruma),
-    noche: noche > 0.5, luces: Math.max(noche, crep * 0.8, aj.luces || 0), pl: 7.0, emis: 1.1, crep, nubesCol: noche > 0.5 ? 0x24304a : lerpC(0xffb088, 0xffffff, sm(-1, 14, e)).getHex(), nubesOp: 0.95 - 0.45 * noche,
+    noche: noche > 0.5, luces: Math.max(noche, crep * 0.8, aj.luces || 0), pl: 2.4, emis: 0.8, crep, nubesCol: noche > 0.5 ? 0x24304a : lerpC(0xffb088, 0xffffff, sm(-1, 14, e)).getHex(), nubesOp: 0.95 - 0.45 * noche,
     sierrasCol: lerpC(0x141a28, lerpC(0x8a7a8c, 0x6b7689, sm(0, 15, e)), sm(-8, -2, e)).getHex(), nieblaCol: lerpC(0x0a1226, lerpC(0xe8c9a8, 0xdbe6f0, sm(0, 15, e)), sm(-8, -2, e)).getHex()
   };
   return H;
