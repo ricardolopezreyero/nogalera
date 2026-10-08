@@ -305,6 +305,26 @@ def negocios_html(con=True):
     t3 = tabla([(f"Año {a + 1}", f0(casas_fin[a]), ("−" if oper[a] < 0 else "") + mill(abs(oper[a]), 1)) for a in range(10)], ["La operación, año por año", "Casas habitadas", "Margen"], "compacta", ("<b>10 años</b>", "", f"<b>{mill(OPER_10, 1)}</b>"))
     return t1, t2, t3
 
+
+def palabras_html():
+    """Las palabras exactas para cada parte, y a quién buscamos."""
+    REP = FI.REPARTO_CASAS; m = MOD; contado = PRECIO_FID * GROSS
+    G = lambda p: gana(True, p)
+    P = [("terreno", f"Tu huerta vale hoy {mill(contado)} de contado, y nadie te los va a pagar de contado. Te propongo que la aportes a un fideicomiso con un banco: no pones un peso, no corres con la obra y cobras el {pct(X_DUENO)} de cada lote conforme se vende, primero que nadie. Son {mill(m['dueno_total'])} en {m['fin_ventas'] / 12:.1f} años, más el {pct(REP['terreno'], 0)} de la utilidad de cada casa: {mill(G('terreno'))} en total, {pct(G('terreno') / contado - 1, 0)} más que de contado. Si el proyecto vende más caro, cobras más. El banco cobra y reparte: no tienes que confiar en mí, tienes que confiar en el contrato."),
+         ("inversionista", f"La obra cuesta {mill(OBRA_TOTAL)}, pero nunca vas a tener puestos más de {mill(m['capital_pico'])} al mismo tiempo, porque las ventas la van pagando. Recuperas todo en el mes {m['m_recupera']} con {TASA_INV_TXT} sobre lo que tengas puesto cada mes, y además el {pct(REP['inversionista'], 0)} de la utilidad de cada casa: {mill(G('inversionista'))} de ganancia, TIR de {pct(m['tir_inv'], 0)}, {m['moic']:.2f} veces lo que pones. Tu dinero no entra hasta que el terreno está en el fideicomiso y la licencia en la mano, y te lo devuelve el banco antes de pagarle un peso a la idea."),
+         ("comercializador", f"{f0(N)} lotes y {CON['casas']:.0f} casas en {m['fin_ventas'] / 12:.1f} años, con el terreno en fideicomiso, un solo producto (una casa, nueve fachadas) y la obra siempre una etapa adelante de ti. Te llevas el {pct(FI.COMISION_VENDEDOR, 0)} de cada venta más el {pct(REP['comercializador'], 0)} de la utilidad de cada casa: ${f0(gana(True, 'comercializador', 'lotes') / N)} por lote vendido y ${f0(FI.MARGEN_CASA * REP['comercializador'])} por casa, {mill(G('comercializador'))} en total. Yo pongo la página, los renders, la lista de precios y la casa muestra; tú pones la fuerza de ventas. Se cobra por venta cerrada."),
+         ("desarrollador", f"{mill(OBRA_TOTAL)} de obra en cuatro etapas, del mes 8 al 33, pagada por el fideicomiso conforme avanza, con el proyecto ejecutivo dibujado sobre la huerta real. Tu margen es el {pct(FI.MARGEN_URB, 0)} dentro del presupuesto, {mill(OBRA_TOTAL * FI.MARGEN_URB)}, más el {pct(REP['desarrollador'], 0)} de la utilidad de cada casa: {mill(G('desarrollador'))} en total. Tú conviertes el plano en calles, redes, parques y acceso, y entregas cada etapa completa antes de que se escrituren sus lotes."),
+         ("constructor", f"{CON['casas']:.0f} casas iguales, Modelo Nogal con nueve fachadas, una tras otra con molde de aluminio y compras por volumen; en el pico, {CON['pico_obra']:.0f} en obra a la vez. Cada casa se paga sola: {pct(FI.PAGO_CASA[0], 0)} de anticipo, {pct(FI.PAGO_CASA[1], 0)} en estimaciones y {pct(FI.PAGO_CASA[2], 0)} a la entrega, así que no pones capital. Te llevas el {pct(REP['constructor'], 0)} de la utilidad de cada casa: ${f0(FI.MARGEN_CASA * REP['constructor'])} por casa, {mill(G('constructor'))} en total. Precio al cliente igual que el mercado; el margen sale de hacer la misma casa {CON['casas']:.0f} veces.")]
+    bloques = "".join(f'<div class="palabras"><h3>{chip(p)}</h3><blockquote>{e(t)}</blockquote></div>' for p, t in P)
+    perfiles = [("comercializador", f"Una inmobiliaria o un vendedor con equipo propio que ya haya vendido fraccionamientos en Torreón o La Laguna (lotes y casas, no departamentos sueltos), con cartera de asesores y de clientes, que sepa vender el paquete lote + casa y que aguante {m['fin_ventas'] / 12:.1f} años a {TE.RITMO} lotes al mes. No pone dinero: pone gente, disciplina y buen trato. Cobra por venta cerrada, nada fijo."),
+                ("desarrollador", f"Una constructora de urbanización de Torreón o la región, con obra terminada que se pueda ir a ver (calles, redes de agua y drenaje, plantas, parques de un fraccionamiento), capaz de ejecutar {mill(OBRA_TOTAL)} en 25 meses con cuatro frentes, y con espalda para fondear dos meses de obra entre estimaciones (unos {mill(OBRA_TOTAL / 25 * 2)}). Que haya hecho drenaje pluvial y sepa trabajar entre árboles que se quedan.")]
+    perf = "".join(f'<div class="palabras"><h3>{chip(p)}</h3><p>{e(t)}</p></div>' for p, t in perfiles)
+    return f'''<h2 id="palabras">Qué decirle a cada quien</h2>
+<p>Las palabras exactas, con los números de este modelo. Cada quien oye solo lo que le toca: qué pone, qué recibe y por qué está protegido.</p>
+{bloques}
+<h2 id="buscamos">A quién buscamos</h2>
+{perf}'''
+
 # ======================= RESUMEN =======================
 def resumen():
     tarj = [("terreno", "El terreno", f"{ha(GROSS)} de nogalera en La Paz, al oriente de Torreón; {f0(R['arboles'])} nogales mapeados uno por uno."),
@@ -337,11 +357,12 @@ def resumen():
 {kpis([("Todos los negocios juntos, 10 años", mill(TODO[True]), "lotes + casas + operación, entre las seis partes"), ("Venta de lotes", mill(MOD["venta_total"]), f"{f0(N)} lotes y el comercio"), ("Casas", f"{CON['casas']:.0f}", f"{mill(CON['utilidad'])} de utilidad, repartida entre todos"), ("La operación", mill(OPER_ANIO), "al año cuando está lleno")])}
 <h3>Un lote y una casa: cuánto se lleva cada quien</h3>
 {unidad_html(True)}
+{palabras_html()}
 <figure><div class="dibujo">{plano_svg("plan", titulo="Plano maestro")}</div><figcaption><b>Plano maestro.</b> Cada punto es un nogal en su lugar exacto; los blancos son los {f0(R['reubicar'])} que se reubican. El bulevar Nogal corre por la hilera que ya faltaba en la huerta; el club, por la otra.</figcaption></figure>
 <h2 id="secciones">Secciones</h2>
 <ul class="tarjetas">{"".join(f'<li><a class="tarjeta" href="/{s_}/"><span class="n">{dict((x[0], x[2]) for x in SECCIONES if x)[s_]}</span><b>{e(t)}</b><p>{e(d)}</p></a></li>' for s_, t, d in tarj)}</ul>
 """
-    pagina("", f"{NOMBRE}", "01 · Resumen", "", cuerpo, [("reglas", "Las reglas del juego"), ("secciones", "Secciones")],
+    pagina("", f"{NOMBRE}", "01 · Resumen", "", cuerpo, [("reglas", "Las reglas del juego"), ("palabras", "Qué decirle a cada quien"), ("buscamos", "A quién buscamos"), ("secciones", "Secciones")],
            descripcion=f"{NOMBRE}: fraccionamiento de {f0(N)} casas entre nogales en el oriente de Torreón. Anteproyecto completo.")
 
 # ======================= TERRENO =======================
