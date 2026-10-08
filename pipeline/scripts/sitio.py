@@ -854,6 +854,7 @@ def numeros():
 <div class="v-con">{reglas_html(True)}</div><div class="v-sin">{reglas_html(False)}</div>
 <h3>Un lote y una casa: cuánto se lleva cada quien</h3>
 <div class="v-con">{unidad_html(True)}</div><div class="v-sin">{unidad_html(False)}</div>
+{palabras_html()}
 
 <h2 id="esquema">Cómo opera</h2>
 <figure><div class="dibujo"><div class="v-con">{esquema_fideicomiso(True)}</div><div class="v-sin">{esquema_fideicomiso(False)}</div></div><figcaption><b>Cuatro partes y un fiduciario.</b> El banco cobra cada venta y reparte sin que nadie tenga que confiar en nadie: el contrato dice a quién le toca qué.</figcaption></figure>
@@ -912,7 +913,7 @@ def numeros():
 <p class="nota">Cuentas en pesos de 2026, antes de impuestos. El fideicomiso de desarrollo lo administra un banco: el dueño aporta el terreno libre de gravámenes, el inversionista pone la obra, nosotros el proyecto, la gestión y las ventas, y el banco le paga a cada quien su parte de cada cobro. Todo sale de <code>pipeline/scripts/n6_fideicomiso.py</code>.</p>
 """
     pagina("numeros", "Números y fideicomiso", "13 · Números y fideicomiso", f"El dueño aporta el terreno y cobra el {pct(X_DUENO)} de cada venta; el inversionista pone la obra; nosotros cobramos en lotes y operamos el agua y el mantenimiento.", cuerpo,
-           [("reglas", "Las reglas del juego"), ("esquema", "Cómo opera"), ("reparto", "Qué recibe cada quien"), ("negocios", "Todos los negocios juntos"), ("flujo", "Flujo a 10 años"), ("casas", "Construir las casas"), ("ventas", "Ventas y obra"), ("porque", f"De dónde sale el {pct(X_DUENO)}"), ("operadora", "La operadora")],
+           [("reglas", "Las reglas del juego"), ("palabras", "Qué decirle a cada quien"), ("buscamos", "A quién buscamos"), ("esquema", "Cómo opera"), ("reparto", "Qué recibe cada quien"), ("negocios", "Todos los negocios juntos"), ("flujo", "Flujo a 10 años"), ("casas", "Construir las casas"), ("ventas", "Ventas y obra"), ("porque", f"De dónde sale el {pct(X_DUENO)}"), ("operadora", "La operadora")],
            script='<script>(function(){var s=document.getElementById("sw-casas"),d=document.querySelector(".doc");function f(){d.classList.toggle("con",s.checked);d.classList.toggle("sin",!s.checked);}s.addEventListener("change",f);if(location.hash==="#sin")s.checked=false;f();})();</script>')
 
 # ======================= ETAPAS =======================
