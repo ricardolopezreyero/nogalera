@@ -7,6 +7,7 @@
 {
   // Debe coincidir con el nombre del Worker en Cloudflare (Workers & Pages → nogalera).
   "name": "nogalera",
+  "account_id": "93695b987a7460c681c06ca4df901ef4",
   "main": "worker/index.js",
   "compatibility_date": "2026-09-01",
   "assets": {
