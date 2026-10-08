@@ -51,6 +51,12 @@ DURACION_CASA = 8                # meses de obra por casa (con molde: 6 a 8)
 ARRANQUE_CASA = 2                # meses entre la compra del lote y el arranque de la casa
 PAGO_CASA = (0.30, 0.60, 0.10)   # anticipo, estimaciones durante la obra, entrega
 PRECIO_CASA = M2_CASA * PRECIO_M2_MERCADO; COSTO_CASA = M2_CASA * COSTO_M2_NOSOTROS; MARGEN_CASA = PRECIO_CASA - COSTO_CASA
+# ---- las partes del negocio: quién gana qué (ver sitio.py → «Las reglas del juego») ----
+COMISION_VENDEDOR = 0.05         # de la COMISION (8 % de cada venta), lo que gana el comercializador; el otro 3 % es escrituración y publicidad
+MARGEN_URB = 0.10                # margen del constructor desarrollador (el que ejecuta la urbanización, el club y los parques) dentro del presupuesto de obra
+REPARTO_CASAS = {"constructor": 0.35, "idea": 0.20, "desarrollador": 0.15, "comercializador": 0.10, "inversionista": 0.10, "terreno": 0.10}   # cómo se reparte la utilidad de cada casa: todos ganan de las casas
+OPERADORA_DE = {"idea": 1.0}     # a quién le queda el margen de la operación (agua, mantenimiento y nuez)
+assert abs(sum(REPARTO_CASAS.values()) - 1) < 1e-9 and abs(sum(OPERADORA_DE.values()) - 1) < 1e-9
 
 def curva_ventas(n, inicio=9, estira=1.0):
     """Lotes vendidos por mes: arranque lento, pico, valle y cierre. Suma n. `estira` > 1 alarga la venta (escenario lento)."""
@@ -83,7 +89,7 @@ def modelo(S, N, X, URB, amen, paisaje, reubica, cuota_mant, estira=1.0):
     aportado = 0.0; devuelto = 0.0; rend_pagado = 0.0; inv_flujo = []
     for f in flujo:
         interes += capital * TASA_INV / 12
-        caja = f["neto"]; mov = 0.0
+        caja = f["neto"]; mov = 0.0; pago_int = 0.0
         if caja < 0:
             capital += -caja; aportado += -caja; mov = caja
         else:
@@ -91,7 +97,7 @@ def modelo(S, N, X, URB, amen, paisaje, reubica, cuota_mant, estira=1.0):
             pago_cap = min(caja, capital); capital -= pago_cap; devuelto += pago_cap; caja -= pago_cap
             acum += caja; mov = pago_int + pago_cap   # excedente libre: es la paga del desarrollador
         pico = max(pico, capital); inv_flujo.append(mov)
-        f.update(capital=capital, excedente=acum, inv=mov)
+        f.update(capital=capital, excedente=acum, inv=mov, rend=pago_int)
     tir_inv = tir_mensual(inv_flujo); moic = (devuelto + rend_pagado) / aportado if aportado else 0
     m_recupera = next((f["mes"] for f in flujo if f["mes"] > 12 and f["capital"] == 0), None)   # None: no recupera en el horizonte
     # la operadora: cuota de mantenimiento y seguridad (casa habitada y lote baldío), agua por tarifa y la nuez de los nogales comunes
@@ -108,7 +114,8 @@ def modelo(S, N, X, URB, amen, paisaje, reubica, cuota_mant, estira=1.0):
                  oper_margen=cuota_ing + agua_ing + nuez - costo - reserva)
     # nosotros, mes a mes: los lotes que nos tocan (se liquidan cuando el inversionista ya recuperó) y el margen de la operación
     for f in flujo:
-        f["nosotros"] = f["oper_margen"] + (acum if f["mes"] == m_recupera else 0.0)
+        f["pago_idea"] = acum if f["mes"] == m_recupera else 0.0          # los lotes de la idea se liquidan cuando el inversionista ya recuperó
+        f["nosotros"] = f["oper_margen"] + f["pago_idea"]
     return dict(flujo=flujo, ventas=ventas, fin_ventas=fin, precio=precio, capital_pico=pico, aportado=aportado, rend=rend_pagado,
                 m_recupera=m_recupera, desarrollador=acum, lotes_desarrollador=acum / precio, dueno_total=sum(f["dueno"] for f in flujo), comis_total=sum(f["comision"] for f in flujo),
                 venta_total=sum(f["ingreso"] for f in flujo), escalacion=sum(f["ingreso"] for f in flujo) / S - 1,
